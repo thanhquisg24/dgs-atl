@@ -1,0 +1,88 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true,
+      "impliedStrict": true
+    },
+    "ecmaVersion": 12
+  },
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".ts", ".jsx", ".tsx"],
+        "moduleDirectory": ["node_modules", "src/"]
+      }
+    },
+    "import/extensions": [".js", ".ts", ".jsx", ".tsx"]
+  },
+  "extends": ["airbnb", "airbnb/hooks", "prettier", "plugin:@typescript-eslint/recommended"],
+  "plugins": ["prettier", "jest"],
+  "rules": {
+    "no-console": "off",
+    "import/prefer-default-export": "off",
+    "import/no-cycle": "off",
+    "import/no-anonymous-default-export": "off",
+    "no-unused-expressions": "warn",
+    "no-await-in-loop": "warn",
+    "no-plusplus": "off",
+    // Typescript
+    "@typescript-eslint/no-empty-function": ["warn"],
+    "@typescript-eslint/no-unused-vars": "warn",
+    "no-use-before-define": "off",
+    "@typescript-eslint/no-use-before-define": ["warn"],
+    "@typescript-eslint/no-unused-expressions": ["warn"],
+    "no-shadow": "warn",
+
+    "no-underscore-dangle": "off",
+    "@typescript-eslint/no-shadow": ["warn"],
+    "no-param-reassign": [
+      "error",
+      {
+        "props": true,
+        "ignorePropertyModificationsFor": ["state"]
+      }
+    ],
+    // React
+    "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
+    "react/prop-types": 0,
+    "react/jsx-props-no-spreading": 0,
+    "react/no-multi-comp": 0,
+    "react/self-closing-comp": 0,
+    "jsx-a11y/interactive-supports-focus": 0,
+    "jsx-a11y/click-events-have-key-events": 0,
+    "jsx-a11y/no-static-element-interactions": 0,
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "mjs": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ],
+    "spaced-comment": "off",
+    "semi": [0, "always"],
+    "prettier/prettier": [
+      "warn",
+      {
+        "singleQuote": false,
+        "semi": true,
+        "trailingComma": "all",
+        "endOfLine": "auto"
+      }
+    ],
+    "camelcase": "off",
+    "class-methods-use-this": 0,
+    "import/order": "off"
+    // "sort-imports": "error"
+  }
+}
