@@ -50,6 +50,7 @@ const ColorBox = ({ bgcolor, title, data, dark }: any) => (
 ColorBox.propTypes = {
   bgcolor: PropTypes.string,
   title: PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
   data: PropTypes.object.isRequired,
   dark: PropTypes.bool,
 };

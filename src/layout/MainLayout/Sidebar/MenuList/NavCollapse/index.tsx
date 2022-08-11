@@ -117,6 +117,7 @@ const NavCollapse = ({ menu, level }: any) => {
 };
 
 NavCollapse.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
   menu: PropTypes.object,
   level: PropTypes.number,
 };

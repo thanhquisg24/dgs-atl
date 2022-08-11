@@ -1,4 +1,5 @@
 // material-ui
+import React from "react";
 import { styled } from "@mui/material/styles";
 import { Button, Card, CardContent, Grid, Stack, Typography } from "@mui/material";
 
@@ -13,7 +14,7 @@ const CardStyle = styled(Card)(({ theme }) => ({
   overflow: "hidden",
   position: "relative",
   "&:after": {
-    content: '""',
+    content: "",
     position: "absolute",
     width: "200px",
     height: "200px",
@@ -24,7 +25,7 @@ const CardStyle = styled(Card)(({ theme }) => ({
     right: "-150px",
   },
   "&:before": {
-    content: '""',
+    content: "",
     position: "absolute",
     width: "200px",
     height: "200px",
@@ -47,7 +48,8 @@ const UpgradePlanCard = () => (
         </Grid>
         <Grid item>
           <Typography variant="subtitle2" color="grey.900" sx={{ opacity: 0.6 }}>
-            70% discount for 1 years <br />
+            70% discount for 1 years
+            <br />
             subscriptions.
           </Typography>
         </Grid>

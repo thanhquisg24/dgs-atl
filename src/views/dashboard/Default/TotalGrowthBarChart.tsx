@@ -97,7 +97,7 @@ const TotalGrowthBarChart = ({ isLoading }: any) => {
 
     // do not load chart when loading
     if (!isLoading) {
-      ApexCharts.exec(`bar-chart`, "updateOptions", newChartData);
+      ApexCharts.exec("bar-chart", "updateOptions", newChartData);
     }
   }, [
     navType,

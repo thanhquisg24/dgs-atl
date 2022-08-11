@@ -16,7 +16,7 @@ const CardWrapper = styled(MainCard)(({ theme }: any) => ({
   overflow: "hidden",
   position: "relative",
   "&:after": {
-    content: '""',
+    content: "",
     position: "absolute",
     width: 210,
     height: 210,
@@ -26,7 +26,7 @@ const CardWrapper = styled(MainCard)(({ theme }: any) => ({
     right: -180,
   },
   "&:before": {
-    content: '""',
+    content: "",
     position: "absolute",
     width: 210,
     height: 210,

@@ -72,7 +72,7 @@ export default function themeTypography(theme: any) {
         top: 23,
         left: 0,
         color: theme.grey500,
-        '&[data-shrink="false"]': {
+        "&[data-shrink='false']": {
           top: 5,
         },
       },

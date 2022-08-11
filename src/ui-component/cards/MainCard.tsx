@@ -1,5 +1,6 @@
+/* eslint-disable react/forbid-prop-types */
 import PropTypes from "prop-types";
-import React,{ forwardRef } from "react";
+import React, { forwardRef } from "react";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";

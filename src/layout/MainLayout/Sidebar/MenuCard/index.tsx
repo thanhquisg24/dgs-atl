@@ -38,7 +38,7 @@ const CardStyle = styled(Card)(({ theme }: any) => ({
   overflow: "hidden",
   position: "relative",
   "&:after": {
-    content: '""',
+    content: "",
     position: "absolute",
     width: "157px",
     height: "157px",

@@ -16,7 +16,6 @@ import { IconTallymark1 } from "@tabler/icons";
 import AccountTreeTwoToneIcon from "@mui/icons-material/AccountTreeTwoTone";
 import HomeIcon from "@mui/icons-material/Home";
 import HomeTwoToneIcon from "@mui/icons-material/HomeTwoTone";
-import React from "react";
 
 const linkSX = {
   display: "flex",
@@ -196,6 +195,7 @@ Breadcrumbs.propTypes = {
   icon: PropTypes.bool,
   icons: PropTypes.bool,
   maxItems: PropTypes.number,
+  // eslint-disable-next-line react/forbid-prop-types
   navigation: PropTypes.object,
   rightAlign: PropTypes.bool,
   separator: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),

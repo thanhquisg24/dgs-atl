@@ -85,6 +85,7 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }: any) => {
 Sidebar.propTypes = {
   drawerOpen: PropTypes.bool,
   drawerToggle: PropTypes.func,
+  // eslint-disable-next-line react/forbid-prop-types
   window: PropTypes.object,
 };
 

@@ -15,7 +15,7 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 // assets
 import { IconBell } from "@tabler/icons";
@@ -25,7 +25,6 @@ import Transitions from "../../../../ui-component/extended/Transitions";
 import NotificationList from "./NotificationList";
 // third-party
 import PerfectScrollbar from "react-perfect-scrollbar";
-import React from "react";
 // project imports
 // material-ui
 import { useTheme } from "@mui/material/styles";
@@ -106,7 +105,7 @@ const NotificationSection = () => {
               transition: "all .2s ease-in-out",
               background: theme.palette.secondary.light,
               color: theme.palette.secondary.dark,
-              '&[aria-controls="menu-list-grow"],&:hover': {
+              "&[aria-controls='menu-list-grow'],&:hover": {
                 background: theme.palette.secondary.dark,
                 color: theme.palette.secondary.light,
               },

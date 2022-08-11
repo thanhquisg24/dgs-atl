@@ -29,7 +29,7 @@ const CardWrapper = styled(MainCard)(({ theme }: any) => ({
     zIndex: 5,
   },
   "&:after": {
-    content: '""',
+    content: "",
     position: "absolute",
     width: 210,
     height: 210,
@@ -44,7 +44,7 @@ const CardWrapper = styled(MainCard)(({ theme }: any) => ({
     },
   },
   "&:before": {
-    content: '""',
+    content: "",
     position: "absolute",
     zIndex: 1,
     width: 210,

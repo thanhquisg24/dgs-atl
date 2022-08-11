@@ -3,7 +3,6 @@ import { forwardRef } from "react";
 
 // material-ui
 import { Collapse, Fade, Box, Grow, Slide, Zoom } from "@mui/material";
-import React from "react";
 
 // ==============================|| TRANSITIONS ||============================== //
 //@ts-ignore

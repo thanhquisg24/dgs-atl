@@ -110,6 +110,7 @@ const NavItem = ({ item, level }: any) => {
 };
 
 NavItem.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
   item: PropTypes.object,
   level: PropTypes.number,
 };
