@@ -30,7 +30,6 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import Transitions from "@ui-component/extended/Transitions";
 import UpgradePlanCard from "./UpgradePlanCard";
 // eslint-disable-next-line import/no-unresolved
-import User1 from "../../../../../assets/images/icons/user-round.svg";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 // material-ui
@@ -108,7 +107,7 @@ const ProfileSection = () => {
         }}
         icon={
           <Avatar
-            src={User1}
+            src="/static/images/icons/user-round.svg"
             sx={{
               ...theme.typography.mediumAvatar,
               margin: "8px 0 8px 8px !important",

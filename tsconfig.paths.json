@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@menu-items/*": ["./src/menu-items/*"],
+      "@store/*": ["./src/store/*"],
+      "@ui-component/*": ["./src/ui-component/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@assets/*": ["./src/assets/*"]
+    }
+  }
+}

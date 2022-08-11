@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useSelector } from "react-redux";
@@ -98,7 +99,7 @@ const NavCollapse = ({ menu, level }: any) => {
           sx={{
             position: "relative",
             "&:after": {
-              content: "''",
+              content: '""',
               position: "absolute",
               left: "32px",
               top: 0,

@@ -4,14 +4,8 @@
       "module": "commonjs"
     }
   },
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@menu-items/*": ["./src/menu-items/*"],
-      "@store/*": ["./src/store/*"],
-      "@ui-component/*": ["./src/ui-component/*"],
-      "@utils/*": ["./src/utils/*"]
-    },
     "jsx": "react-jsx",
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],

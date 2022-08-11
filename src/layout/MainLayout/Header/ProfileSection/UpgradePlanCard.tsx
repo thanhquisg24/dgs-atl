@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 // material-ui
 import React from "react";
 import { styled } from "@mui/material/styles";
@@ -14,7 +15,7 @@ const CardStyle = styled(Card)(({ theme }) => ({
   overflow: "hidden",
   position: "relative",
   "&:after": {
-    content: "",
+    content: '""',
     position: "absolute",
     width: "200px",
     height: "200px",
@@ -25,7 +26,7 @@ const CardStyle = styled(Card)(({ theme }) => ({
     right: "-150px",
   },
   "&:before": {
-    content: "",
+    content: '""',
     position: "absolute",
     width: "200px",
     height: "200px",

@@ -23,7 +23,8 @@ const CardWrapper = styled(MainCard)(({ theme }: any) => ({
   overflow: "hidden",
   position: "relative",
   "&:after": {
-    content: "",
+    // eslint-disable-next-line quotes
+    content: '""',
     position: "absolute",
     width: 210,
     height: 210,
@@ -37,7 +38,8 @@ const CardWrapper = styled(MainCard)(({ theme }: any) => ({
     },
   },
   "&:before": {
-    content: "",
+    // eslint-disable-next-line quotes
+    content: '""',
     position: "absolute",
     width: 210,
     height: 210,
