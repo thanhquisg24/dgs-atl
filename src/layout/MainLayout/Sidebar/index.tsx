@@ -9,7 +9,7 @@ import MenuList from "./MenuList";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import React from "react";
-import { drawerWidth } from "store/constant";
+import { drawerWidth } from "@store/constant";
 // material-ui
 import { useTheme } from "@mui/material/styles";
 

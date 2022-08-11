@@ -19,9 +19,8 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { strengthColor, strengthIndicator } from "utils/password-strength";
-
-import AnimateButton from "ui-component/extended/AnimateButton";
+import { strengthColor, strengthIndicator } from "@utils/password-strength";
+import AnimateButton from "@ui-component/extended/AnimateButton";
 import { Formik } from "formik";
 //@ts-ignore
 import Google from "../../../../assets/images/icons/social-google.svg";

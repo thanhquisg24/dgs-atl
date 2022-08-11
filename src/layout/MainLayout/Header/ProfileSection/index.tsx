@@ -24,10 +24,10 @@ import { IconLogout, IconSearch, IconSettings, IconUser } from "@tabler/icons";
 import React, { useEffect, useRef, useState } from "react";
 
 // project imports
-import MainCard from "ui-component/cards/MainCard";
+import MainCard from "@ui-component/cards/MainCard";
 // third-party
 import PerfectScrollbar from "react-perfect-scrollbar";
-import Transitions from "ui-component/extended/Transitions";
+import Transitions from "@ui-component/extended/Transitions";
 import UpgradePlanCard from "./UpgradePlanCard";
 // eslint-disable-next-line import/no-unresolved
 import User1 from "../../../../../assets/images/icons/user-round.svg";

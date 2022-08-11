@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "resolveJsonModule": true,
+    "strict": true,
+    "baseUrl": "./src",
     "paths": {
       "menu-items/*": ["src/menu-items/*"],
-      "store/*": ["src/store/*"]
+      "store/*": ["src/store/*"],
+      "ui-component/*": ["src/ui-component/*"],
+      "utils/*": ["src/utils/*"]
     }
   }
 }

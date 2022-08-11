@@ -1,5 +1,3 @@
-import PropTypes from "prop-types";
-
 // material-ui
 import { useTheme } from "@mui/material/styles";
 import MuiAvatar from "@mui/material/Avatar";
@@ -7,15 +5,16 @@ import React from "react";
 
 // ==============================|| AVATAR ||============================== //
 
-const Avatar = ({ color, outline, size, sx, ...others }: any) => {
+const Avatar = (props: any): JSX.Element => {
+  const { color, outline, size, sx, ...others } = props;
   const theme = useTheme();
 
   const colorSX = color && !outline && { color: theme.palette.background.paper, bgcolor: `${color}.main` };
   const outlineSX = outline && {
-    color: color ? `${color}.main` : `primary.main`,
+    color: color ? `${color}.main` : "primary.main",
     bgcolor: theme.palette.background.paper,
     border: "2px solid",
-    borderColor: color ? `${color}.main` : `primary.main`,
+    borderColor: color ? `${color}.main` : "primary.main",
   };
   let sizeSX = {};
   switch (size) {
@@ -60,14 +59,6 @@ const Avatar = ({ color, outline, size, sx, ...others }: any) => {
   }
 
   return <MuiAvatar sx={{ ...colorSX, ...outlineSX, ...sizeSX, ...sx }} {...others} />;
-};
-
-Avatar.propTypes = {
-  className: PropTypes.string,
-  color: PropTypes.string,
-  outline: PropTypes.bool,
-  size: PropTypes.string,
-  sx: PropTypes.object,
 };
 
 export default Avatar;

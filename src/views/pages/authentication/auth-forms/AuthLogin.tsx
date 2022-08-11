@@ -21,7 +21,7 @@ import {
 import React, { useState } from "react";
 
 // project imports
-import AnimateButton from "ui-component/extended/AnimateButton";
+import AnimateButton from "@ui-component/extended/AnimateButton";
 import { Formik } from "formik";
 import Google from "../../../../assets/images/icons/social-google.svg";
 // assets

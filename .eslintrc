@@ -1,7 +1,8 @@
 {
-  "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "project": "./tsconfig.json",
+    "tsconfigRootDir": "./",
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
       "impliedStrict": true
@@ -15,6 +16,7 @@
 
   "settings": {
     "import/resolver": {
+      "typescript": true,
       "node": {
         "extensions": [".js", ".ts", ".jsx", ".tsx"],
         "moduleDirectory": ["node_modules", "src/"]
@@ -22,10 +24,14 @@
     },
     "import/extensions": [".js", ".ts", ".jsx", ".tsx"]
   },
-  "extends": ["airbnb", "airbnb/hooks", "prettier", "plugin:@typescript-eslint/recommended"],
-  "plugins": ["prettier", "jest"],
+  "plugins": ["@typescript-eslint", "import"],
+  "extends": ["airbnb", "airbnb/hooks", "plugin:@typescript-eslint/recommended","plugin:import/recommended"],
   "rules": {
+    "max-len": "off",
+    "object-curly-newline": "off",
+    "quotes": ["error", "double"],
     "no-console": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
     "import/prefer-default-export": "off",
     "import/no-cycle": "off",
     "import/no-anonymous-default-export": "off",
@@ -52,6 +58,7 @@
     // React
     "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
     "react/prop-types": 0,
+    "react/require-default-props": 0,
     "react/jsx-props-no-spreading": 0,
     "react/no-multi-comp": 0,
     "react/self-closing-comp": 0,
@@ -71,15 +78,15 @@
     ],
     "spaced-comment": "off",
     "semi": [0, "always"],
-    "prettier/prettier": [
-      "warn",
-      {
-        "singleQuote": false,
-        "semi": true,
-        "trailingComma": "all",
-        "endOfLine": "auto"
-      }
-    ],
+    // "prettier/prettier": [
+    //   "warn",
+    //   {
+    //     "singleQuote": false,
+    //     "semi": true,
+    //     "trailingComma": "all",
+    //     "endOfLine": "auto"
+    //   }
+    // ],
     "camelcase": "off",
     "class-methods-use-this": 0,
     "import/order": "off"

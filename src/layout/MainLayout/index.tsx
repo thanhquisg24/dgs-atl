@@ -5,15 +5,15 @@ import { styled, useTheme } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 
 // project imports
-import Breadcrumbs from "ui-component/extended/Breadcrumbs";
+import Breadcrumbs from "@ui-component/extended/Breadcrumbs";
 import Customization from "../Customization";
 import Header from "./Header";
 // assets
 import { IconChevronRight } from "@tabler/icons";
 import { Outlet } from "react-router-dom";
-import { SET_MENU } from "store/actions";
+import { SET_MENU } from "@store/actions";
 import Sidebar from "./Sidebar";
-import { drawerWidth } from "store/constant";
+import { drawerWidth } from "@store/constant";
 import navigation from "../../menu-items";
 
 // styles
@@ -62,7 +62,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(({
 
 // ==============================|| MAIN LAYOUT ||============================== //
 
-const MainLayout = () => {
+const MainLayout = (): JSX.Element => {
   const theme = useTheme();
   const matchDownMd = useMediaQuery(theme.breakpoints.down("lg"));
 
@@ -100,7 +100,7 @@ const MainLayout = () => {
       {/* drawer */}
       <Sidebar drawerOpen={leftDrawerOpened} drawerToggle={handleLeftDrawerToggle} />
 
-      {/* main content */}
+      {/* @ts-ignore main content */}
       <Main theme={theme} open={leftDrawerOpened}>
         {/* breadcrumb */}
         <Breadcrumbs

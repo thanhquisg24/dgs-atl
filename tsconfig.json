@@ -1,18 +1,20 @@
 {
-  "extends": "./base-tsconfig.json",
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
     }
   },
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@menu-items/*": ["./src/menu-items/*"],
+      "@store/*": ["./src/store/*"],
+      "@ui-component/*": ["./src/ui-component/*"],
+      "@utils/*": ["./src/utils/*"]
+    },
     "jsx": "react-jsx",
     "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -26,11 +28,6 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts"
-  ]
+  "exclude": ["node_modules", "**/*.spec.ts", "**/*.test.ts"],
+  "include": ["./src/**/*"]
 }

@@ -12,16 +12,16 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { SET_BORDER_RADIUS, SET_FONT_FAMILY } from "/src/store/actions";
+import { SET_BORDER_RADIUS, SET_FONT_FAMILY } from "@store/actions";
 import { useDispatch, useSelector } from "react-redux";
 
-import AnimateButton from "ui-component/extended/AnimateButton";
+import AnimateButton from "@ui-component/extended/AnimateButton";
 import { IconSettings } from "@tabler/icons";
 // third-party
 import PerfectScrollbar from "react-perfect-scrollbar";
 // project imports
-import SubCard from "ui-component/cards/SubCard";
-import { gridSpacing } from "store/constant";
+import SubCard from "@ui-component/cards/SubCard";
+import { gridSpacing } from "@store/constant";
 // material-ui
 import { useTheme } from "@mui/material/styles";
 
@@ -108,7 +108,6 @@ const Customization = () => {
             zIndex: theme.zIndex.speedDial,
           }}
         >
-          {/*@ts-ignore border radius */}
           <AnimateButton type="rotate">
             <IconButton color="inherit" size="large" disableRipple>
               <IconSettings />
@@ -130,7 +129,6 @@ const Customization = () => {
         <PerfectScrollbar component="div">
           <Grid container spacing={gridSpacing} sx={{ p: 3 }}>
             <Grid item xs={12}>
-              {/*@ts-ignore border radius */}
               <SubCard title="Font Family">
                 <FormControl>
                   <RadioGroup
@@ -171,7 +169,6 @@ const Customization = () => {
               </SubCard>
             </Grid>
             <Grid item xs={12}>
-              {/*@ts-ignore border radius */}
               <SubCard title="Border Radius">
                 <Grid item xs={12} container spacing={2} alignItems="center" sx={{ mt: 2.5 }}>
                   <Grid item>
