@@ -1,11 +1,11 @@
 import { combineReducers } from "redux";
 
 // reducer import
-import customizationReducer from "./customizationReducer";
+import themesReducer from "./reducers/customizationReducer";
 
 // ==============================|| COMBINE REDUCER ||============================== //
 
 const rootReducer = combineReducers({
-  customization: customizationReducer,
+  customization: themesReducer,
 });
 export default rootReducer;

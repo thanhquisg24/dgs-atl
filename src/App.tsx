@@ -12,12 +12,12 @@ import themes from "./themes";
 // project imports
 import NavigationScroll from "./layout/NavigationScroll";
 import React from "react";
-import { RootState } from "./store";
+import { RootStateType } from "./store/types";
 
 // ==============================|| APP ||============================== //
 
 const App = () => {
-  const customization = useSelector((state: RootState) => state.customization);
+  const customization = useSelector((state: RootStateType) => state.themes);
 
   return (
     <StyledEngineProvider injectFirst>

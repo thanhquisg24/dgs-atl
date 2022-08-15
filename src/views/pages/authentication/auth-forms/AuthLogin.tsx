@@ -38,7 +38,7 @@ const FirebaseLogin = ({ ...others }) => {
   const theme: any = useTheme();
   const scriptedRef = useScriptRef();
   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
-  const customization = useSelector((state: any) => state.customization);
+  const customization = useSelector((state: any) => state.themes);
   const [checked, setChecked] = useState(true);
 
   const googleHandler = async () => {

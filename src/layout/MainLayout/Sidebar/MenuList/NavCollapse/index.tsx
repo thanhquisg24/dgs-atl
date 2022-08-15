@@ -18,7 +18,7 @@ import { IconChevronDown, IconChevronUp } from "@tabler/icons";
 
 const NavCollapse = ({ menu, level }: any) => {
   const theme: any = useTheme();
-  const customization = useSelector((state: any) => state.customization);
+  const customization = useSelector((state: any) => state.themes);
 
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);

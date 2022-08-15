@@ -40,7 +40,7 @@ const FirebaseRegister = ({ ...others }: any) => {
   const theme: any = useTheme();
   const scriptedRef = useScriptRef();
   const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
-  const customization = useSelector((state: any) => state.customization);
+  const customization = useSelector((state: any) => state.themes);
   const [showPassword, setShowPassword] = useState(false);
   const [checked, setChecked] = useState(true);
 

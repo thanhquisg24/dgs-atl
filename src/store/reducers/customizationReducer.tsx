@@ -1,10 +1,16 @@
 // project imports
-import config from "../config";
+import config from "../../config";
 
 // action - state management
-import * as actionTypes from "./actions";
+import * as actionTypes from "../actions/themes-actions";
 
-export const initialState = {
+interface IThemesModel {
+  isOpen: any[]; // for active default menu
+  fontFamily: string;
+  borderRadius: number;
+  opened: boolean;
+}
+export const initialStateThemes: IThemesModel = {
   isOpen: [], // for active default menu
   fontFamily: config.fontFamily,
   borderRadius: config.borderRadius,
@@ -13,7 +19,7 @@ export const initialState = {
 
 // ==============================|| CUSTOMIZATION REDUCER ||============================== //
 
-const customizationReducer = (state = initialState, action: any) => {
+const themesReducer = (state = initialStateThemes, action: any) => {
   let id;
   switch (action.type) {
     case actionTypes.MENU_OPEN:
@@ -42,4 +48,4 @@ const customizationReducer = (state = initialState, action: any) => {
   }
 };
 
-export default customizationReducer;
+export default themesReducer;

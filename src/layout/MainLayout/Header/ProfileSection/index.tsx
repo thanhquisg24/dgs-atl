@@ -39,7 +39,7 @@ import { useTheme } from "@mui/material/styles";
 
 const ProfileSection = () => {
   const theme: any = useTheme();
-  const customization = useSelector((state: any) => state.customization);
+  const customization = useSelector((state: any) => state.themes);
   const navigate = useNavigate();
 
   const [sdm, setSdm] = useState(true);
