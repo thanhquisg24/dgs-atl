@@ -1,6 +1,6 @@
 import axios from "axios";
 import { AXIOS_BASE_URL } from "../adapters.infrastructures.config";
-// import mockAxios from "./../__mocks__/mockAxios";
+import mockAxios from "../__mocks__/mockAxios";
 
 // create new axios instance
 const customAxios = axios.create({});
@@ -10,5 +10,5 @@ customAxios.defaults.baseURL = AXIOS_BASE_URL;
 //   // config.params = { ...config.params, timestamp: Date.now() };
 //   return config;
 // });
-
+mockAxios(customAxios);
 export default customAxios;
