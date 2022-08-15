@@ -6,7 +6,8 @@
       "@store/*": ["./src/store/*"],
       "@ui-component/*": ["./src/ui-component/*"],
       "@utils/*": ["./src/utils/*"],
-      "@assets/*": ["./src/assets/*"]
+      "@assets/*": ["./src/assets/*"],
+      "@adapters/*": ["./src/adapters/*"]
     }
   }
 }

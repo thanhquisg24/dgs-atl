@@ -27,8 +27,10 @@
   "plugins": ["@typescript-eslint", "import"],
   "extends": ["airbnb", "airbnb/hooks", "plugin:@typescript-eslint/recommended", "plugin:import/recommended"],
   "rules": {
+    "eol-last": "off",
+    "arrow-body-style":"off",
     "implicit-arrow-linebreak": "off",
-    "linebreak-style": ["error", "windows"],
+    "linebreak-style": ["off", "windows"],
     "max-len": "off",
     "object-curly-newline": "off",
     "quotes": ["error", "double"],
