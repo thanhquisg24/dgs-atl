@@ -5,9 +5,11 @@
     "tsconfigRootDir": "./",
     "ecmaFeatures": {
       "experimentalObjectRestSpread": true,
-      "impliedStrict": true
+      "impliedStrict": true,
+      "jsx": true
     },
-    "ecmaVersion": 12
+    "sourceType": "module",
+    "ecmaVersion": 2017
   },
   "env": {
     "es6": true,
@@ -28,7 +30,7 @@
   "extends": ["airbnb", "airbnb/hooks", "plugin:@typescript-eslint/recommended", "plugin:import/recommended"],
   "rules": {
     "eol-last": "off",
-    "arrow-body-style":"off",
+    "arrow-body-style": "off",
     "implicit-arrow-linebreak": "off",
     "linebreak-style": ["off", "windows"],
     "max-len": "off",

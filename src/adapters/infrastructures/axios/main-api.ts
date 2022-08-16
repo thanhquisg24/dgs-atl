@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { AuthApi } from "./auth-api";
 import customAxios from "./customeAxios";
 
@@ -11,12 +11,12 @@ interface IApiFetchType {
 
 export interface IMainApi extends IApiPostType, IApiFetchType {}
 class MainApi extends AuthApi implements IMainApi {
-  Axios: AxiosInstance;
+  // Axios: AxiosInstance;
 
-  constructor(_customAxios: AxiosInstance) {
-    super(_customAxios);
-    this.Axios = _customAxios;
-  }
+  // constructor(_customAxios: AxiosInstance) {
+  //   super(_customAxios);
+  //   this.Axios = _customAxios;
+  // }
 
   postWagerCancelSuccess(
     tx_id: string,

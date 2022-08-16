@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+// eslint-disable-next-line import/no-extraneous-dependencies
 const createProxyMiddleware = require("http-proxy-middleware");
 
 const host = "http://localhost:3000/";
