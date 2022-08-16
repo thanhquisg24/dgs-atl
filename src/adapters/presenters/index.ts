@@ -9,3 +9,5 @@ export interface IPresenter {
 export const presenter = {
   degaPlayer: new DegaPlayerPresenter(diUseCases.degaPlayer),
 };
+
+export { diInfrastructures, diRepositorires } from "../di";
