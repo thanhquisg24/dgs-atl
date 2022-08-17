@@ -9,10 +9,11 @@ import {
   checkAuthFailure,
 } from "../actions/auth-action";
 
-const initialAuthState: IAuthModel = {
+export const initialAuthState: IAuthModel = {
   authChecked: false,
   loggedIn: false,
   currentUser: null,
+  isLoading: false,
 };
 
 const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {
@@ -20,17 +21,18 @@ const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {
     const newState = { ...state };
     newState.loggedIn = true;
     newState.authChecked = true;
+    newState.isLoading = false;
     newState.currentUser = action.payload;
     return newState;
   });
   builder.addCase(doLoginFailure, (state, action) => {
-    return { ...state, loggedIn: false, authChecked: false, currentUser: null };
+    return { ...state, loggedIn: false, authChecked: false, isLoading: false, currentUser: null };
   });
   builder.addCase(checkAuthSuccess, (state, action) => {
-    return { ...state, loggedIn: true, authChecked: true };
+    return { ...state, loggedIn: true, authChecked: true, isLoading: false };
   });
   builder.addCase(checkAuthFailure, (state, action) => {
-    return { ...state, loggedIn: false, authChecked: false };
+    return { ...state, loggedIn: false, authChecked: false, isLoading: false };
   });
 });
 
