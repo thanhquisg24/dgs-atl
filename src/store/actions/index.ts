@@ -1,4 +1,4 @@
-import { CombineDegaSportActionTypes } from "./dega-sport-action";
+import { CombineAuthActionTypes } from "./auth-action";
 
-export type CombineActionTypes = CombineDegaSportActionTypes;
+export type CombineActionTypes = CombineAuthActionTypes;
 export * from "./themes-actions";

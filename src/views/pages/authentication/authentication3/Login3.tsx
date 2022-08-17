@@ -49,9 +49,6 @@ const Login = () => {
                           >
                             Hi, Welcome Back
                           </Typography>
-                          <Typography variant="caption" fontSize="16px" textAlign={matchDownSM ? "center" : "inherit"}>
-                            Enter your credentials to continue
-                          </Typography>
                         </Stack>
                       </Grid>
                     </Grid>
@@ -61,18 +58,6 @@ const Login = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <Divider />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Grid item container direction="column" alignItems="center" xs={12}>
-                      <Typography
-                        component={Link}
-                        to="/pages/register/register3"
-                        variant="subtitle1"
-                        sx={{ textDecoration: "none" }}
-                      >
-                        Don&apos;t have an account?
-                      </Typography>
-                    </Grid>
                   </Grid>
                 </Grid>
               </AuthCardWrapper>

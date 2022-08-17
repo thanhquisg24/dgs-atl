@@ -4,46 +4,45 @@ import * as Yup from "yup";
 import {
   Box,
   Button,
-  Checkbox,
   Divider,
   FormControl,
-  FormControlLabel,
   FormHelperText,
   Grid,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
-  Stack,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 
 // project imports
 import AnimateButton from "@ui-component/extended/AnimateButton";
 import { Formik } from "formik";
-import Google from "../../../../assets/images/icons/social-google.svg";
 // assets
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import useScriptRef from "../../../../hooks/useScriptRef";
-import { useSelector } from "react-redux";
 // material-ui
 import { useTheme } from "@mui/material/styles";
+import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
+import { doLoginRequest, ILoginPayload } from "@store/actions/auth-action";
+import { getAuthSelector } from "@store/selector/auth-selectors";
 
 // ============================|| FIREBASE - LOGIN ||============================ //
 
 const FirebaseLogin = ({ ...others }) => {
   const theme: any = useTheme();
   const scriptedRef = useScriptRef();
-  const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
-  const customization = useSelector((state: any) => state.themes);
-  const [checked, setChecked] = useState(true);
+  const { isLoading } = useAppSelector(getAuthSelector);
+  const dispatch = useAppDispatch();
+  // const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
+  // const customization = useSelector((state: any) => state.themes);
+  // const [checked, setChecked] = useState(true);
 
-  const googleHandler = async () => {
-    console.error("Login");
-  };
+  // const googleHandler = async () => {
+  //   console.error("Login");
+  // };
 
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
@@ -53,31 +52,31 @@ const FirebaseLogin = ({ ...others }) => {
   const handleMouseDownPassword = (event: any) => {
     event.preventDefault();
   };
-
+  const handleSubmit = async (values: any, { setErrors, setStatus, setSubmitting }: any) => {
+    try {
+      if (scriptedRef.current) {
+        console.log("🚀 ~ file: AuthLogin.tsx ~ line 55 ~ handleSubmit ~ current");
+        const payload: ILoginPayload = {
+          username: values.username,
+          password: values.password,
+        };
+        dispatch(doLoginRequest(payload));
+        setStatus({ success: true });
+        setSubmitting(false);
+      }
+    } catch (err: any) {
+      console.error(err);
+      if (scriptedRef.current) {
+        setStatus({ success: false });
+        setErrors({ submit: err.message });
+        setSubmitting(false);
+      }
+    }
+  };
   return (
     <>
       <Grid container direction="column" justifyContent="center" spacing={2}>
-        <Grid item xs={12}>
-          <AnimateButton>
-            <Button
-              disableElevation
-              fullWidth
-              onClick={googleHandler}
-              size="large"
-              variant="outlined"
-              sx={{
-                color: "grey.700",
-                backgroundColor: theme.palette.grey[50],
-                borderColor: theme.palette.grey[100],
-              }}
-            >
-              <Box sx={{ mr: { xs: 1, sm: 2, width: 20 } }}>
-                <img src={Google} alt="google" width={16} height={16} style={{ marginRight: matchDownSM ? 8 : 16 }} />
-              </Box>
-              Sign in with Google
-            </Button>
-          </AnimateButton>
-        </Grid>
+        <Grid item xs={12}></Grid>
         <Grid item xs={12}>
           <Box
             sx={{
@@ -87,30 +86,12 @@ const FirebaseLogin = ({ ...others }) => {
           >
             <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
 
-            <Button
-              variant="outlined"
-              sx={{
-                cursor: "unset",
-                m: 2,
-                py: 0.5,
-                px: 7,
-                borderColor: `${theme.palette.grey[100]} !important`,
-                color: `${theme.palette.grey[900]}!important`,
-                fontWeight: 500,
-                borderRadius: `${customization.borderRadius}px`,
-              }}
-              disableRipple
-              disabled
-            >
-              OR
-            </Button>
-
             <Divider sx={{ flexGrow: 1 }} orientation="horizontal" />
           </Box>
         </Grid>
         <Grid item xs={12} container alignItems="center" justifyContent="center">
           <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1">Sign in with Email address</Typography>
+            <Typography variant="subtitle1">Sign in </Typography>
           </Box>
         </Grid>
       </Grid>
@@ -125,21 +106,7 @@ const FirebaseLogin = ({ ...others }) => {
           email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
           password: Yup.string().max(255).required("Password is required"),
         })}
-        onSubmit={async (values, { setErrors, setStatus, setSubmitting }) => {
-          try {
-            if (scriptedRef.current) {
-              setStatus({ success: true });
-              setSubmitting(false);
-            }
-          } catch (err: any) {
-            console.error(err);
-            if (scriptedRef.current) {
-              setStatus({ success: false });
-              setErrors({ submit: err.message });
-              setSubmitting(false);
-            }
-          }
-        }}
+        onSubmit={handleSubmit}
       >
         {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
@@ -148,15 +115,15 @@ const FirebaseLogin = ({ ...others }) => {
               error={Boolean(touched.email && errors.email)}
               sx={{ ...theme.typography.customInput }}
             >
-              <InputLabel htmlFor="outlined-adornment-email-login">Email Address / Username</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-email-login">Username</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-email-login"
-                type="email"
+                type="text"
                 value={values.email}
-                name="email"
+                name="username"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                label="Email Address / Username"
+                label="Username"
                 inputProps={{}}
               />
               {touched.email && errors.email && (
@@ -201,22 +168,7 @@ const FirebaseLogin = ({ ...others }) => {
                 </FormHelperText>
               )}
             </FormControl>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={checked}
-                    onChange={(event) => setChecked(event.target.checked)}
-                    name="checked"
-                    color="primary"
-                  />
-                }
-                label="Remember me"
-              />
-              <Typography variant="subtitle1" color="secondary" sx={{ textDecoration: "none", cursor: "pointer" }}>
-                Forgot Password?
-              </Typography>
-            </Stack>
+
             {errors.submit && (
               <Box sx={{ mt: 3 }}>
                 <FormHelperText error>{errors.submit}</FormHelperText>
@@ -227,7 +179,7 @@ const FirebaseLogin = ({ ...others }) => {
               <AnimateButton>
                 <Button
                   disableElevation
-                  disabled={isSubmitting}
+                  disabled={isLoading}
                   fullWidth
                   size="large"
                   type="submit"

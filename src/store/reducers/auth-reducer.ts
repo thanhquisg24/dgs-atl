@@ -2,7 +2,7 @@ import { createReducer } from "@reduxjs/toolkit";
 import { IAuthModel } from "@store/models/auth-model";
 import {
   doLoginFailure,
-  // doLoginRequest,
+  doLoginRequest,
   doLoginSuccess,
   checkAuthSuccess,
   // checkAuthRequest,
@@ -17,6 +17,9 @@ export const initialAuthState: IAuthModel = {
 };
 
 const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {
+  builder.addCase(doLoginRequest, (state, action) => {
+    return { ...state, isLoading: true };
+  });
   builder.addCase(doLoginSuccess, (state, action) => {
     const newState = { ...state };
     newState.loggedIn = true;
