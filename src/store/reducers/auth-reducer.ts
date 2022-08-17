@@ -17,7 +17,7 @@ export const initialAuthState: IAuthModel = {
 };
 
 const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {
-  builder.addCase(doLoginRequest, (state, action) => {
+  builder.addCase(doLoginRequest, (state) => {
     return { ...state, isLoading: true };
   });
   builder.addCase(doLoginSuccess, (state, action) => {
@@ -28,13 +28,13 @@ const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {
     newState.currentUser = action.payload;
     return newState;
   });
-  builder.addCase(doLoginFailure, (state, action) => {
+  builder.addCase(doLoginFailure, (state) => {
     return { ...state, loggedIn: false, authChecked: false, isLoading: false, currentUser: null };
   });
-  builder.addCase(checkAuthSuccess, (state, action) => {
+  builder.addCase(checkAuthSuccess, (state) => {
     return { ...state, loggedIn: true, authChecked: true, isLoading: false };
   });
-  builder.addCase(checkAuthFailure, (state, action) => {
+  builder.addCase(checkAuthFailure, (state) => {
     return { ...state, loggedIn: false, authChecked: false, isLoading: false };
   });
 });

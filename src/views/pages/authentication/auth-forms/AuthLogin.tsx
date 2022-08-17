@@ -14,8 +14,8 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 // project imports
 import AnimateButton from "@ui-component/extended/AnimateButton";
 import { Formik } from "formik";
@@ -34,8 +34,9 @@ import { getAuthSelector } from "@store/selector/auth-selectors";
 const FirebaseLogin = ({ ...others }) => {
   const theme: any = useTheme();
   const scriptedRef = useScriptRef();
-  const { isLoading } = useAppSelector(getAuthSelector);
+  const { isLoading, authChecked, loggedIn, currentUser } = useAppSelector(getAuthSelector);
   const dispatch = useAppDispatch();
+  const history = useNavigate();
   // const matchDownSM = useMediaQuery(theme.breakpoints.down("md"));
   // const customization = useSelector((state: any) => state.themes);
   // const [checked, setChecked] = useState(true);
@@ -43,7 +44,11 @@ const FirebaseLogin = ({ ...others }) => {
   // const googleHandler = async () => {
   //   console.error("Login");
   // };
-
+  React.useEffect(() => {
+    if (isLoading === false) {
+      if (authChecked && loggedIn && currentUser !== null) history("/dashboard/default");
+    }
+  }, [authChecked, currentUser, history, isLoading, loggedIn]);
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
