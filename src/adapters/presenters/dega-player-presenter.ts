@@ -1,5 +1,6 @@
 import { IDegaPlayerUseCase } from "../useCases/dega-player-usercase";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDegaPlayerPresenter {
   // postAirDropDega(walletPubKey: string): Promise<boolean>;
   // fetchLeaderBoard(): Promise<ILeaderBoardEntity>;

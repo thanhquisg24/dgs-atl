@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { BaseRepository } from "./base-repository";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDegaPlayerRepository {
   // postAirDropDega(walletPubKey: string): Promise<AxiosResponse>;
   // fetchLeaderBoard(): Promise<AxiosResponse>;
@@ -10,11 +11,9 @@ export class DegaPlayerRepository extends BaseRepository implements IDegaPlayerR
   // fetchLeaderBoard(): Promise<AxiosResponse> {
   //   return this.infra.remote.mainApi.fetchLeaderBoard();
   // }
-
   // fetchLeaderBoardAll(): Promise<AxiosResponse> {
   //   return this.infra.remote.mainApi.fetchLeaderBoardAll();
   // }
-
   // postAirDropDega(walletPubKey: string): Promise<AxiosResponse> {
   //   return this.infra.remote.mainApi.postAirDropDega(walletPubKey);
   // }

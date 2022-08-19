@@ -1,6 +1,7 @@
 import { AxiosResponse } from "axios";
 import { IDegaPlayerRepository } from "../repositories/dega-player-repository";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDegaPlayerUseCase {
   // postAirDropDega(walletPubKey: string): Promise<boolean>;
   // fetchLeaderBoard(): Promise<ILeaderBoardEntity>;
