@@ -1,5 +1,5 @@
 import { AxiosResponse } from "axios";
-import { AuthApi } from "./auth-api";
+import { AuthApi, IAuthApi } from "./auth-api";
 import customAxios from "./customeAxios";
 
 interface IApiPostType {
@@ -9,7 +9,7 @@ interface IApiFetchType {
   fetchActiveDegaGamesHomePage(): Promise<AxiosResponse>;
 }
 
-export interface IMainApi extends IApiPostType, IApiFetchType {}
+export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 class MainApi extends AuthApi implements IMainApi {
   // Axios: AxiosInstance;
 

@@ -1,6 +1,7 @@
 export default function mockUser(mock: any): void {
   mock.onPost("/api/frontend/v1/agent/wager/test_agent").reply(() => {
     const user = {
+      _rcode: "SUCCESS",
       status: "ok",
       token:
         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJERUFMRVIiXSwiZXhwIjoxNjE1MTk0Mzg4LCJ1c2VyIjoiZGVhbGVyMSIsInNpZCI6IkVWNUR2UW5WYm4waXY4YmYwN3IxSXZ0UDE2MTQ5MzUxODgifQ.ssCT8zU9o5zdvbfsPHL8dlodejHzUXfe8ZYT7dzfeBw",
@@ -15,7 +16,10 @@ export default function mockUser(mock: any): void {
         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJERUFMRVIiXSwiZXhwIjoxNjE1MTk0Mzg4LCJ1c2VyIjoiZGVhbGVyMSIsInNpZCI6IkVWNUR2UW5WYm4waXY4YmYwN3IxSXZ0UDE2MTQ5MzUxODgifQ.ssCT8zU9o5zdvbfsPHL8dlodejHzUXfe8ZYT7dzfeBw",
       type: "Bearer",
       refreshToken: "tstokenasd",
-      username: "agent test",
+      username: "alex",
+      userId: 1,
+      tokenExpiration: 3000,
+      _rcode: "SUCCESS",
     };
     return [200, jwt];
   });

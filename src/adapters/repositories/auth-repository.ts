@@ -10,24 +10,18 @@ export interface IAuthRepository {
 
 export class AuthRepository extends BaseRepository implements IAuthRepository {
   postLogin(username: string, password: string): Promise<AxiosResponse> {
-    throw new Error("Method not implemented.");
+    return this.infra.remote.mainApi.postLogin(username, password);
   }
+
   postLogout(userId: number): Promise<AxiosResponse> {
-    throw new Error("Method not implemented.");
+    return this.infra.remote.mainApi.postLogout(userId);
   }
+
   postRefreshToken(refreshToken: string): Promise<AxiosResponse> {
-    throw new Error("Method not implemented.");
+    return this.infra.remote.mainApi.postRefreshToken(refreshToken);
   }
+
   getCheckToken(agent_id: number): Promise<AxiosResponse> {
-    throw new Error("Method not implemented.");
+    return this.infra.remote.mainApi.getCheckToken(agent_id);
   }
-  // fetchLeaderBoard(): Promise<AxiosResponse> {
-  //   return this.infra.remote.mainApi.fetchLeaderBoard();
-  // }
-  // fetchLeaderBoardAll(): Promise<AxiosResponse> {
-  //   return this.infra.remote.mainApi.fetchLeaderBoardAll();
-  // }
-  // postAirDropDega(walletPubKey: string): Promise<AxiosResponse> {
-  //   return this.infra.remote.mainApi.postAirDropDega(walletPubKey);
-  // }
 }
