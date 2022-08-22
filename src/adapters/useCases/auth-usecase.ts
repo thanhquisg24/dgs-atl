@@ -7,13 +7,43 @@ export interface IAuthUseCase {
   postLogin(username: string, password: string): Promise<IUserEntity>;
   postLogout(userId: number): Promise<string>;
   postRefreshToken(refreshToken: string): Promise<IJwtEntity>;
-  getCheckToken(agent_id: number): Promise<boolean>;
+  getCheckToken(token: string): Promise<boolean>;
+  checkInitLocalStorageLogin(): Promise<IUserEntity>;
 }
 export class AuthUseCase implements IAuthUseCase {
   readonly repository: IAuthRepository;
 
   constructor(sessionRepositories: IAuthRepository) {
     this.repository = sessionRepositories;
+  }
+
+  checkInitLocalStorageLogin(): Promise<IUserEntity> {
+    const store = diInfrastructures.webStorage.getToken();
+    if (store === null) {
+      return Promise.reject(new Error("Not found token in sore "));
+    }
+    console.log("🚀 ~ file: auth-usecase.ts ~ line 22 ~ AuthUseCase ~ checkInitLocalStorageLogin ~ store", store);
+    return new Promise((resolve, reject) => {
+      this.repository
+        .getCheckToken(store.token)
+        .then((res: AxiosResponse) => {
+          console.log("🚀 ~ file: auth-usecase.ts ~ line 30 ~ AuthUseCase ~ .then ~ res", res);
+          if (res.status === 200) {
+            const { data } = res;
+            if (data._rcode === "SUCCESS") {
+              const user: IUserEntity = {
+                ...data,
+                ...store,
+                tokenExpiration: 3600,
+                type: "Bearer ",
+              };
+              resolve(user);
+            }
+          }
+          reject(new Error(`CheckToken Error HTTP status code ${res.status}`));
+        })
+        .catch((error) => reject(error));
+    });
   }
 
   private storeAuth(token: string, refreshToken: string): void {
@@ -78,10 +108,10 @@ export class AuthUseCase implements IAuthUseCase {
     });
   }
 
-  getCheckToken(agent_id: number): Promise<boolean> {
+  getCheckToken(token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.repository
-        .getCheckToken(agent_id)
+        .getCheckToken(token)
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;

@@ -7,6 +7,7 @@ import {
   checkAuthSuccess,
   // checkAuthRequest,
   checkAuthFailure,
+  doLogoutSuccess,
 } from "../actions/auth-action";
 
 export const initialAuthState: IAuthModel = {
@@ -36,6 +37,9 @@ const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {
   });
   builder.addCase(checkAuthFailure, (state) => {
     return { ...state, loggedIn: false, authChecked: false, isLoading: false };
+  });
+  builder.addCase(doLogoutSuccess, () => {
+    return initialAuthState;
   });
 });
 

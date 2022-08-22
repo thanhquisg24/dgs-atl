@@ -5,7 +5,7 @@ export interface IAuthRepository {
   postLogin(username: string, password: string): Promise<AxiosResponse>;
   postLogout(userId: number): Promise<AxiosResponse>;
   postRefreshToken(refreshToken: string): Promise<AxiosResponse>;
-  getCheckToken(agent_id: number): Promise<AxiosResponse>;
+  getCheckToken(token: string): Promise<AxiosResponse>;
 }
 
 export class AuthRepository extends BaseRepository implements IAuthRepository {
@@ -21,7 +21,7 @@ export class AuthRepository extends BaseRepository implements IAuthRepository {
     return this.infra.remote.mainApi.postRefreshToken(refreshToken);
   }
 
-  getCheckToken(agent_id: number): Promise<AxiosResponse> {
-    return this.infra.remote.mainApi.getCheckToken(agent_id);
+  getCheckToken(token: string): Promise<AxiosResponse> {
+    return this.infra.remote.mainApi.getCheckToken(token);
   }
 }

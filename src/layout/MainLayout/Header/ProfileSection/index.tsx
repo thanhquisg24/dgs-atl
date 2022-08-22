@@ -34,6 +34,8 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 // material-ui
 import { useTheme } from "@mui/material/styles";
+import { useAppDispatch } from "@hooks/useReduxToolKit";
+import { doLogoutRequest } from "@store/actions/auth-action";
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -47,12 +49,14 @@ const ProfileSection = () => {
   const [notification, setNotification] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
+  const dispatch = useAppDispatch();
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
   const anchorRef: any = useRef(null);
   const handleLogout = async () => {
     console.log("Logout");
+    dispatch(doLogoutRequest());
   };
 
   const handleClose = (event: any) => {

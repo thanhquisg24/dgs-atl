@@ -5,7 +5,7 @@ export interface IAuthApi {
   postLogin(username: string, password: string): Promise<AxiosResponse>;
   postLogout(userId: number): Promise<AxiosResponse>;
   postRefreshToken(refreshToken: string): Promise<AxiosResponse>;
-  getCheckToken(agent_id: number): Promise<AxiosResponse>;
+  getCheckToken(token: string): Promise<AxiosResponse>;
 }
 
 export class AuthApi implements IAuthApi {
@@ -15,10 +15,10 @@ export class AuthApi implements IAuthApi {
     this.Axios = _customAxios;
   }
 
-  getCheckToken(agent_id: number): Promise<AxiosResponse<any, any>> {
-    return this.Axios.get("/agent/wager/test_agent", {
+  getCheckToken(token: string): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("/agent/auth/check_token", {
       params: {
-        agent_id,
+        token,
       },
     });
   }

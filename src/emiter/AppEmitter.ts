@@ -22,12 +22,6 @@ export const NOTIFY = "NOTIFY";
 export const CONNECT_WALLET_MODAL = "CONNECT_WALLET_MODAL";
 export const VIEW_WALLET_MODAL = "VIEW_WALLET_MODAL";
 export const CLOSE_MODAL = "CLOSE_MODAL";
-// eslint-disable-next-line no-shadow
-export enum NOTIFY_TYPE {
-  ERROR,
-  SUCCESS,
-  DEFAULT,
-}
 
 export const emitCloseModal = (): void => {
   AppEmitter.emit(CLOSE_MODAL);
@@ -40,27 +34,15 @@ export const emitConnectWalletModal = (child: string | JSX.Element): void => {
 export const emitViewWalletModal = (child: string | JSX.Element): void => {
   AppEmitter.emit(VIEW_WALLET_MODAL, { child });
 };
-
-export const notifyMessageDefault = (
-  msg: string,
-  description?: string | JSX.Element | null,
-  txid?: string | string[],
-): void => {
-  AppEmitter.emit(NOTIFY, { type: NOTIFY_TYPE.DEFAULT, msg, description, txid });
+// "success" | "info" | "warning" | "error"
+export const notifyMessageInfo = (msg: string, description?: string | JSX.Element | null): void => {
+  AppEmitter.emit(NOTIFY, { type: "info", msg, description });
 };
-export const notifyMessageSuccess = (
-  msg: string,
-  description?: string | JSX.Element | null,
-  txid?: string | string[],
-): void => {
-  AppEmitter.emit(NOTIFY, { type: NOTIFY_TYPE.SUCCESS, msg, description, txid });
+export const notifyMessageSuccess = (msg: string, description?: string | JSX.Element | null): void => {
+  AppEmitter.emit(NOTIFY, { type: "success", msg, description });
 };
-export const notifyMessageError = (
-  msg: string,
-  description?: string | JSX.Element | null,
-  txid?: string | string[],
-): void => {
-  AppEmitter.emit(NOTIFY, { type: NOTIFY_TYPE.ERROR, msg, description, txid });
+export const notifyMessageError = (msg: string, description?: string | JSX.Element | null): void => {
+  AppEmitter.emit(NOTIFY, { type: "error", msg, description });
 };
 
 export const REFRESH_UNMATCH_WAGER = "REFRESH_UNMATCH_WAGER";

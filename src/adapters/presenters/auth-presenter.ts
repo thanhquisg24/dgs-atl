@@ -9,6 +9,10 @@ export class AuthPresenter implements IAuthPresenter {
     this.useCase = usecase;
   }
 
+  checkInitLocalStorageLogin(): Promise<IUserEntity> {
+    return this.useCase.checkInitLocalStorageLogin();
+  }
+
   postLogin(username: string, password: string): Promise<IUserEntity> {
     return this.useCase.postLogin(username, password);
   }
@@ -21,7 +25,7 @@ export class AuthPresenter implements IAuthPresenter {
     return this.useCase.postRefreshToken(refreshToken);
   }
 
-  getCheckToken(agent_id: number): Promise<boolean> {
-    return this.useCase.getCheckToken(agent_id);
+  getCheckToken(token: string): Promise<boolean> {
+    return this.useCase.getCheckToken(token);
   }
 }

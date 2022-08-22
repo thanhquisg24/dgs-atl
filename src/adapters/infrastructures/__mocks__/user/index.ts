@@ -1,10 +1,8 @@
 export default function mockUser(mock: any): void {
-  mock.onPost("/api/frontend/v1/agent/wager/test_agent").reply(() => {
+  mock.onGet("/api/frontend/v1/agent/auth/check_token").reply(() => {
     const user = {
       _rcode: "SUCCESS",
       status: "ok",
-      token:
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6WyJERUFMRVIiXSwiZXhwIjoxNjE1MTk0Mzg4LCJ1c2VyIjoiZGVhbGVyMSIsInNpZCI6IkVWNUR2UW5WYm4waXY4YmYwN3IxSXZ0UDE2MTQ5MzUxODgifQ.ssCT8zU9o5zdvbfsPHL8dlodejHzUXfe8ZYT7dzfeBw",
       agentId: 1,
       username: "agent test",
     };
@@ -26,6 +24,7 @@ export default function mockUser(mock: any): void {
   mock.onPost("/api/frontend/v1/agent/auth/logout").reply(() => {
     const msg = {
       message: "logout successfully",
+      _rcode: "SUCCESS",
     };
     return [200, msg];
   });

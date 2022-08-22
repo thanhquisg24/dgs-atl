@@ -14,7 +14,7 @@ class WebStorage implements IWebStorage {
   private storage: Storage;
 
   constructor() {
-    this.storage = window.sessionStorage;
+    this.storage = window.localStorage;
   }
 
   // removeUser(): void {
