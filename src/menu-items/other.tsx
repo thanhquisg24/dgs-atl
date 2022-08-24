@@ -11,6 +11,14 @@ const other = {
   type: "group",
   children: [
     {
+      id: "feed-page",
+      title: "Feed Page",
+      type: "item",
+      url: "/feed-page",
+      icon: icons.IconBrandChrome,
+      breadcrumbs: false,
+    },
+    {
       id: "sample-page",
       title: "Sample Page",
       type: "item",

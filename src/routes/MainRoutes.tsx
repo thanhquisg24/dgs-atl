@@ -17,7 +17,7 @@ const UtilsTablerIcons = Loadable(lazy(() => import("../views/utilities/TablerIc
 
 // sample page routing
 const SamplePage = Loadable(lazy(() => import("../views/sample-page")));
-
+const FeedPage = Loadable(lazy(() => import("../views/feed-page")));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -89,6 +89,10 @@ const MainRoutes = {
     {
       path: "sample-page",
       element: <SamplePage />,
+    },
+    {
+      path: "feed-page",
+      element: <FeedPage />,
     },
   ],
 };
