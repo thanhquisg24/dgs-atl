@@ -14,7 +14,7 @@ export const initialAuthState: IAuthModel = {
   authChecked: false,
   loggedIn: false,
   currentUser: null,
-  isLoading: false,
+  isLoading: true,
 };
 
 const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {

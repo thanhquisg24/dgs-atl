@@ -7,7 +7,7 @@ export function LeagueOddTitle() {
         <Grid container spacing={1}>
           <Grid item md={4}></Grid>
           <Grid item md={8}>
-            <Typography variant="h6" gutterBottom align="center">
+            <Typography variant="h6" gutterBottom align="center" component="span">
               Spread
             </Typography>
           </Grid>
@@ -17,7 +17,7 @@ export function LeagueOddTitle() {
         <Grid container spacing={1}>
           <Grid item md={4}></Grid>
           <Grid item md={8}>
-            <Typography variant="h6" gutterBottom align="center">
+            <Typography variant="h6" gutterBottom align="center" component="span">
               Money
             </Typography>
           </Grid>
@@ -27,7 +27,7 @@ export function LeagueOddTitle() {
         <Grid container spacing={1}>
           <Grid item md={4}></Grid>
           <Grid item md={8}>
-            <Typography variant="h6" gutterBottom align="center">
+            <Typography variant="h6" gutterBottom align="center" component="span">
               Total
             </Typography>
           </Grid>

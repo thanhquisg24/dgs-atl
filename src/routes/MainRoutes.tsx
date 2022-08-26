@@ -21,7 +21,6 @@ const FeedPage = Loadable(lazy(() => import("../views/feed-page")));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
-  path: "/",
   element: (
     <RequireAuth>
       <MainLayout />

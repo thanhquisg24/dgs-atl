@@ -48,7 +48,7 @@ export default function BasicTabs() {
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs value={value} onChange={handleChange}>
           <Tab label="League" {...a11yProps(0)} />
           <Tab label="Game" {...a11yProps(1)} />
           <Tab label="Special Game" {...a11yProps(2)} />

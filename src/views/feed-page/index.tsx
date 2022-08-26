@@ -10,10 +10,10 @@ import BasicTabs from "./tabs";
 
 const FeedPage = () => (
   <Grid container spacing={gridSpacing}>
-    <Grid item xs={3}>
+    <Grid item xs={2}>
       <DgsScheduleCard />
     </Grid>
-    <Grid item xs={9}>
+    <Grid item xs={10}>
       <RightSideCard>
         <BasicTabs />
       </RightSideCard>

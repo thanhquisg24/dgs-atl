@@ -1,22 +1,19 @@
+/* eslint-disable react/jsx-curly-newline */
 import { RootStateType } from "@store/types";
 import { Loading } from "@ui-component/SpinerWrapper";
-import React from "react";
 
-import { Navigate, useLocation } from "react-router-dom";
 import { useAppSelector } from "@hooks/useReduxToolKit";
+import { Navigate, useLocation } from "react-router-dom";
 
-function RequireAuth({ children }: { children: JSX.Element }) {
+function RequireAuth({ children }: any) {
   const { authChecked, loggedIn, currentUser, isLoading } = useAppSelector((state: RootStateType) => state.auth);
 
   const location = useLocation();
 
-  if (isLoading) {
-    return <Loading />;
-  }
-  if (!loggedIn) {
+  if (!loggedIn && isLoading === false) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
-  return children;
+  return isLoading ? <Loading /> : children;
 }
 
 // const PrivateRoute = ({ children, ...rest }: any) => {
@@ -33,5 +30,9 @@ function RequireAuth({ children }: { children: JSX.Element }) {
 //     />
 //   );
 // };
+// function PrivateRoute({ children, ...rest }: any) {
+//   const auth = false;
+//   return <Route {...rest} render={() => children} />;
+// }
 
 export default RequireAuth;

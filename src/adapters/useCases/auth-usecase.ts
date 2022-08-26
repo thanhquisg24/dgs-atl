@@ -19,10 +19,10 @@ export class AuthUseCase implements IAuthUseCase {
 
   checkInitLocalStorageLogin(): Promise<IUserEntity> {
     const store = diInfrastructures.webStorage.getToken();
+    console.log("🚀 ~ file: auth-usecase.ts ~ line 22 ~ AuthUseCase ~ checkInitLocalStorageLogin ~ store", store);
     if (store === null) {
       return Promise.reject(new Error("Not found token in sore "));
     }
-    console.log("🚀 ~ file: auth-usecase.ts ~ line 22 ~ AuthUseCase ~ checkInitLocalStorageLogin ~ store", store);
     return new Promise((resolve, reject) => {
       this.repository
         .getCheckToken(store.token)

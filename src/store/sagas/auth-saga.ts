@@ -3,10 +3,12 @@ import { presenter } from "@adapters/presenters";
 import { notifyMessageError } from "@emiter/AppEmitter";
 import { appInitAction } from "@store/actions";
 import {
+  doLoginFailure,
   doLoginRequest,
   doLoginSuccess,
   doLogoutRequest,
   doLogoutSuccess,
+  doRefreshTokenFailure,
   doRefreshTokenRequest,
   doRefreshTokenSuccess,
 } from "@store/actions/auth-action";
@@ -64,11 +66,13 @@ function* refreshTokenSaga(action: ReturnType<typeof doRefreshTokenRequest>): Ge
 
 function* initAuthTokenSaga(): Generator | any {
   try {
+    console.log("🚀 ~ file: auth-saga.ts ~ line 68 ~ function*initAuthTokenSaga ~ user1");
     const user: IUserEntity = yield presenter.auth.checkInitLocalStorageLogin();
+    console.log("🚀 ~ file: auth-saga.ts ~ line 68 ~ function*initAuthTokenSaga ~ user", user);
     yield put(doLoginSuccess(user));
   } catch (error) {
-    // yield put(doRefreshTokenFailure("Refresh token fail!"));
-    notifyMessageError(error.message);
+    yield put(doLoginFailure(error.message));
+    // notifyMessageError(error.message);
   }
 }
 
