@@ -1,6 +1,7 @@
-import * as React from "react";
+import { Box, Grid, MenuItem, Select } from "@mui/material";
 import { gridSpacing } from "@store/constant";
-import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from "@mui/material";
+import { LeagueOddTitle } from "./league-odd-title";
+import { LeagueOddsRow } from "./league-odds-row";
 
 export function Leagueform() {
   return (
@@ -40,37 +41,11 @@ export function Leagueform() {
               </Select>
             </Grid>
           </Grid>
-          <Grid container spacing={1} sx={{ mt: 2.5 }}>
-            <Grid item md={4}>
-              <FormControl fullWidth>
-                <Select variant="filled" value={10} label="Age">
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item md={4}>
-              <Select label="Spread" value={20} variant="filled" fullWidth>
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>DONBEST ALM</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </Grid>
-            <Grid item md={4}>
-              <Select label="Spread" value={20} variant="filled" fullWidth>
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value={10}>BETOL</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
-              </Select>
-            </Grid>
-          </Grid>
+          <LeagueOddTitle />
+          <LeagueOddsRow />
+          <LeagueOddsRow />
+          <LeagueOddsRow />
+          <LeagueOddsRow />
         </Box>
       </Grid>
     </Grid>
