@@ -1,7 +1,7 @@
 import { Checkbox, FormControl, FormControlLabel, Grid, MenuItem, Select } from "@mui/material";
-import { LeaguePtsItem } from "./league-pts-item";
+import { GamePtsItem } from "./game-pts-item";
 
-export function LeagueOddsRow() {
+export function GameOddsRow() {
   return (
     <Grid container spacing={1} sx={{ mt: 2.5 }}>
       {/* <Grid item md={2}>
@@ -10,7 +10,7 @@ export function LeagueOddsRow() {
       <Grid item md={4}>
         <Grid container spacing={1}>
           <Grid item md={4}>
-            <FormControlLabel control={<Checkbox size="small" defaultChecked />} label="FG On" />
+            <FormControlLabel control={<Checkbox size="small" defaultChecked />} label="Active" />
           </Grid>
           <Grid item md={8}>
             <FormControl fullWidth>
@@ -20,7 +20,7 @@ export function LeagueOddsRow() {
                 <MenuItem value={30}>Thirty20</MenuItem>
               </Select>
             </FormControl>
-            <LeaguePtsItem showPts />
+            <GamePtsItem showPts />
           </Grid>
         </Grid>
       </Grid>
@@ -35,7 +35,7 @@ export function LeagueOddsRow() {
                 <MenuItem value={30}>Thirty</MenuItem>
               </Select>
             </FormControl>
-            <LeaguePtsItem showPts={false} />
+            <GamePtsItem showPts={false} />
           </Grid>
         </Grid>
       </Grid>
@@ -50,7 +50,7 @@ export function LeagueOddsRow() {
                 <MenuItem value={30}>Thirty</MenuItem>
               </Select>
             </FormControl>
-            <LeaguePtsItem showPts />
+            <GamePtsItem showPts />
           </Grid>
         </Grid>
       </Grid>

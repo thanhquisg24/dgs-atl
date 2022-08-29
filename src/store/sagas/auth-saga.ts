@@ -27,7 +27,7 @@ import { delay, put, select, takeLatest } from "redux-saga/effects";
 // };
 function* loginSaga(action: ReturnType<typeof doLoginRequest>): Generator | any {
   try {
-    yield delay(5000);
+    yield delay(1000);
     const resData: IUserEntity = yield presenter.auth.postLogin(action.payload.username, action.payload.password);
     yield put(doLoginSuccess(resData));
     yield delay(2000);

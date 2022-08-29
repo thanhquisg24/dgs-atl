@@ -70,6 +70,91 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
   },
 }));
 
+interface IGameItem {
+  id: number;
+  name: string;
+  status: boolean;
+}
+interface INodeLeague {
+  id: number;
+  name: string;
+  games: IGameItem[];
+  status: boolean;
+  countGameFail: number;
+}
+const dataLeague: INodeLeague[] = [
+  {
+    id: 1,
+    name: "BOXING",
+    status: true,
+    countGameFail: 0,
+    games: [
+      {
+        id: 22,
+        name: "08/06:29121:2431642 Hassim Ralman Jr.",
+        status: true,
+      },
+      {
+        id: 23,
+        name: "08/06:29121:2431642 Hassim Ralman Jr.",
+        status: true,
+      },
+      {
+        id: 24,
+        name: "08/06:29121:2431642 Hassim Ralman Jr.",
+        status: true,
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "BOXING 2",
+    status: false,
+    countGameFail: 2,
+    games: [
+      {
+        id: 25,
+        name: "08/06:29121:2431642 Hassim Ralman Jr.",
+        status: false,
+      },
+      {
+        id: 26,
+        name: "08/06:29121:2431642 Hassim Ralman Jr.",
+        status: false,
+      },
+      {
+        id: 27,
+        name: "08/06:29121:2431642 Hassim Ralman Jr.",
+        status: true,
+      },
+    ],
+  },
+];
+interface IPropsTreeItem {
+  nodeId: string;
+  label: string;
+  status: boolean;
+  countGameFail: number;
+  children?: any;
+}
+
+function TreeItemNode(props: IPropsTreeItem) {
+  const { nodeId, label, status, countGameFail, children } = props;
+
+  const o = React.useMemo(() => {
+    return {
+      color: status === false ? "#fd2025" : "#5c8e32",
+      newLabel: countGameFail > 0 ? `${label}(${countGameFail})` : label,
+    };
+  }, [countGameFail, label, status]);
+
+  return (
+    <StyledTreeItem nodeId={nodeId} label={o.newLabel} sx={{ color: o.color }}>
+      {children}
+    </StyledTreeItem>
+  );
+}
+
 export default function CustomizedTreeView() {
   return (
     <TreeView
@@ -78,22 +163,32 @@ export default function CustomizedTreeView() {
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
       defaultEndIcon={<CloseSquare />}
-      sx={{ height: 264, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
+      sx={{ minHeight: 550, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
     >
-      <StyledTreeItem nodeId="1" label="Main">
-        <StyledTreeItem nodeId="2" label="Hello" />
-        <StyledTreeItem nodeId="3" label="Subtree with children">
-          <StyledTreeItem nodeId="6" label="Hello" />
-          <StyledTreeItem nodeId="7" label="Sub-subtree with children">
-            <StyledTreeItem nodeId="9" label="Child 1" />
-            <StyledTreeItem nodeId="10" label="Child 2" />
-            <StyledTreeItem nodeId="11" label="Child 3" />
-          </StyledTreeItem>
-          <StyledTreeItem nodeId="8" label="Hello" />
-        </StyledTreeItem>
-        <StyledTreeItem nodeId="4" label="World" />
-        <StyledTreeItem nodeId="5" label="Something something" />
-      </StyledTreeItem>
+      <>
+        {dataLeague.map((item) => (
+          <TreeItemNode
+            key={item.id}
+            nodeId={item.id.toString()}
+            label={item.name}
+            status={item.status}
+            countGameFail={item.countGameFail}
+          >
+            <>
+              {item.games.map((g) => (
+                <TreeItemNode key={g.id} nodeId={g.id.toString()} label={g.name} status={g.status} countGameFail={0} />
+              ))}
+            </>
+          </TreeItemNode>
+        ))}
+      </>
     </TreeView>
   );
 }
+// {dataLeague.forEach((item) => (
+//   <StyledTreeItem key={item.id} nodeId={item.id.toString()} label={item.name}>
+//     {item.games.forEach((g) => (
+//       <StyledTreeItem key={g.id} nodeId={g.id.toString()} label={g.name} />
+//     ))}
+//   </StyledTreeItem>
+// ))}

@@ -26,7 +26,7 @@ export default function LeagueContainerRight() {
               <Typography variant="body2" gutterBottom align="left" component="span">
                 +
               </Typography>
-              <TextField size="small" variant="filled" sx={{ maxWidth: "90px" }} />
+              <TextField size="small" sx={{ maxWidth: "90px" }} />
             </Grid>
             <Grid
               container
@@ -41,7 +41,7 @@ export default function LeagueContainerRight() {
               <Typography variant="body2" gutterBottom align="left" component="span">
                 +
               </Typography>
-              <TextField size="small" variant="filled" sx={{ maxWidth: "90px" }} />
+              <TextField size="small" sx={{ maxWidth: "90px" }} />
             </Grid>
             <Grid
               container
@@ -56,7 +56,7 @@ export default function LeagueContainerRight() {
               <Typography variant="body2" gutterBottom align="left" component="span">
                 +
               </Typography>
-              <TextField size="small" variant="filled" sx={{ maxWidth: "90px" }} />
+              <TextField size="small" sx={{ maxWidth: "90px" }} />
             </Grid>
           </Grid>
           <Grid item md={2}></Grid>
@@ -78,7 +78,7 @@ export default function LeagueContainerRight() {
           <Grid item md={6}>
             <TextField
               size="small"
-              variant="filled"
+              label="From"
               type="time"
               defaultValue="07:30"
               InputLabelProps={{
@@ -93,7 +93,7 @@ export default function LeagueContainerRight() {
           <Grid item md={6}>
             <TextField
               size="small"
-              variant="filled"
+              label="To"
               type="time"
               defaultValue="07:30"
               InputLabelProps={{
@@ -110,7 +110,7 @@ export default function LeagueContainerRight() {
       <FormControlLabel control={<Checkbox size="small" defaultChecked />} label="Auto Time Change" />
       <Grid container>
         <Grid container sx={{ ml: 2.5 }} spacing={1}>
-          <Grid item md={8}>
+          <Grid item md={6}>
             <Grid
               container
               direction="row"
@@ -118,10 +118,7 @@ export default function LeagueContainerRight() {
               alignItems="baseline"
               sx={{ lineHeight: "60px", mt: 1 }}
             >
-              <Typography variant="body2" gutterBottom align="left" component="span">
-                Offset By
-              </Typography>
-              <TextField size="small" variant="filled" sx={{ maxWidth: "80px" }} />
+              <TextField size="small" sx={{ maxWidth: "100px" }} label="Offset By" />
               <Typography variant="body2" gutterBottom align="left" component="span">
                 minutes
               </Typography>

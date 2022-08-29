@@ -4,6 +4,7 @@ import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Leagueform } from "./league/league-form";
+import { GameForm } from "./game/game-form";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -58,7 +59,7 @@ export default function BasicTabs() {
         <Leagueform />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Game
+        <GameForm />
       </TabPanel>
       <TabPanel value={value} index={2}>
         Special Game
