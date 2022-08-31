@@ -12,12 +12,34 @@ const other = {
   children: [
     {
       id: "feed-page",
-      title: "Feed Page",
-      type: "item",
-      url: "/feed-page",
+      title: "Feed",
+      type: "collapse",
       icon: icons.IconBrandChrome,
-      breadcrumbs: false,
+      children: [
+        {
+          id: "feed-page",
+          title: "Manager",
+          type: "item",
+          url: "/feed-page",
+          breadcrumbs: false,
+        },
+        {
+          id: "feed-history",
+          title: "History",
+          type: "item",
+          url: "/feed-page-history",
+          breadcrumbs: false,
+        },
+      ],
     },
+    // {
+    //   id: "feed-page",
+    //   title: "Feed Page",
+    //   type: "item",
+    //   url: "/feed-page",
+    //   icon: icons.IconBrandChrome,
+    //   breadcrumbs: false,
+    // },
     {
       id: "sample-page",
       title: "Sample Page",

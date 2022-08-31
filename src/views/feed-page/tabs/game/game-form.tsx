@@ -16,19 +16,21 @@ export function GameForm() {
           <Typography variant="h6" color="secondary" sx={{ mt: 3.5 }}>
             This event uses the league setting
           </Typography>
-          <Grid item md={12} sx={{ mt: 3.5, mb: 3.5 }}>
-            <Button variant="contained" sx={{ flex: 1 }}>
-              Sync Odds
-            </Button>
-            <Button variant="contained" sx={{ flex: 1, ml: 1 }}>
-              Use Default
-            </Button>
-            <Button variant="contained" sx={{ flex: 1, ml: 1 }}>
-              Apply
-            </Button>
-          </Grid>
+          {/* <Grid item md={12} sx={{ mt: 3.5, mb: 3.5 }}>
+          </Grid> */}
         </Grid>
         <Grid item md={4}></Grid>
+      </Grid>
+      <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
+        <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+          Sync Odds
+        </Button>
+        <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+          Use Default
+        </Button>
+        <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+          Apply
+        </Button>
       </Grid>
     </fieldset>
   );
