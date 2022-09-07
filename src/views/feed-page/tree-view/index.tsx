@@ -8,6 +8,8 @@ import Collapse from "@mui/material/Collapse";
 // web.cjs is required for IE11 support
 import { animated, useSpring } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
+import { useAppDispatch } from "@hooks/useReduxToolKit";
+import { selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions";
 
 function MinusSquare(props: SvgIconProps) {
   return (
@@ -132,15 +134,17 @@ const dataLeague: INodeLeague[] = [
 ];
 interface IPropsTreeItem {
   nodeId: string;
+  id: number;
   label: string;
   status: boolean;
   countGameFail: number;
+  type: "GAME" | "LEAGUE";
   children?: any;
 }
 
 function TreeItemNode(props: IPropsTreeItem) {
-  const { nodeId, label, status, countGameFail, children } = props;
-
+  const { nodeId, label, status, countGameFail, children, id, type } = props;
+  const dispatch = useAppDispatch();
   const o = React.useMemo(() => {
     return {
       color: status === false ? "#fd2025" : "#5c8e32",
@@ -148,8 +152,17 @@ function TreeItemNode(props: IPropsTreeItem) {
     };
   }, [countGameFail, label, status]);
 
+  const stopClick = (event: any) => {
+    event.stopPropagation();
+    if (type === "LEAGUE") {
+      dispatch(selectLeagueIdSuccess({ id }));
+    } else if (type === "GAME") {
+      dispatch(selectGameIdSuccess({ id }));
+    }
+  };
+
   return (
-    <StyledTreeItem nodeId={nodeId} label={o.newLabel} sx={{ color: o.color }}>
+    <StyledTreeItem nodeId={nodeId} label={<div onClick={stopClick}>{o.newLabel}</div>} sx={{ color: o.color }}>
       {children}
     </StyledTreeItem>
   );
@@ -163,7 +176,7 @@ export default function CustomizedTreeView() {
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
       defaultEndIcon={<CloseSquare />}
-      sx={{ minHeight: 550, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
+      sx={{ minHeight: 380, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
     >
       <>
         {dataLeague.map((item) => (
@@ -173,10 +186,20 @@ export default function CustomizedTreeView() {
             label={item.name}
             status={item.status}
             countGameFail={item.countGameFail}
+            type="LEAGUE"
+            id={item.id}
           >
             <>
               {item.games.map((g) => (
-                <TreeItemNode key={g.id} nodeId={g.id.toString()} label={g.name} status={g.status} countGameFail={0} />
+                <TreeItemNode
+                  key={g.id}
+                  nodeId={g.id.toString()}
+                  label={g.name}
+                  status={g.status}
+                  countGameFail={0}
+                  type="GAME"
+                  id={item.id}
+                />
               ))}
             </>
           </TreeItemNode>
@@ -185,6 +208,7 @@ export default function CustomizedTreeView() {
     </TreeView>
   );
 }
+
 // {dataLeague.forEach((item) => (
 //   <StyledTreeItem key={item.id} nodeId={item.id.toString()} label={item.name}>
 //     {item.games.forEach((g) => (

@@ -1,10 +1,12 @@
+import { useAppSelector } from "@hooks/useReduxToolKit";
 import { Button, Grid, Typography } from "@mui/material";
 import { gridSpacing } from "@store/constant";
+import { getSelectedGameId } from "@store/selector";
 import { GameOddTitle } from "./game-odd-title";
 import { GameOddsRow } from "./game-odds-row";
 import GameSportbookSelect from "./game-sportbook-select";
 
-export function GameForm() {
+export function GameFormContent() {
   return (
     <fieldset>
       <legend>Settings: Hassim Rahman vs Jake paul </legend>
@@ -34,4 +36,12 @@ export function GameForm() {
       </Grid>
     </fieldset>
   );
+}
+
+export function GameForm() {
+  const gameIdSelected: number | null = useAppSelector(getSelectedGameId);
+  const isLoading: boolean = useAppSelector((state) => state.feed.isLoading);
+  if (isLoading) return <b>Loading...</b>;
+
+  return gameIdSelected !== null ? <GameFormContent /> : <b>Please Select game!</b>;
 }

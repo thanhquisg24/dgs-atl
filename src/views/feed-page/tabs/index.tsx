@@ -5,6 +5,9 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { Leagueform } from "./league/league-form";
 import { GameForm } from "./game/game-form";
+import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
+import { getCurrentTabselector } from "@store/selector";
+import { CurrentTabType } from "@store/models/feed-model";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -40,11 +43,20 @@ function a11yProps(index: number) {
 }
 
 export default function BasicTabs() {
+  const currentTab = useAppSelector(getCurrentTabselector);
+  const dispatch = useAppDispatch();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+  React.useEffect(() => {
+    if (currentTab === CurrentTabType.LEAGUE) {
+      setValue(0);
+    } else {
+      setValue(1);
+    }
+  }, [currentTab]);
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -52,7 +64,6 @@ export default function BasicTabs() {
         <Tabs value={value} onChange={handleChange}>
           <Tab label="League" {...a11yProps(0)} />
           <Tab label="Game" {...a11yProps(1)} />
-          <Tab label="Special Game" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -60,9 +71,6 @@ export default function BasicTabs() {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <GameForm />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Special Game
       </TabPanel>
     </Box>
   );

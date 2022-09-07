@@ -5,6 +5,7 @@ import { CardContent, Divider, Grid, Typography } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 import MainCard from "@ui-component/cards/MainCard";
 import CustomizedTreeView from "./tree-view";
+import SyncProgressBars from "./tree-view/process-bar";
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const DgsScheduleCard = () => (
@@ -19,8 +20,11 @@ const DgsScheduleCard = () => (
           </Grid>
         </Grid> */}
         <Grid item xs={12}>
-          {/* <Divider sx={{ my: 1.5 }} /> */}
           <CustomizedTreeView />
+        </Grid>
+        <Grid item xs={12}>
+          {/* <Divider sx={{ my: 1.5 }} /> */}
+          <SyncProgressBars />
         </Grid>
       </Grid>
     </CardContent>
