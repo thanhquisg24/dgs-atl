@@ -1,13 +1,13 @@
-import * as React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
+import { useAppSelector } from "@hooks/useReduxToolKit";
 import Box from "@mui/material/Box";
-import { Leagueform } from "./league/league-form";
-import { GameForm } from "./game/game-form";
-import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
-import { getCurrentTabselector } from "@store/selector";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import Typography from "@mui/material/Typography";
 import { CurrentTabType } from "@store/models/feed-model";
+import { getCurrentTabselector } from "@store/selector";
+import * as React from "react";
+import { GameForm } from "./game/game-form";
+import { Leagueform } from "./league/league-form";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -44,7 +44,7 @@ function a11yProps(index: number) {
 
 export default function BasicTabs() {
   const currentTab = useAppSelector(getCurrentTabselector);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {

@@ -32,6 +32,28 @@ const other = {
         },
       ],
     },
+    {
+      id: "league-page",
+      title: "League Mapping",
+      type: "collapse",
+      icon: icons.IconBrandChrome,
+      children: [
+        {
+          id: "league-page-list",
+          title: "List league mapping",
+          type: "item",
+          url: "/league-page-list",
+          breadcrumbs: false,
+        },
+        {
+          id: "league-page-add",
+          title: "Add league mapping",
+          type: "item",
+          url: "/league-page-add",
+          breadcrumbs: false,
+        },
+      ],
+    },
     // {
     //   id: "feed-page",
     //   title: "Feed Page",
