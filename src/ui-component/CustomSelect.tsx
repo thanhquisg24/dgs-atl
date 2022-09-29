@@ -1,11 +1,6 @@
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import React from "react";
 
-interface IData {
-  value: string | number;
-  text: string;
-}
-
 interface IProps {
   id: string;
   label?: string;

@@ -37,25 +37,19 @@ const myDataProvider = (
       }
       query.sort = JSON.stringify(arr);
     }
-    const url = `${apiUrl}/${resource}?${stringify(query)}`;
+    const url = `/${resource}?${stringify(query)}`;
     const options = {};
 
-    return httpClient(url, options).then(({ headers, data }) => {
-      if (!get(headers, "countHeader")) {
-        throw new Error(
-          `The ${countHeader} header is missing in the HTTP Response. The simple REST data provider expects responses for lists of resources to contain this header with the total number of results to build the pagination. If you are using CORS, did you declare ${countHeader} in the Access-Control-Expose-Headers header?`,
-        );
-      }
-      const p = get(headers, "countHeader");
+    return httpClient(url, options).then(({ data }) => {
       return {
         data: data.content,
-        total: parseInt(p || "0", 10),
+        total: data.totalElements,
       };
     });
   },
 
   getOne: (resource, params) =>
-    httpClient(`${apiUrl}/${resource}/${params.id}`).then(({ data }) => ({
+    httpClient(`/${resource}/${params.id}`).then(({ data }) => ({
       data,
     })),
 
@@ -63,7 +57,7 @@ const myDataProvider = (
     const query = {
       filter: JSON.stringify({ id: params.ids }),
     };
-    const url = `${apiUrl}/${resource}?${stringify(query)}`;
+    const url = `/${resource}?${stringify(query)}`;
     return httpClient(url).then(({ data }) => ({ data: data.content }));
   },
 
@@ -80,7 +74,7 @@ const myDataProvider = (
         [params.target]: params.id,
       }),
     };
-    const url = `${apiUrl}/${resource}?${stringify(query)}`;
+    const url = `/${resource}?${stringify(query)}`;
     const options = {};
 
     return httpClient(url, options).then(({ headers, data }) => {
@@ -98,7 +92,7 @@ const myDataProvider = (
   },
 
   update: (resource, params) => {
-    return httpClient(`${apiUrl}/${resource}/${params.id}`, {
+    return httpClient(`/${resource}/${params.id}`, {
       method: "PUT",
       data: JSON.stringify(params.data),
     }).then(({ data }) => ({ data }));
@@ -108,7 +102,7 @@ const myDataProvider = (
   updateMany: (resource, params) =>
     Promise.all(
       params.ids.map((id) =>
-        httpClient(`${apiUrl}/${resource}/${id}`, {
+        httpClient(`/${resource}/${id}`, {
           method: "PUT",
           data: JSON.stringify(params.data),
         }),
@@ -116,7 +110,7 @@ const myDataProvider = (
     ).then((responses) => ({ data: responses.map(({ data }) => data.id) })),
 
   create: (resource, params) => {
-    return httpClient(`${apiUrl}/${resource}`, {
+    return httpClient(`/${resource}`, {
       method: "POST",
       data: JSON.stringify(params.data),
     }).then(({ data }) => ({
@@ -125,7 +119,7 @@ const myDataProvider = (
   },
 
   delete: (resource, params) =>
-    httpClient(`${apiUrl}/${resource}/${params.id}`, {
+    httpClient(`/${resource}/${params.id}`, {
       method: "DELETE",
     }).then(({ data }) => ({ data })),
 
@@ -133,7 +127,7 @@ const myDataProvider = (
   deleteMany: (resource, params) =>
     Promise.all(
       params.ids.map((id) =>
-        httpClient(`${apiUrl}/${resource}/${id}`, {
+        httpClient(`/${resource}/${id}`, {
           method: "DELETE",
         }),
       ),

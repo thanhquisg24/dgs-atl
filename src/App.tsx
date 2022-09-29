@@ -16,6 +16,8 @@ import { RootStateType } from "./store/types";
 import { ToastMessage } from "@ui-component/Toast-message";
 import { useAppDispatch } from "@hooks/useReduxToolKit";
 import { appInitAction } from "@store/actions";
+import DataProviderContext from "./context/DataProviderContext";
+import { restProvider } from "@adapters/infrastructures/dataProvider";
 
 // ==============================|| APP ||============================== //
 
@@ -25,16 +27,22 @@ const App = () => {
   React.useEffect(() => {
     dispatch(appInitAction());
   }, [dispatch]);
+  const finalDataProvider = React.useMemo(() => {
+    return restProvider;
+  }, []);
+
   return (
-    <StyledEngineProvider injectFirst>
-      <ThemeProvider theme={themes(customization)}>
-        <CssBaseline />
-        <NavigationScroll>
-          <Routes />
-        </NavigationScroll>
-        <ToastMessage />
-      </ThemeProvider>
-    </StyledEngineProvider>
+    <DataProviderContext.Provider value={finalDataProvider}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={themes(customization)}>
+          <CssBaseline />
+          <NavigationScroll>
+            <Routes />
+          </NavigationScroll>
+          <ToastMessage />
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </DataProviderContext.Provider>
   );
 };
 

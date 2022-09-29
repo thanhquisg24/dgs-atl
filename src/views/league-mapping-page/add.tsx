@@ -5,8 +5,11 @@ import { Controller, useForm } from "react-hook-form";
 // project imports
 import MainCard from "@ui-component/cards/MainCard";
 import BasicTable from "./preview-table";
-import CustomSelect from "@ui-component/CustomSelect";
 import React from "react";
+import { useGetList } from "@hooks/useGetList";
+import AsynCustomSelectV2 from "@ui-component/AsynCustomSelectV2";
+import CustomSelect from "@ui-component/CustomSelect";
+import CustomAutoComplete from "@ui-component/CustomAutoComplete";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
@@ -30,7 +33,7 @@ export interface IRowsLeagueMapping {
     dbSportName: string;
     dbLeagueId: number;
     dbLeagueName: string;
-    dgsSportId: number;
+    dgsSportId: string;
     dgsSportName: string;
     dgsLeagueId: number;
     dgsLeagueName: string;
@@ -39,6 +42,7 @@ export interface IRowsLeagueMapping {
 
 const defaultValues = {
   dbSportId: "",
+  dgsSportId: "",
 };
 const AddLeagueMapping = () => {
   const {
@@ -51,13 +55,22 @@ const AddLeagueMapping = () => {
   const [state, setState] = React.useState<IRowsLeagueMapping>({
     rows: [],
   });
+
+  // const getListDgsSport = useGetList(
+  //   JSON.stringify({
+  //     resource: "dgs-sports",
+  //     perPage: 50,
+  //     sort: { field: "sportOrder", order: "ASC" },
+  //   }),
+  // );
+
   const onSubmit = (data: any) => {
     const row = {
       dbSportId: 1,
       dbSportName: "NFL",
       dbLeagueId: 22,
       dbLeagueName: "BITCOIN",
-      dgsSportId: 33,
+      dgsSportId: "33",
       dgsSportName: "ETH",
       dgsLeagueId: 44,
       dgsLeagueName: "BNB",
@@ -103,23 +116,30 @@ const AddLeagueMapping = () => {
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid item md={4}>
-              <FormControl fullWidth>
-                <InputLabel id="dgs-sport-select">DGS Sport</InputLabel>
-                <Select label="DGS Sport" labelId="dgs-sport-select" size="small" value={10}>
-                  <MenuItem value={10}>ten20</MenuItem>
-                  <MenuItem value={20}>Twenty 20</MenuItem>
-                  <MenuItem value={30}>Thirty20</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl fullWidth sx={{ mt: 2 }}>
-                <InputLabel id="db-sport-select3">DonBest Sport</InputLabel>
-                <Select label="DonBest Sport" labelId="db-sport-select3" size="small" value={10}>
-                  <MenuItem value={10}>ten20</MenuItem>
-                  <MenuItem value={20}>Twenty 20</MenuItem>
-                  <MenuItem value={30}>Thirty20</MenuItem>
-                </Select>
-              </FormControl>
+              {/* <Controller
+                name="dgsSportId"
+                control={control}
+                rules={{
+                  required: "This Field is Required",
+                }}
+                render={({ field }) => (
+                  <AsynCustomSelectV2
+                    id="dgs-sport-select"
+                    label="DGS Sport"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.dbSportId?.message}
+                    idField="idSport"
+                    textField="sportName"
+                    listData={getListDgsSport.data}
+                    displayIdAndText
+                  ></AsynCustomSelectV2>
+                )}
+              /> */}
+
+              <CustomAutoComplete />
             </Grid>
             <Grid item md={4}>
               <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} type="submit">

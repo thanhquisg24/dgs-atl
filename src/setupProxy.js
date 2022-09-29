@@ -2,9 +2,9 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const createProxyMiddleware = require("http-proxy-middleware");
 
-const host = "http://localhost:3000/";
+const host = "http://localhost:8088/";
 // const host = "http://143.198.49.77:8200/";
-const controllers = ["/api", "/api/sign-wager-tx"];
+const controllers = ["/api"];
 
 const proxyAll = createProxyMiddleware("/", {
   target: host,

@@ -1,0 +1,44 @@
+import { useGetList } from "@hooks/useGetList";
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
+import { get } from "lodash";
+import React from "react";
+import { IQueryParams } from "../types/query-type";
+
+interface IData {
+  value: string | number;
+  text: string;
+}
+
+interface IProps {
+  id: string;
+  label?: string;
+  size: "small" | "medium" | undefined;
+  errorMsg?: string | any;
+  sx?: any;
+  registerProp?: any;
+  idField: string;
+  textField: string;
+  queryParams: IQueryParams;
+}
+
+export default function AsynCustomSelect(props: IProps) {
+  const { id, label, size, errorMsg, sx, registerProp, queryParams, idField, textField } = props;
+  const getList = useGetList(queryParams);
+  React.useEffect(() => {
+    console.log("🚀 ~ file: AsynCustomSelect.tsx ~ line 27 ~ AsynCustomSelect ~ getList", queryParams);
+  }, [queryParams]);
+  return (
+    <FormControl fullWidth sx={sx}>
+      <InputLabel id={id}>{label}</InputLabel>
+      <Select label={label} labelId={id} size={size} {...registerProp}>
+        <MenuItem value=""></MenuItem>
+        {getList.data.map((item) => (
+          <MenuItem value={get(item, idField)} key={get(item, idField)}>
+            {get(item, textField)}
+          </MenuItem>
+        ))}
+      </Select>
+      {errorMsg && <FormHelperText error>{errorMsg}</FormHelperText>}
+    </FormControl>
+  );
+}

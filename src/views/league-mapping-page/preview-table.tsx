@@ -32,7 +32,7 @@ interface IProps {
     dbSportName: string;
     dbLeagueId: number;
     dbLeagueName: string;
-    dgsSportId: number;
+    dgsSportId: string;
     dgsSportName: string;
     dgsLeagueId: number;
     dgsLeagueName: string;
