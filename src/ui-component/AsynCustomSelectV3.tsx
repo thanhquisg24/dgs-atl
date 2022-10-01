@@ -1,10 +1,6 @@
+import { useGetList } from "@hooks/useGetList";
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import { get } from "lodash";
-
-interface IData {
-  value: string | number;
-  text: string;
-}
 
 interface IProps {
   id: string;
@@ -15,19 +11,19 @@ interface IProps {
   registerProp?: any;
   idField: string;
   textField: string;
-  listData: any[];
   displayIdAndText?: boolean;
+  queryStr: string;
 }
 
-export default function AsynCustomSelectV2(props: IProps) {
-  const { id, label, size, errorMsg, sx, registerProp, idField, textField, listData, displayIdAndText } = props;
-
+export default function AsynCustomSelectV3(props: IProps) {
+  const { id, label, size, errorMsg, sx, registerProp, idField, textField, displayIdAndText, queryStr } = props;
+  const listData = useGetList(queryStr);
   return (
     <FormControl fullWidth sx={sx}>
       <InputLabel id={id}>{label}</InputLabel>
       <Select label={label} labelId={id} size={size} {...registerProp}>
         <MenuItem value=""></MenuItem>
-        {listData.map((item) => (
+        {listData.data.map((item) => (
           <MenuItem value={get(item, idField)} key={get(item, idField)}>
             {displayIdAndText ? `${get(item, idField)} - ${get(item, textField)}` : get(item, textField)}
           </MenuItem>

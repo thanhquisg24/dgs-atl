@@ -22,9 +22,17 @@ export const NOTIFY = "NOTIFY";
 export const CONNECT_WALLET_MODAL = "CONNECT_WALLET_MODAL";
 export const VIEW_WALLET_MODAL = "VIEW_WALLET_MODAL";
 export const CLOSE_MODAL = "CLOSE_MODAL";
+export const START_LOADING = "START_LOADING";
+export const END_LOADING = "END_LOADING";
 
 export const emitCloseModal = (): void => {
   AppEmitter.emit(CLOSE_MODAL);
+};
+export const emitStartLoading = (): void => {
+  AppEmitter.emit(START_LOADING);
+};
+export const emitStopLoading = (): void => {
+  AppEmitter.emit(END_LOADING);
 };
 
 export const emitConnectWalletModal = (child: string | JSX.Element): void => {

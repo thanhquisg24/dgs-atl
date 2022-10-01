@@ -47,9 +47,7 @@ export default function BasicTable(props: IProps) {
       <Table sx={{ minWidth: 650, border: 1 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>DonBest Sport</TableCell>
             <TableCell>DonBest League</TableCell>
-            <TableCell>DGS Sport</TableCell>
             <TableCell>DGS League</TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -57,14 +55,8 @@ export default function BasicTable(props: IProps) {
         <TableBody>
           {rows.map((row, index) => (
             <TableRow key={row.dbLeagueName} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-              <TableCell component="th" scope="row">
-                {row.dbSportId} - {row.dbSportName}
-              </TableCell>
               <TableCell>
                 {row.dbLeagueId} - {row.dbLeagueName}
-              </TableCell>
-              <TableCell>
-                {row.dgsSportId} - {row.dgsSportName}
               </TableCell>
               <TableCell>
                 {row.dgsLeagueId} - {row.dgsLeagueName}

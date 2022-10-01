@@ -1,15 +1,16 @@
 // material-ui
-import { Box, Typography, Grid, FormControl, Select, MenuItem, InputLabel, Button } from "@mui/material";
+import { Box, Typography, Grid, Button } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 import { Controller, useForm } from "react-hook-form";
 // project imports
 import MainCard from "@ui-component/cards/MainCard";
 import BasicTable from "./preview-table";
 import React from "react";
-import { useGetList } from "@hooks/useGetList";
-import AsynCustomSelectV2 from "@ui-component/AsynCustomSelectV2";
-import CustomSelect from "@ui-component/CustomSelect";
-import CustomAutoComplete from "@ui-component/CustomAutoComplete";
+
+import CustomAutoCompleteV2 from "@ui-component/CustomAutoCompleteV2";
+import AsynCustomSelectV3 from "@ui-component/AsynCustomSelectV3";
+import { find } from "lodash";
+import { diRepositorires } from "@adapters/di";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
@@ -27,61 +28,98 @@ const Title = () => (
   </Grid>
 );
 
-export interface IRowsLeagueMapping {
-  rows: {
-    dbSportId: number;
-    dbSportName: string;
-    dbLeagueId: number;
-    dbLeagueName: string;
-    dgsSportId: string;
-    dgsSportName: string;
-    dgsLeagueId: number;
-    dgsLeagueName: string;
-  }[];
+export interface IRowLeagueMapping {
+  dbSportId: number;
+  dbSportName: string;
+  dbLeagueId: number;
+  dbLeagueName: string;
+  dgsSportId: string;
+  dgsSportName: string;
+  dgsLeagueId: number;
+  dgsLeagueName: string;
+}
+export interface IState {
+  rows: IRowLeagueMapping[];
+}
+function checkAddItemMap(row: IRowLeagueMapping, list: IRowLeagueMapping[]) {
+  const isExist = find(list, (item: IRowLeagueMapping) => {
+    return row.dbLeagueId === item.dbLeagueId || row.dgsLeagueId === item.dgsLeagueId;
+  });
+  if (isExist) {
+    return false;
+  }
+  return true;
 }
 
 const defaultValues = {
   dbSportId: "",
+  dbLeagueId: "",
   dgsSportId: "",
+  dgsLeagueId: "",
 };
 const AddLeagueMapping = () => {
   const {
     control,
-    register,
+    setValue,
     handleSubmit,
     watch,
     formState: { errors },
   } = useForm({ defaultValues });
-  const [state, setState] = React.useState<IRowsLeagueMapping>({
+  const watchDgsSport = watch("dgsSportId", "");
+  const watchDbSport = watch("dbSportId", "");
+  const [state, setState] = React.useState<IState>({
     rows: [],
   });
 
-  // const getListDgsSport = useGetList(
-  //   JSON.stringify({
-  //     resource: "dgs-sports",
-  //     perPage: 50,
-  //     sort: { field: "sportOrder", order: "ASC" },
-  //   }),
-  // );
+  // control.getFieldState;
+  const filterDgsSport = React.useMemo(() => {
+    if (watchDgsSport === "") {
+      return null;
+    }
+    return { idSport: watchDgsSport };
+  }, [watchDgsSport]);
+
+  const filterDbSport = React.useMemo(() => {
+    if (watchDbSport === "") {
+      return null;
+    }
+    return { dbSport: { idSport: watchDbSport } };
+  }, [watchDbSport]);
+  React.useEffect(() => {
+    setValue("dgsLeagueId", "");
+  }, [setValue, watchDgsSport]);
 
   const onSubmit = (data: any) => {
-    const row = {
-      dbSportId: 1,
-      dbSportName: "NFL",
-      dbLeagueId: 22,
-      dbLeagueName: "BITCOIN",
-      dgsSportId: "33",
-      dgsSportName: "ETH",
-      dgsLeagueId: 44,
-      dgsLeagueName: "BNB",
+    console.log("🚀 ~ file: add.tsx ~ line 88 ~ onSubmit ~ data", data);
+    // const multipleValues = getValues(["test", "test1"]);
+    const row: IRowLeagueMapping = {
+      dbSportId: data.dbSportId,
+      dbSportName: "",
+      dbLeagueId: data.dbLeagueId.id,
+      dbLeagueName: data.dbLeagueId.label,
+      dgsSportId: data.dgsSportId,
+      dgsSportName: "",
+      dgsLeagueId: data.dgsLeagueId.id,
+      dgsLeagueName: data.dgsLeagueId.label,
     };
-    setState({ rows: [...state.rows, row] });
+    if (checkAddItemMap(row, state.rows)) {
+      setState({ rows: [...state.rows, row] });
+    }
   };
   const onDeleteRow = (index: number) => {
     const rows = [...state.rows];
     rows.splice(index, 1);
     setState({ rows });
   };
+
+  function onSave(): void {
+    diRepositorires.donbestLeague.postSaveLeagueMappings(state.rows).then((result) => {
+      console.log(
+        "🚀 ~ file: add.tsx ~ line 117 ~ diRepositorires.donbestLeague.postSaveLeagueMappings ~ result",
+        result,
+      );
+    });
+  }
 
   return (
     <MainCard title="Add league  mapping">
@@ -97,49 +135,100 @@ const AddLeagueMapping = () => {
                   required: "This Field is Required",
                 }}
                 render={({ field }) => (
-                  <CustomSelect
+                  <AsynCustomSelectV3
                     id="db-sport-select"
                     label="DonBest Sport"
                     size="small"
                     registerProp={field}
                     errorMsg={errors.dbSportId?.message}
-                  ></CustomSelect>
+                    idField="idSport"
+                    textField="name"
+                    queryStr={JSON.stringify({
+                      resource: "db-sport",
+                      perPage: 50,
+                      sort: { field: "name", order: "ASC" },
+                    })}
+                    displayIdAndText
+                  ></AsynCustomSelectV3>
                 )}
               />
-
-              <FormControl fullWidth sx={{ mt: 2 }}>
-                <InputLabel id="db-sport-select2">DonBest Sport</InputLabel>
-                <Select label="DonBest Sport" labelId="db-sport-select2" size="small" value={10}>
-                  <MenuItem value={10}>ten20</MenuItem>
-                  <MenuItem value={20}>Twenty 20</MenuItem>
-                  <MenuItem value={30}>Thirty20</MenuItem>
-                </Select>
-              </FormControl>
+              <Controller
+                control={control}
+                name="dbLeagueId"
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <CustomAutoCompleteV2
+                    sx={{ mt: 2 }}
+                    id="donbest-league-select"
+                    label="DonBest League"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.dgsLeagueId?.message}
+                    idField="idLeague"
+                    textField="name"
+                    dependencyField="dbSport.idSport"
+                    queryStr={JSON.stringify({
+                      resource: "db-league",
+                      perPage: 50,
+                      filter: filterDbSport,
+                      sort: { field: "name", order: "ASC" },
+                    })}
+                  />
+                )}
+              />
             </Grid>
 
             <Grid item md={4}>
-              {/* <Controller
+              <Controller
                 name="dgsSportId"
                 control={control}
                 rules={{
                   required: "This Field is Required",
                 }}
                 render={({ field }) => (
-                  <AsynCustomSelectV2
+                  <AsynCustomSelectV3
                     id="dgs-sport-select"
                     label="DGS Sport"
                     size="small"
                     registerProp={field}
-                    errorMsg={errors.dbSportId?.message}
+                    errorMsg={errors.dgsSportId?.message}
                     idField="idSport"
                     textField="sportName"
-                    listData={getListDgsSport.data}
+                    queryStr={JSON.stringify({
+                      resource: "dgs-sports",
+                      perPage: 50,
+                      sort: { field: "sportOrder", order: "ASC" },
+                    })}
                     displayIdAndText
-                  ></AsynCustomSelectV2>
+                  ></AsynCustomSelectV3>
                 )}
-              /> */}
+              />
 
-              <CustomAutoComplete />
+              {/* <CustomAutoComplete /> */}
+              <Controller
+                control={control}
+                name="dgsLeagueId"
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <CustomAutoCompleteV2
+                    sx={{ mt: 2 }}
+                    id="dgs-league-select"
+                    label="DGS League"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.dgsLeagueId?.message}
+                    idField="idLeague"
+                    textField="description"
+                    dependencyField="idSport"
+                    queryStr={JSON.stringify({
+                      resource: "dgs-league",
+                      perPage: 50,
+                      filter: filterDgsSport,
+                      sort: { field: "description", order: "ASC" },
+                    })}
+                  />
+                )}
+              />
             </Grid>
             <Grid item md={4}>
               <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} type="submit">
@@ -157,7 +246,7 @@ const AddLeagueMapping = () => {
           </Grid>
 
           <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
-            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onSave()}>
               Save
             </Button>
           </Grid>

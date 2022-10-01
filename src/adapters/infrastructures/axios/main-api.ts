@@ -1,9 +1,18 @@
 import { AxiosResponse } from "axios";
 import { AuthApi, IAuthApi } from "./auth-api";
 import customAxios from "./customeAxios";
+import queryString from "query-string";
+
+export interface IItemLeagueMapPost {
+  dbSportId: number;
+  dbLeagueId: number;
+  dgsSportId: string;
+  dgsLeagueId: number;
+}
 
 interface IApiPostType {
   postWagerCancelSuccess(tx_id: string, wager_id: number, wallet_id: string, txFee: number): Promise<AxiosResponse>;
+  postSaveLeagueMappings(payload: IItemLeagueMapPost[]): Promise<AxiosResponse>;
 }
 interface IApiFetchType {
   fetchActiveDegaGamesHomePage(): Promise<AxiosResponse>;
@@ -11,6 +20,9 @@ interface IApiFetchType {
 
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 class MainApi extends AuthApi implements IMainApi {
+  postSaveLeagueMappings(payload: IItemLeagueMapPost[]): Promise<AxiosResponse<any, any>> {
+    return this.Axios.post("/db-league/update-items", payload);
+  }
   // Axios: AxiosInstance;
 
   // constructor(_customAxios: AxiosInstance) {
