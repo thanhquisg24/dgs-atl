@@ -124,6 +124,8 @@ export interface GetOneParams {
   id: Identifier;
 }
 export interface GetOneResult<RecordType extends Record = Record> {
+  dgsIdSport(arg0: string, dgsIdSport: any): unknown;
+  dgsIdLeague(arg0: string, dgsIdLeague: any): unknown;
   data: RecordType;
   validUntil?: ValidUntil;
 }

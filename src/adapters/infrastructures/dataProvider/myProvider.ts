@@ -44,14 +44,12 @@ const myDataProvider = (
       return {
         data: data.content,
         total: data.totalElements,
+        page: data.pageable.pageNumber,
       };
     });
   },
 
-  getOne: (resource, params) =>
-    httpClient(`/${resource}/${params.id}`).then(({ data }) => ({
-      data,
-    })),
+  getOne: (resource, params) => httpClient(`/${resource}/${params.id}`).then(({ data }) => data),
 
   getMany: (resource, params) => {
     const query = {

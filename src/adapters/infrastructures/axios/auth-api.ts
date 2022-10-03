@@ -1,5 +1,4 @@
 import { AxiosInstance, AxiosResponse } from "axios";
-import queryString from "query-string";
 
 export interface IAuthApi {
   postLogin(username: string, password: string): Promise<AxiosResponse>;

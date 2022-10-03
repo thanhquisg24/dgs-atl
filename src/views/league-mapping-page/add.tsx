@@ -11,6 +11,8 @@ import CustomAutoCompleteV2 from "@ui-component/CustomAutoCompleteV2";
 import AsynCustomSelectV3 from "@ui-component/AsynCustomSelectV3";
 import { find } from "lodash";
 import { diRepositorires } from "@adapters/di";
+import { notifyMessageError, emitStopLoading, emitStartLoading, notifyMessageSuccess } from "../../emiter/AppEmitter";
+import { useRouteFunc } from "../../routes/useRouteFunc";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
@@ -58,6 +60,7 @@ const defaultValues = {
   dgsLeagueId: "",
 };
 const AddLeagueMapping = () => {
+  const { gotoPage } = useRouteFunc();
   const {
     control,
     setValue,
@@ -83,7 +86,7 @@ const AddLeagueMapping = () => {
     if (watchDbSport === "") {
       return null;
     }
-    return { dbSport: { idSport: watchDbSport } };
+    return { dbSport: { idSport: watchDbSport }, dgsIdLeague: null };
   }, [watchDbSport]);
   React.useEffect(() => {
     setValue("dgsLeagueId", "");
@@ -113,12 +116,19 @@ const AddLeagueMapping = () => {
   };
 
   function onSave(): void {
-    diRepositorires.donbestLeague.postSaveLeagueMappings(state.rows).then((result) => {
-      console.log(
-        "🚀 ~ file: add.tsx ~ line 117 ~ diRepositorires.donbestLeague.postSaveLeagueMappings ~ result",
-        result,
-      );
-    });
+    emitStartLoading();
+    diRepositorires.donbestLeague
+      .postSaveLeagueMappings(state.rows)
+      .then((result) => {
+        console.log(
+          "🚀 ~ file: add.tsx ~ line 117 ~ diRepositorires.donbestLeague.postSaveLeagueMappings ~ result",
+          result,
+        );
+        notifyMessageSuccess("Save successfull!");
+        gotoPage("/league-page-list");
+      })
+      .catch((error) => notifyMessageError(error.message))
+      .finally(() => emitStopLoading());
   }
 
   return (

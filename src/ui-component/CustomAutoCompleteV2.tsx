@@ -32,8 +32,11 @@ export default function CustomAutoCompleteV2(props: IProps) {
   return (
     <FormControl fullWidth sx={sx}>
       <Autocomplete
-        {...registerProp}
-        isOptionEqualToValue={(option: any, value) => value === "" || option.id === value.id}
+        value={registerProp.value}
+        isOptionEqualToValue={(option: any, value) => {
+          console.log("🚀 ~ file: CustomAutoCompleteV2.tsx ~ line 37 ~ CustomAutoCompleteV2 ~ option", option);
+          return value === "" || option.id === value.id;
+        }}
         getOptionLabel={(item) => {
           const str = options.list.find((p) => p?.id?.toString() === item?.id?.toString())?.label;
           if (str) return str;
