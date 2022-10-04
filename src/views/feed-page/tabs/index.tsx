@@ -42,7 +42,7 @@ function a11yProps(index: number) {
   };
 }
 
-export default function BasicTabs() {
+export default function LeagueGameTabs() {
   const currentTab = useAppSelector(getCurrentTabselector);
   // const dispatch = useAppDispatch();
   const [value, setValue] = React.useState(0);

@@ -11,10 +11,10 @@ export default function SimpleBackdrop() {
 
   React.useEffect(() => {
     const openLoad = () => {
-      handleClose();
+      handleOpen();
     };
     const closeLoad = () => {
-      handleOpen();
+      handleClose();
     };
     AppEmitter.on(START_LOADING, openLoad);
     AppEmitter.on(END_LOADING, closeLoad);

@@ -8,6 +8,7 @@ import tableIcons from "@ui-component/marterial-table/tableIcons";
 import MaterialTable from "material-table";
 import Edit from "@mui/icons-material/Edit";
 import { Link } from "react-router-dom";
+import React from "react";
 
 const columns: any = [
   {
@@ -20,21 +21,8 @@ const columns: any = [
   { title: "DGS League", field: "dgsIdLeague" },
   { title: "Enabled", field: "enabled", type: "boolean" },
 ];
-
-// render: (rowData) => {
-//   const button = (
-//     <IconButton
-//       color="inherit"
-//       onClick={() => {
-//         console.log("Save");
-//       }}
-//     >
-//       <Edit />
-//     </IconButton>
-//   );
-//   return button;
-// },
 const ListLeagueMapping = () => {
+  const tableRef = React.createRef<any>();
   const dataProvider = useDataProvider();
 
   const onActive = (evt: any, data: any) => {
@@ -46,12 +34,11 @@ const ListLeagueMapping = () => {
     }, []);
     diRepositorires.donbestLeague
       .putActiveItemsLeagueMapping(items)
-      .then((result) => {
-        console.log(
-          "🚀 ~ file: add.tsx ~ line 117 ~ diRepositorires.donbestLeague.postSaveLeagueMappings ~ result",
-          result,
-        );
+      .then(() => {
         notifyMessageSuccess("Active items successfull!");
+        if (tableRef.current) {
+          tableRef.current.onQueryChange();
+        }
       })
       .catch((error: any) => notifyMessageError(error.message))
       .finally(() => emitStopLoading());
@@ -65,12 +52,11 @@ const ListLeagueMapping = () => {
     }, []);
     diRepositorires.donbestLeague
       .putDisabledItemsLeagueMapping(items)
-      .then((result) => {
-        console.log(
-          "🚀 ~ file: add.tsx ~ line 117 ~ diRepositorires.donbestLeague.postSaveLeagueMappings ~ result",
-          result,
-        );
+      .then(() => {
         notifyMessageSuccess("Disabled items successfull!");
+        if (tableRef.current) {
+          tableRef.current.onQueryChange();
+        }
       })
       .catch((error) => notifyMessageError(error.message))
       .finally(() => emitStopLoading());
@@ -102,6 +88,7 @@ const ListLeagueMapping = () => {
       <MainCard title="List league mapping">asdasd</MainCard>
       <Box sx={{ width: "100%" }}>
         <MaterialTable
+          tableRef={tableRef}
           icons={tableIcons}
           columns={[
             ...columns,

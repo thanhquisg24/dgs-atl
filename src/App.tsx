@@ -18,6 +18,7 @@ import { useAppDispatch } from "@hooks/useReduxToolKit";
 import { appInitAction } from "@store/actions";
 import DataProviderContext from "./context/DataProviderContext";
 import { restProvider } from "@adapters/infrastructures/dataProvider";
+import SimpleBackdrop from "@ui-component/loading-backdrop";
 
 // ==============================|| APP ||============================== //
 
@@ -39,6 +40,7 @@ const App = () => {
           <NavigationScroll>
             <Routes />
           </NavigationScroll>
+          <SimpleBackdrop />
           <ToastMessage />
         </ThemeProvider>
       </StyledEngineProvider>

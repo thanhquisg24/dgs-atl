@@ -4,6 +4,7 @@ import LeagueContainerLeft from "./league-container-left";
 import LeagueContainerRight from "./league-container-right";
 import { useAppSelector } from "@hooks/useReduxToolKit";
 import { getSelectedLeagueId } from "@store/selector";
+import React from "react";
 
 // Loading
 function LeagueformContent() {
@@ -25,6 +26,9 @@ function LeagueformContent() {
 export function Leagueform() {
   const leagueIdSelected: number | null = useAppSelector(getSelectedLeagueId);
   const isLoading: boolean = useAppSelector((state) => state.feed.isLoading);
+  React.useEffect(() => {
+    console.log("🚀 ~ file: league-form.tsx ~ line 31 ~ React.useEffect ~ conso");
+  }, []);
   if (isLoading) return <b>Loading...</b>;
 
   return leagueIdSelected !== null ? <LeagueformContent /> : <b>Please Select league!</b>;

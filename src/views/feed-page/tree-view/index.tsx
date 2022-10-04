@@ -8,8 +8,10 @@ import Collapse from "@mui/material/Collapse";
 // web.cjs is required for IE11 support
 import { animated, useSpring } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
-import { useAppDispatch } from "@hooks/useReduxToolKit";
-import { selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions";
+import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
+import { fetchDgsLeaguesRequest, selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions";
+import { getDgsLeagueList } from "@store/selector";
+import { ILeagueInfoModel } from "@store/models/feed-model";
 
 function MinusSquare(props: SvgIconProps) {
   return (
@@ -29,14 +31,14 @@ function PlusSquare(props: SvgIconProps) {
   );
 }
 
-function CloseSquare(props: SvgIconProps) {
-  return (
-    <SvgIcon className="close" fontSize="inherit" style={{ width: 14, height: 14 }} {...props}>
-      {/* tslint:disable-next-line: max-line-length */}
-      <path d="M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z" />
-    </SvgIcon>
-  );
-}
+// function CloseSquare(props: SvgIconProps) {
+//   return (
+//     <SvgIcon className="close" fontSize="inherit" style={{ width: 14, height: 14 }} {...props}>
+//       {/* tslint:disable-next-line: max-line-length */}
+//       <path d="M17.485 17.512q-.281.281-.682.281t-.696-.268l-4.12-4.147-4.12 4.147q-.294.268-.696.268t-.682-.281-.281-.682.294-.669l4.12-4.147-4.12-4.147q-.294-.268-.294-.669t.281-.682.682-.281.696 .268l4.12 4.147 4.12-4.147q.294-.268.696-.268t.682.281 .281.669-.294.682l-4.12 4.147 4.12 4.147q.294.268 .294.669t-.281.682zM22.047 22.074v0 0-20.147 0h-20.12v0 20.147 0h20.12zM22.047 24h-20.12q-.803 0-1.365-.562t-.562-1.365v-20.147q0-.776.562-1.351t1.365-.575h20.147q.776 0 1.351.575t.575 1.351v20.147q0 .803-.575 1.365t-1.378.562v0z" />
+//     </SvgIcon>
+//   );
+// }
 
 function TransitionComponent(props: TransitionProps) {
   const style = useSpring({
@@ -113,23 +115,7 @@ const dataLeague: INodeLeague[] = [
     name: "BOXING 2",
     status: false,
     countGameFail: 2,
-    games: [
-      {
-        id: 25,
-        name: "08/06:29121:2431642 Hassim Ralman Jr.",
-        status: false,
-      },
-      {
-        id: 26,
-        name: "08/06:29121:2431642 Hassim Ralman Jr.",
-        status: false,
-      },
-      {
-        id: 27,
-        name: "08/06:29121:2431642 Hassim Ralman Jr.",
-        status: true,
-      },
-    ],
+    games: [],
   },
 ];
 interface IPropsTreeItem {
@@ -168,29 +154,43 @@ function TreeItemNode(props: IPropsTreeItem) {
   );
 }
 
+// interface IState
+
 export default function CustomizedTreeView() {
+  // const [state,setState] = React.useState({
+
+  // })
+  const dispatch = useAppDispatch();
+  React.useEffect(() => {
+    dispatch(fetchDgsLeaguesRequest());
+  }, [dispatch]);
+
+  const dgsLeagueList: ILeagueInfoModel[] = useAppSelector(getDgsLeagueList);
+
+  const handleToggle = (e: any, nodeIds: any) => {
+    console.log("🚀 ~ file: index.tsx ~ line 163 ~ handleToggle ~ nodeIds", nodeIds);
+  };
   return (
     <TreeView
       aria-label="customized"
-      defaultExpanded={["1"]}
       defaultCollapseIcon={<MinusSquare />}
       defaultExpandIcon={<PlusSquare />}
-      defaultEndIcon={<CloseSquare />}
       sx={{ minHeight: 380, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
+      onNodeToggle={handleToggle}
     >
       <>
-        {dataLeague.map((item) => (
+        {dgsLeagueList.map((item) => (
           <TreeItemNode
-            key={item.id}
-            nodeId={item.id.toString()}
-            label={item.name}
-            status={item.status}
-            countGameFail={item.countGameFail}
+            key={item.idLeague}
+            nodeId={item.idLeague.toString()}
+            label={item.description}
+            status
+            countGameFail={0}
             type="LEAGUE"
-            id={item.id}
+            id={item.idLeague}
           >
             <>
-              {item.games.map((g) => (
+              {/* {item.games.map((g) => (
                 <TreeItemNode
                   key={g.id}
                   nodeId={g.id.toString()}
@@ -200,7 +200,7 @@ export default function CustomizedTreeView() {
                   type="GAME"
                   id={item.id}
                 />
-              ))}
+              ))} */}
             </>
           </TreeItemNode>
         ))}
@@ -208,11 +208,3 @@ export default function CustomizedTreeView() {
     </TreeView>
   );
 }
-
-// {dataLeague.forEach((item) => (
-//   <StyledTreeItem key={item.id} nodeId={item.id.toString()} label={item.name}>
-//     {item.games.forEach((g) => (
-//       <StyledTreeItem key={g.id} nodeId={g.id.toString()} label={g.name} />
-//     ))}
-//   </StyledTreeItem>
-// ))}

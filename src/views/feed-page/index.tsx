@@ -5,17 +5,17 @@ import { Grid } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 import DgsScheduleCard from "./dgs-schedule-card";
 import RightSideCard from "./right-side-card";
-import BasicTabs from "./tabs";
+import LeagueGameTabs from "./tabs";
 // ==============================|| SAMPLE PAGE ||============================== //
 
 const FeedPage = () => (
   <Grid container spacing={gridSpacing}>
-    <Grid item xs={2}>
+    <Grid item xs={4}>
       <DgsScheduleCard />
     </Grid>
-    <Grid item xs={10}>
+    <Grid item xs={8}>
       <RightSideCard>
-        <BasicTabs />
+        <LeagueGameTabs />
       </RightSideCard>
     </Grid>
   </Grid>

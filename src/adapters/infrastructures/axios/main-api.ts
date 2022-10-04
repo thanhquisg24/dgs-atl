@@ -10,7 +10,6 @@ export interface IItemLeagueMapPost {
 }
 
 interface IApiPostType {
-  postWagerCancelSuccess(tx_id: string, wager_id: number, wallet_id: string, txFee: number): Promise<AxiosResponse>;
   postSaveLeagueMappings(payload: IItemLeagueMapPost[]): Promise<AxiosResponse>;
   postSaveLeagueMapping(payload: IItemLeagueMapPost): Promise<AxiosResponse>;
   putActiveItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
@@ -18,10 +17,15 @@ interface IApiPostType {
 }
 interface IApiFetchType {
   fetchActiveDegaGamesHomePage(): Promise<AxiosResponse>;
+  fetAvaiableDgsLeague(): Promise<AxiosResponse>;
 }
 
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 class MainApi extends AuthApi implements IMainApi {
+  fetAvaiableDgsLeague(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("dgs-league/get-avaiable-list");
+  }
+
   putActiveItemsLeagueMapping(payload: number[]): Promise<AxiosResponse<any, any>> {
     return this.Axios.put("/db-league/active", payload);
   }
@@ -44,15 +48,6 @@ class MainApi extends AuthApi implements IMainApi {
   //   super(_customAxios);
   //   this.Axios = _customAxios;
   // }
-
-  postWagerCancelSuccess(
-    tx_id: string,
-    wager_id: number,
-    wallet_id: string,
-    txFee: number,
-  ): Promise<AxiosResponse<any, any>> {
-    throw new Error("Method not implemented.");
-  }
 
   fetchActiveDegaGamesHomePage(): Promise<AxiosResponse<any, any>> {
     throw new Error("Method not implemented.");

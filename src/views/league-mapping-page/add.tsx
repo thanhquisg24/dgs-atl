@@ -119,15 +119,15 @@ const AddLeagueMapping = () => {
     emitStartLoading();
     diRepositorires.donbestLeague
       .postSaveLeagueMappings(state.rows)
-      .then((result) => {
-        console.log(
-          "🚀 ~ file: add.tsx ~ line 117 ~ diRepositorires.donbestLeague.postSaveLeagueMappings ~ result",
-          result,
-        );
+      .then(() => {
         notifyMessageSuccess("Save successfull!");
         gotoPage("/league-page-list");
       })
-      .catch((error) => notifyMessageError(error.message))
+      .catch((error) => {
+        const { message } = error.response.data;
+        notifyMessageError(message || error.message);
+        emitStopLoading();
+      })
       .finally(() => emitStopLoading());
   }
 

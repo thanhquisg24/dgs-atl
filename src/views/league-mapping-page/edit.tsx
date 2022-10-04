@@ -111,10 +111,6 @@ const EditLeagueMapping = () => {
     diRepositorires.donbestLeague
       .postSaveLeagueMapping(row)
       .then((result) => {
-        console.log(
-          "🚀 ~ file: add.tsx ~ line 117 ~ diRepositorires.donbestLeague.postSaveLeagueMappings ~ result",
-          result,
-        );
         notifyMessageSuccess("Save successfull!");
         gotoPage("/league-page-list");
       })
@@ -122,24 +118,8 @@ const EditLeagueMapping = () => {
       .finally(() => emitStopLoading());
   };
 
-  // function onSave(): void {
-  //   emitStartLoading();
-  //   // diRepositorires.donbestLeague
-  //   //   .postSaveLeagueMappings(state.rows)
-  //   //   .then((result) => {
-  //   //     console.log(
-  //   //       "🚀 ~ file: add.tsx ~ line 117 ~ diRepositorires.donbestLeague.postSaveLeagueMappings ~ result",
-  //   //       result,
-  //   //     );
-  //   //     notifyMessageSuccess("Save successfull!");
-  //   //     gotoPage("/league-page-list");
-  //   //   })
-  //   //   .catch((error) => notifyMessageError(error.message))
-  //   //   .finally(() => emitStopLoading());
-  // }
-
   return (
-    <MainCard title="Add league  mapping">
+    <MainCard title="Edit league  mapping">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ width: "100%" }}>
           <Title></Title>
