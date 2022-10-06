@@ -1,24 +1,24 @@
 import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { ILeagueInfoModel } from "@store/models/feed-model";
-import { getDgsLeagueList } from "@store/selector";
+import { getLeagueLeftInfoList } from "@store/selector";
 import { LeagueOddTitle } from "./league-odd-title";
 import { LeagueOddsRow } from "./league-odds-row";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 
-function SportBookSelect(props: { dgsLeagueList: ILeagueInfoModel[] }) {
-  const { dgsLeagueList } = props;
+function SportBookSelect(props: { leagueInfoList: ILeagueInfoModel[] }) {
+  const { leagueInfoList } = props;
   return (
     <Grid container spacing={1}>
       <Grid item md={5}>
         <Select
-          value={dgsLeagueList.length > 0 ? dgsLeagueList[0].idLeague : null}
+          value={leagueInfoList.length > 0 ? leagueInfoList[0].dgsLeague.idLeague : null}
           displayEmpty
           inputProps={{ "aria-label": "Without label" }}
           fullWidth
         >
-          {dgsLeagueList.map((item) => (
-            <MenuItem key={item.idLeague} value={item.idLeague}>
-              {item.description}
+          {leagueInfoList.map((item) => (
+            <MenuItem key={item.dgsLeague.idLeague} value={item.dgsLeague.idLeague}>
+              {item.dgsLeague.description}
             </MenuItem>
           ))}
         </Select>
@@ -60,10 +60,10 @@ function SportBookSelect(props: { dgsLeagueList: ILeagueInfoModel[] }) {
 }
 
 export default function LeagueContainerLeft() {
-  const dgsLeagueList: ILeagueInfoModel[] = useAppSelector(getDgsLeagueList);
+  const leagueInfoList: ILeagueInfoModel[] = useAppSelector(getLeagueLeftInfoList);
   return (
     <Box sx={{ width: "100%" }}>
-      <SportBookSelect dgsLeagueList={dgsLeagueList} />
+      <SportBookSelect leagueInfoList={leagueInfoList} />
       <LeagueOddTitle />
       <LeagueOddsRow />
       <LeagueOddsRow />

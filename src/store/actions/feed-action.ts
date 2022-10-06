@@ -1,8 +1,14 @@
-import { IDgsLeagueEntity } from "@adapters/entity/DgsLeagueEntity";
+import { IDonbestLeagueEntity, IDgsLeagueEntity, IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
 import { createAction } from "@reduxjs/toolkit";
 
 export interface ILeagueFetchDataPayload {
   id: number;
+}
+export interface IDgsDonbestLeague {
+  listDgsLeague: IDgsLeagueEntity[];
+  listDonbestLeague: IDonbestLeagueEntity[];
+  listDgsLineType: IDgsLineTypeEntity[];
+  listDonbestSportBook: IDonbestSportBookEntity[];
 }
 
 export const selectLeagueId = "feed/SELECT_LEAGUE_ID";
@@ -14,14 +20,14 @@ export const selectGameIdRequest = createAction<number>("feed/SELECT_GAME_ID_REQ
 export const selectGameIdSuccess = createAction<ILeagueFetchDataPayload>("feed/SELECT_GAME_ID_SUCCESS");
 export const selectGameIdFailure = createAction<string>("feed/SELECT_GAME_ID_FAILURE");
 
-export const fetchDgsLeaguesRequest = createAction<undefined>("feed/FETCH_DGSLEAGUES_REQUEST");
-export const fetchDgsLeaguesSuccess = createAction<IDgsLeagueEntity[]>("feed/FETCH_DGSLEAGUES_SUCCESS");
-export const fetchDgsLeaguesFailure = createAction<string>("feed/FETCH_DGSLEAGUES_FAILURE");
+export const fetchLeagueInfoTreeRequest = createAction<undefined>("feed/FETCH_LEAGUE_INFO_REQUEST");
+export const fetchLeagueInfoTreeSuccess = createAction<IDgsDonbestLeague>("feed/FETCH_LEAGUE_INFO_SUCCESS");
+export const fetchLeagueInfoTreeFailure = createAction<string>("feed/FETCH_LEAGUE_INFO_FAILURE");
 
 export type CombineFeedActionTypes =
-  | ReturnType<typeof fetchDgsLeaguesRequest>
-  | ReturnType<typeof fetchDgsLeaguesSuccess>
-  | ReturnType<typeof fetchDgsLeaguesFailure>
+  | ReturnType<typeof fetchLeagueInfoTreeRequest>
+  | ReturnType<typeof fetchLeagueInfoTreeSuccess>
+  | ReturnType<typeof fetchLeagueInfoTreeFailure>
   | ReturnType<typeof selectLeagueIdRequest>
   | ReturnType<typeof selectLeagueIdSuccess>
   | ReturnType<typeof selectLeagueIdFailure>

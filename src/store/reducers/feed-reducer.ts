@@ -1,5 +1,5 @@
 import { createReducer } from "@reduxjs/toolkit";
-import { fetchDgsLeaguesSuccess, selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions/feed-action";
+import { fetchLeagueInfoTreeSuccess, selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions/feed-action";
 import { CurrentTabType, IFeedModel } from "@store/models/feed-model";
 import { buildDgsLeaguesTree } from "@store/utils/feed-utils";
 
@@ -14,6 +14,8 @@ export const initialFeedState: IFeedModel = {
     lineTypeSetting: null,
     periodSetting: null,
   },
+  listDgsLineType: [],
+  listDonbestSportBook: [],
 };
 
 const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
@@ -32,10 +34,13 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     newState.isLoading = false;
     return newState;
   });
-  builder.addCase(fetchDgsLeaguesSuccess, (state, action) => {
+
+  builder.addCase(fetchLeagueInfoTreeSuccess, (state, action) => {
     const newState = { ...state };
-    const leagueLeftInfo = buildDgsLeaguesTree(action.payload);
+    const leagueLeftInfo = buildDgsLeaguesTree(action.payload.listDgsLeague, action.payload.listDonbestLeague);
     newState.leagueLeftInfo = leagueLeftInfo;
+    newState.listDgsLineType = action.payload.listDgsLineType;
+    newState.listDonbestSportBook = action.payload.listDonbestSportBook;
     newState.isLoading = false;
     return newState;
   });

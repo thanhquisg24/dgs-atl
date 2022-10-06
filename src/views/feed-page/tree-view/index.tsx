@@ -9,8 +9,8 @@ import Collapse from "@mui/material/Collapse";
 import { animated, useSpring } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
-import { fetchDgsLeaguesRequest, selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions";
-import { getDgsLeagueList } from "@store/selector";
+import { fetchLeagueInfoTreeRequest, selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions";
+import { getLeagueLeftInfoList } from "@store/selector";
 import { ILeagueInfoModel } from "@store/models/feed-model";
 
 function MinusSquare(props: SvgIconProps) {
@@ -162,10 +162,10 @@ export default function CustomizedTreeView() {
   // })
   const dispatch = useAppDispatch();
   React.useEffect(() => {
-    dispatch(fetchDgsLeaguesRequest());
+    dispatch(fetchLeagueInfoTreeRequest());
   }, [dispatch]);
 
-  const dgsLeagueList: ILeagueInfoModel[] = useAppSelector(getDgsLeagueList);
+  const dgsLeagueList: ILeagueInfoModel[] = useAppSelector(getLeagueLeftInfoList);
 
   const handleToggle = (e: any, nodeIds: any) => {
     console.log("🚀 ~ file: index.tsx ~ line 163 ~ handleToggle ~ nodeIds", nodeIds);
@@ -181,13 +181,13 @@ export default function CustomizedTreeView() {
       <>
         {dgsLeagueList.map((item) => (
           <TreeItemNode
-            key={item.idLeague}
-            nodeId={item.idLeague.toString()}
-            label={item.description}
+            key={item.dgsLeague.idLeague}
+            nodeId={item.dgsLeague.idLeague.toString()}
+            label={item.dgsLeague.description}
             status
             countGameFail={0}
             type="LEAGUE"
-            id={item.idLeague}
+            id={item.dgsLeague.idLeague}
           >
             <>
               {/* {item.games.map((g) => (

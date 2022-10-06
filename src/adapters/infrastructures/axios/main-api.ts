@@ -16,12 +16,26 @@ interface IApiPostType {
   putDisabledItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
 }
 interface IApiFetchType {
-  fetchActiveDegaGamesHomePage(): Promise<AxiosResponse>;
+  fetchAvaiableDgsLineType(): Promise<AxiosResponse>;
   fetAvaiableDgsLeague(): Promise<AxiosResponse>;
+  fetAvaiableDonbestLeague(): Promise<AxiosResponse>;
+  fetAvaiableDonbestSportBook(): Promise<AxiosResponse>;
 }
 
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 class MainApi extends AuthApi implements IMainApi {
+  fetAvaiableDonbestSportBook(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("db-sportbook/get-avaiable-sportbook");
+  }
+
+  fetAvaiableDonbestLeague(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("db-league/get-avaiable-league");
+  }
+
+  fetchAvaiableDgsLineType(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("dgs-linetype/get-avaiable-linetype");
+  }
+
   fetAvaiableDgsLeague(): Promise<AxiosResponse<any, any>> {
     return this.Axios.get("dgs-league/get-avaiable-list");
   }
@@ -48,10 +62,6 @@ class MainApi extends AuthApi implements IMainApi {
   //   super(_customAxios);
   //   this.Axios = _customAxios;
   // }
-
-  fetchActiveDegaGamesHomePage(): Promise<AxiosResponse<any, any>> {
-    throw new Error("Method not implemented.");
-  }
 }
 
 // mockAxios(customAxios);
