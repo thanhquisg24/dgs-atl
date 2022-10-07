@@ -1,14 +1,22 @@
-import { IDonbestLeagueEntity, IDgsLeagueEntity, IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
+import {
+  IDonbestLeagueEntity,
+  IDgsLeagueEntity,
+  IDgsLineTypeEntity,
+  IDonbestSportBookEntity,
+  IFilterCombine,
+} from "@adapters/entity";
 import { createAction } from "@reduxjs/toolkit";
 
 export interface ILeagueFetchDataPayload {
   id: number;
+  filterCombine: IFilterCombine | null;
 }
-export interface IDgsDonbestLeague {
+export interface IInitConfigFeed {
   listDgsLeague: IDgsLeagueEntity[];
   listDonbestLeague: IDonbestLeagueEntity[];
   listDgsLineType: IDgsLineTypeEntity[];
   listDonbestSportBook: IDonbestSportBookEntity[];
+  defaultFilterCombine: IFilterCombine | null;
 }
 
 export const selectLeagueId = "feed/SELECT_LEAGUE_ID";
@@ -21,7 +29,7 @@ export const selectGameIdSuccess = createAction<ILeagueFetchDataPayload>("feed/S
 export const selectGameIdFailure = createAction<string>("feed/SELECT_GAME_ID_FAILURE");
 
 export const fetchLeagueInfoTreeRequest = createAction<undefined>("feed/FETCH_LEAGUE_INFO_REQUEST");
-export const fetchLeagueInfoTreeSuccess = createAction<IDgsDonbestLeague>("feed/FETCH_LEAGUE_INFO_SUCCESS");
+export const fetchLeagueInfoTreeSuccess = createAction<IInitConfigFeed>("feed/FETCH_LEAGUE_INFO_SUCCESS");
 export const fetchLeagueInfoTreeFailure = createAction<string>("feed/FETCH_LEAGUE_INFO_FAILURE");
 
 export type CombineFeedActionTypes =

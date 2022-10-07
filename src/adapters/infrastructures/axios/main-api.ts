@@ -20,10 +20,22 @@ interface IApiFetchType {
   fetAvaiableDgsLeague(): Promise<AxiosResponse>;
   fetAvaiableDonbestLeague(): Promise<AxiosResponse>;
   fetAvaiableDonbestSportBook(): Promise<AxiosResponse>;
+
+  fetCombineFilter(type: string, dgsLeagueId: number, lineTypeId: number): Promise<AxiosResponse>;
 }
 
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 class MainApi extends AuthApi implements IMainApi {
+  fetCombineFilter(type: string, dgsLeagueId: number, lineTypeId: number): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("db-filter/get-combine-filter", {
+      params: {
+        type,
+        dgsLeagueId,
+        lineTypeId,
+      },
+    });
+  }
+
   fetAvaiableDonbestSportBook(): Promise<AxiosResponse<any, any>> {
     return this.Axios.get("db-sportbook/get-avaiable-sportbook");
   }

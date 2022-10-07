@@ -5,3 +5,7 @@ export * from "./DonbestLeagueEntity";
 export * from "./DgsLeagueEntity";
 export * from "./DgsLineTypeEntity";
 export * from "./DonbestSportBookEntity";
+export * from "./FilterLineTypeEntity";
+export * from "./FilterPeriodEntity";
+export * from "./FilterTypeEnum";
+export * from "./FilterCombine";

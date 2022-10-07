@@ -9,7 +9,7 @@ import Collapse from "@mui/material/Collapse";
 import { animated, useSpring } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
-import { fetchLeagueInfoTreeRequest, selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions";
+import { fetchLeagueInfoTreeRequest, selectLeagueIdRequest } from "@store/actions";
 import { getLeagueLeftInfoList } from "@store/selector";
 import { ILeagueInfoModel } from "@store/models/feed-model";
 
@@ -141,9 +141,9 @@ function TreeItemNode(props: IPropsTreeItem) {
   const stopClick = (event: any) => {
     event.stopPropagation();
     if (type === "LEAGUE") {
-      dispatch(selectLeagueIdSuccess({ id }));
+      dispatch(selectLeagueIdRequest(id));
     } else if (type === "GAME") {
-      dispatch(selectGameIdSuccess({ id }));
+      // dispatch(selectGameIdSuccess({ id }));
     }
   };
 

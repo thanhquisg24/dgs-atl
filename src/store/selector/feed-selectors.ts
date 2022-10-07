@@ -2,7 +2,7 @@ import { IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
 import { CurrentTabType, ILeagueInfoModel } from "@store/models/feed-model";
 import { RootStateType } from "../types";
 
-export const getSelectedLeagueId = (state: RootStateType): number | null => state.feed.selectedLeagueId;
+export const getSelectedLeagueId = (state: RootStateType): number | null => state.feed.selectedDgsLeague.dgsLeagueId;
 export const getSelectedGameId = (state: RootStateType): number | null => state.feed.selectedGameId;
 export const getCurrentTabselector = (state: RootStateType): CurrentTabType => state.feed.currentTabType;
 export const getLeagueLeftInfoTree = (

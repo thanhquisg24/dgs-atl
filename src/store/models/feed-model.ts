@@ -1,4 +1,10 @@
-import { IDgsLeagueEntity, IDgsLineTypeEntity, IDonbestLeagueEntity, IDonbestSportBookEntity } from "@adapters/entity";
+import {
+  IDgsLeagueEntity,
+  IDgsLineTypeEntity,
+  IDonbestLeagueEntity,
+  IDonbestSportBookEntity,
+  IFilterCombine,
+} from "@adapters/entity";
 
 // eslint-disable-next-line no-shadow
 export enum CurrentTabType {
@@ -20,11 +26,14 @@ interface IFeedBaseDataFetched {
   listDgsLineType: IDgsLineTypeEntity[];
   listDonbestSportBook: IDonbestSportBookEntity[];
   leagueLeftInfo: { [dgsLeagueId: number]: ILeagueInfoModel };
+  defaultFilterCombine: IFilterCombine | null;
 }
 
 interface IFeedUiAction {
-  selectedDgsLeague: IDgsLeagueEntity | null;
-  selectedLeagueId: number | null;
+  selectedDgsLeague: {
+    dgsLeagueId: number | null;
+    filterCombine: IFilterCombine | null;
+  };
   selectedGameId: number | null;
   isLoading: boolean;
   currentTabType: CurrentTabType;

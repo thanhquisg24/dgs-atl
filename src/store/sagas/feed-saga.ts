@@ -4,16 +4,21 @@ import {
   fetchLeagueInfoTreeFailure,
   fetchLeagueInfoTreeRequest,
   fetchLeagueInfoTreeSuccess,
+  selectLeagueIdFailure,
+  selectLeagueIdRequest,
+  selectLeagueIdSuccess,
 } from "@store/actions/feed-action";
 import { diRepositorires } from "@adapters/di";
+import { FilterTypeEnum } from "@adapters/entity";
 
 function* fetchDgsLeaguesSaga(): Generator | any {
   try {
-    const [listDgs, listDonbest, lineTypes, sportBooks] = yield all([
+    const [listDgs, listDonbest, lineTypes, sportBooks, defaultCombine] = yield all([
       diRepositorires.dgsLeague.fetAvaiableDgsLeague(),
       diRepositorires.donbestLeague.fetAvaiableDonbestLeague(),
       diRepositorires.dgsLeague.fetchAvaiableDgsLineType(),
       diRepositorires.donbestLeague.fetAvaiableDonbestSportBook(),
+      diRepositorires.donbestFilter.fetDefaultFilterCombine(),
     ]);
 
     yield put(
@@ -22,10 +27,10 @@ function* fetchDgsLeaguesSaga(): Generator | any {
         listDonbestLeague: listDonbest,
         listDgsLineType: lineTypes,
         listDonbestSportBook: sportBooks,
+        defaultFilterCombine: defaultCombine,
       }),
     );
   } catch (error) {
-    console.log("🚀 ~ file: feed-saga.ts ~ line 18 ~ function*fetchDgsLeaguesSaga ~ error", error);
     yield put(fetchLeagueInfoTreeFailure("Fetch DgsLeagues fail!"));
     notifyMessageError("Fetch DgsLeagues fail!");
   }
@@ -34,5 +39,28 @@ function* fetchDgsLeaguesSaga(): Generator | any {
 function* fetchDgsLeaguesWatcher() {
   yield takeLatest(fetchLeagueInfoTreeRequest.type, fetchDgsLeaguesSaga);
 }
+function* fetchSelectedDgsLeaguesSaga(action: ReturnType<typeof selectLeagueIdRequest>): Generator | any {
+  try {
+    const lueagueCombineConfig = yield diRepositorires.donbestFilter.fetFilterCombine(
+      FilterTypeEnum.LEAGUE,
+      action.payload,
+      0,
+    );
 
-export const feedWatchers = [fetchDgsLeaguesWatcher()];
+    yield put(
+      selectLeagueIdSuccess({
+        id: action.payload,
+        filterCombine: lueagueCombineConfig,
+      }),
+    );
+  } catch (error) {
+    yield put(selectLeagueIdFailure("Fetch DgsLeagues fail!"));
+    notifyMessageError("Fetch DgsLeagues fail!");
+  }
+}
+
+function* fetchSelectedDgsLeaguesSagaWatcher() {
+  yield takeLatest(selectLeagueIdRequest.type, fetchSelectedDgsLeaguesSaga);
+}
+
+export const feedWatchers = [fetchDgsLeaguesWatcher(), fetchSelectedDgsLeaguesSagaWatcher()];

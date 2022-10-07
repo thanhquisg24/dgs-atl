@@ -4,11 +4,10 @@ import { CurrentTabType, IFeedModel } from "@store/models/feed-model";
 import { buildDgsLeaguesTree } from "@store/utils/feed-utils";
 
 export const initialFeedState: IFeedModel = {
-  selectedLeagueId: null,
   selectedGameId: null,
   isLoading: false,
   currentTabType: CurrentTabType.LEAGUE,
-  selectedDgsLeague: null,
+  selectedDgsLeague: { dgsLeagueId: null, filterCombine: null },
   leagueLeftInfo: {},
   defaultSetting: {
     lineTypeSetting: null,
@@ -16,12 +15,13 @@ export const initialFeedState: IFeedModel = {
   },
   listDgsLineType: [],
   listDonbestSportBook: [],
+  defaultFilterCombine: null,
 };
 
 const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
   builder.addCase(selectLeagueIdSuccess, (state, action) => {
     const newState = { ...state };
-    newState.selectedLeagueId = action.payload.id;
+    newState.selectedDgsLeague = { dgsLeagueId: action.payload.id, filterCombine: action.payload.filterCombine };
     newState.isLoading = false;
     newState.currentTabType = CurrentTabType.LEAGUE;
     return newState;
@@ -41,6 +41,7 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     newState.leagueLeftInfo = leagueLeftInfo;
     newState.listDgsLineType = action.payload.listDgsLineType;
     newState.listDonbestSportBook = action.payload.listDonbestSportBook;
+    newState.defaultFilterCombine = action.payload.defaultFilterCombine;
     newState.isLoading = false;
     return newState;
   });
