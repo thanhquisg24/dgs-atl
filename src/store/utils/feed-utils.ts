@@ -1,5 +1,16 @@
-import { IDgsLeagueEntity, IDonbestLeagueEntity } from "@adapters/entity";
-import { ILeagueInfoModel } from "@store/models/feed-model";
+import {
+  IDgsLeagueEntity,
+  IDonbestLeagueEntity,
+  IFilterCombine,
+  IFilterLineTypeEntity,
+  IFilterPeriodEntity,
+} from "@adapters/entity";
+import {
+  ILeagueInfoModel,
+  IMapFilterCombine,
+  IMapFilterLineTypeConfig,
+  IMapFilterPeriodConfig,
+} from "@store/models/feed-model";
 
 export function buildDgsLeaguesTree(
   dgs: IDgsLeagueEntity[],
@@ -14,4 +25,32 @@ export function buildDgsLeaguesTree(
     reduceObj[don.dgsIdLeague].donbestLeague = don;
   }
   return reduceObj;
+}
+
+export function buildKeyLineTypeAndSportbook(lineTypeId: number, sportbookId: number): string {
+  return `${lineTypeId}_${sportbookId}`;
+}
+
+export function buildMapFilterLineType(data: IFilterLineTypeEntity[] | undefined): IMapFilterLineTypeConfig | null {
+  if (data) {
+    const reduceObj: IMapFilterLineTypeConfig = data.reduce(
+      (obj, cur) => ({
+        ...obj,
+        [buildKeyLineTypeAndSportbook(cur.lineTypeId, cur.bookId)]: cur,
+      }),
+      {},
+    ); //end reduce
+    return reduceObj;
+  }
+  return null;
+}
+
+export function buildMapFilterPeriod(data: IFilterPeriodEntity[] | undefined): IMapFilterPeriodConfig | null {
+  if (data) {
+    const result = {};
+    for (let index = 0; index < data.length; index++) {
+      const element = data[index];
+    }
+  }
+  return null;
 }
