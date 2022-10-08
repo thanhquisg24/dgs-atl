@@ -4,12 +4,27 @@ import {
   IDonbestLeagueEntity,
   IDonbestSportBookEntity,
   IFilterCombine,
+  IFilterLineTypeEntity,
+  IFilterPeriodEntity,
 } from "@adapters/entity";
 
 // eslint-disable-next-line no-shadow
 export enum CurrentTabType {
   GAME = "GAME",
   LEAGUE = "LEAGUE",
+}
+
+export interface IMapFilterCombine {
+  [linetypeId_sportbookId: string]: {
+    filterLineTypeSetting: IFilterLineTypeEntity;
+    listFilterPeriodSetting: IFilterPeriodEntity[];
+  };
+}
+export interface IMapFilterLineTypeConfig {
+  [linetypeId_sportbookId: string]: IFilterLineTypeEntity;
+}
+export interface IMapFilterPeriodConfig {
+  [linetypeId: number]: IFilterPeriodEntity[];
 }
 
 export interface ILeagueInfoModel {
@@ -32,7 +47,9 @@ interface IFeedBaseDataFetched {
 interface IFeedUiAction {
   selectedDgsLeague: {
     dgsLeagueId: number | null;
-    filterCombine: IFilterCombine | null;
+    mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null;
+    mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
+    defaultSelectedLineType_BookId: string | null;
   };
   selectedGameId: number | null;
   isLoading: boolean;

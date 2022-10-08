@@ -40,7 +40,7 @@ export default function LeagueContainerRight() {
         <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>
           Copy to Leagues
         </Button>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>
+        <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>
           Apply
         </Button>
       </Grid>

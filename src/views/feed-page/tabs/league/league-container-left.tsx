@@ -1,47 +1,80 @@
 import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { ILeagueInfoModel } from "@store/models/feed-model";
-import { getLeagueLeftInfoList } from "@store/selector";
 import { LeagueOddTitle } from "./league-odd-title";
 import { LeagueOddsRow } from "./league-odds-row";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
+import { IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
+import { Controller, useFormContext } from "react-hook-form";
+import { getSelectedLeague } from "@store/selector";
 
-function SportBookSelect(props: { leagueInfoList: ILeagueInfoModel[] }) {
-  const { leagueInfoList } = props;
+interface IProps {
+  leagueInfoList: ILeagueInfoModel[];
+  listLineType: IDgsLineTypeEntity[];
+  listSportBook: IDonbestSportBookEntity[];
+}
+
+function SportBookSelect(props: IProps) {
+  const { leagueInfoList, listLineType, listSportBook } = props;
+  const { register, control } = useFormContext();
+
   return (
     <Grid container spacing={1}>
       <Grid item md={5}>
-        <Select
-          value={leagueInfoList.length > 0 ? leagueInfoList[0].dgsLeague.idLeague : null}
-          displayEmpty
-          inputProps={{ "aria-label": "Without label" }}
-          fullWidth
-        >
-          {leagueInfoList.map((item) => (
-            <MenuItem key={item.dgsLeague.idLeague} value={item.dgsLeague.idLeague}>
-              {item.dgsLeague.description}
-            </MenuItem>
-          ))}
-        </Select>
+        <Controller
+          name="dgsLeagueId"
+          control={control}
+          rules={{
+            required: "This Field is Required",
+          }}
+          render={({ field }) => (
+            <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
+              <MenuItem value={-1}>Select...</MenuItem>
+              {leagueInfoList.map((item) => (
+                <MenuItem key={item.dgsLeague.idLeague} value={item.dgsLeague.idLeague}>
+                  {item.dgsLeague.description}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
       </Grid>
       <Grid item md={4}>
-        <Select value={10} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>DONBEST ALM</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
+        <Controller
+          name="lineTypeId"
+          control={control}
+          rules={{
+            required: "This Field is Required",
+          }}
+          render={({ field }) => (
+            <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
+              <MenuItem value={-1}>Select...</MenuItem>
+              {listLineType.map((item) => (
+                <MenuItem key={item.idLineType} value={item.idLineType}>
+                  {item.description}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
       </Grid>
       <Grid item md={3}>
-        <Select value={10} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
-          <MenuItem value="">
-            <em>None</em>
-          </MenuItem>
-          <MenuItem value={10}>BETOL</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
-        </Select>
+        <Controller
+          name="bookId"
+          control={control}
+          rules={{
+            required: "This Field is Required",
+          }}
+          render={({ field }) => (
+            <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
+              <MenuItem value={-1}>Select...</MenuItem>
+              {listSportBook.map((item) => (
+                <MenuItem key={item.idSportsbook} value={item.idSportsbook}>
+                  {item.name}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        />
       </Grid>
 
       <Grid item md={5}>
@@ -50,20 +83,47 @@ function SportBookSelect(props: { leagueInfoList: ILeagueInfoModel[] }) {
         </Typography>
       </Grid>
       <Grid item md={4}>
-        <FormControlLabel control={<Checkbox size="small" disabled />} label="Follow Except" />
+        <Controller
+          name="followParentExcept"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  onChange={(e) => field.onChange(e.target.checked)}
+                  checked={field.value}
+                  size="small"
+                  disabled
+                />
+              }
+              label="Follow Except"
+            />
+          )}
+        />
       </Grid>
       <Grid item md={3}>
-        <FormControlLabel control={<Checkbox size="small" defaultChecked />} label="Active" />
+        <Controller
+          name="enabled"
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+              }
+              label="Active"
+            />
+          )}
+        />
       </Grid>
     </Grid>
   );
 }
 
-export default function LeagueContainerLeft() {
-  const leagueInfoList: ILeagueInfoModel[] = useAppSelector(getLeagueLeftInfoList);
+export default function LeagueContainerLeft(props: IProps) {
+  const { leagueInfoList, listLineType, listSportBook } = props;
   return (
     <Box sx={{ width: "100%" }}>
-      <SportBookSelect leagueInfoList={leagueInfoList} />
+      <SportBookSelect leagueInfoList={leagueInfoList} listLineType={listLineType} listSportBook={listSportBook} />
       <LeagueOddTitle />
       <LeagueOddsRow />
       <LeagueOddsRow />

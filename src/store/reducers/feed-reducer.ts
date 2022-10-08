@@ -1,13 +1,23 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { fetchLeagueInfoTreeSuccess, selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions/feed-action";
-import { CurrentTabType, IFeedModel } from "@store/models/feed-model";
-import { buildDgsLeaguesTree } from "@store/utils/feed-utils";
+import { CurrentTabType, IFeedModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
+import {
+  buildDgsLeaguesTree,
+  buildKeyLineTypeAndSportbook,
+  buildMapFilterLineType,
+  buildMapFilterPeriod,
+} from "@store/utils/feed-utils";
 
 export const initialFeedState: IFeedModel = {
   selectedGameId: null,
   isLoading: false,
   currentTabType: CurrentTabType.LEAGUE,
-  selectedDgsLeague: { dgsLeagueId: null, filterCombine: null },
+  selectedDgsLeague: {
+    dgsLeagueId: null,
+    mapFilterLineTypeConfig: null,
+    mapFilterPeriodConfig: null,
+    defaultSelectedLineType_BookId: null,
+  },
   leagueLeftInfo: {},
   defaultSetting: {
     lineTypeSetting: null,
@@ -21,7 +31,19 @@ export const initialFeedState: IFeedModel = {
 const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
   builder.addCase(selectLeagueIdSuccess, (state, action) => {
     const newState = { ...state };
-    newState.selectedDgsLeague = { dgsLeagueId: action.payload.id, filterCombine: action.payload.filterCombine };
+    const listLineTypeConfig = action.payload.filterCombine?.listFilterLineType;
+    const mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null = buildMapFilterLineType(listLineTypeConfig);
+    const mapFilterPeriodConfig: IMapFilterPeriodConfig | null = buildMapFilterPeriod(
+      action.payload.filterCombine?.listFilterPeriod,
+    );
+    newState.selectedDgsLeague = {
+      dgsLeagueId: action.payload.id,
+      mapFilterLineTypeConfig,
+      mapFilterPeriodConfig,
+      defaultSelectedLineType_BookId: listLineTypeConfig
+        ? buildKeyLineTypeAndSportbook(listLineTypeConfig[0].lineTypeId, listLineTypeConfig[0].bookId)
+        : null,
+    };
     newState.isLoading = false;
     newState.currentTabType = CurrentTabType.LEAGUE;
     return newState;

@@ -22,6 +22,7 @@ export interface IInitConfigFeed {
 export const selectLeagueId = "feed/SELECT_LEAGUE_ID";
 export const selectLeagueIdRequest = createAction<number>("feed/SELECT_LEAGUE_ID_REQUEST");
 export const selectLeagueIdSuccess = createAction<ILeagueFetchDataPayload>("feed/SELECT_LEAGUE_ID_SUCCESS");
+export const selectLeagueIdNotChanged = createAction<undefined>("feed/SELECT_LEAGUE_ID_NOT_SELECT_LEAGUE_ID_NOTCHANGE");
 export const selectLeagueIdFailure = createAction<string>("feed/SELECT_LEAGUE_ID_FAILURE");
 
 export const selectGameIdRequest = createAction<number>("feed/SELECT_GAME_ID_REQUEST");
@@ -39,6 +40,7 @@ export type CombineFeedActionTypes =
   | ReturnType<typeof selectLeagueIdRequest>
   | ReturnType<typeof selectLeagueIdSuccess>
   | ReturnType<typeof selectLeagueIdFailure>
+  | ReturnType<typeof selectLeagueIdNotChanged>
   | ReturnType<typeof selectGameIdRequest>
   | ReturnType<typeof selectGameIdSuccess>
   | ReturnType<typeof selectGameIdFailure>;

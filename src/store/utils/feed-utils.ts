@@ -11,6 +11,7 @@ import {
   IMapFilterLineTypeConfig,
   IMapFilterPeriodConfig,
 } from "@store/models/feed-model";
+import { get } from "lodash";
 
 export function buildDgsLeaguesTree(
   dgs: IDgsLeagueEntity[],
@@ -37,6 +38,7 @@ export function buildMapFilterLineType(data: IFilterLineTypeEntity[] | undefined
       (obj, cur) => ({
         ...obj,
         [buildKeyLineTypeAndSportbook(cur.lineTypeId, cur.bookId)]: cur,
+        [cur.lineTypeId]: cur,
       }),
       {},
     ); //end reduce
@@ -47,10 +49,17 @@ export function buildMapFilterLineType(data: IFilterLineTypeEntity[] | undefined
 
 export function buildMapFilterPeriod(data: IFilterPeriodEntity[] | undefined): IMapFilterPeriodConfig | null {
   if (data) {
-    const result = {};
+    let result: IMapFilterPeriodConfig = {};
     for (let index = 0; index < data.length; index++) {
       const element = data[index];
+      let list = get(result, element.lineTypeId);
+      if (list === null || list === undefined) {
+        list = [];
+      }
+      list.push(element);
+      result = { ...result, [element.lineTypeId]: list };
     }
+    return result;
   }
   return null;
 }
