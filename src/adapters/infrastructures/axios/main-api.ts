@@ -1,3 +1,4 @@
+import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
 import { AxiosResponse } from "axios";
 import { AuthApi, IAuthApi } from "./auth-api";
 import customAxios from "./customeAxios";
@@ -14,6 +15,7 @@ interface IApiPostType {
   postSaveLeagueMapping(payload: IItemLeagueMapPost): Promise<AxiosResponse>;
   putActiveItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
   putDisabledItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
+  postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<AxiosResponse>;
 }
 interface IApiFetchType {
   fetchAvaiableDgsLineType(): Promise<AxiosResponse>;
@@ -68,6 +70,9 @@ class MainApi extends AuthApi implements IMainApi {
     return this.Axios.post("/db-league/update-item", payload);
   }
 
+  postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<AxiosResponse<any, any>> {
+    return this.Axios.post("/db-filter/save-filter-league", payload);
+  }
   // Axios: AxiosInstance;
 
   // constructor(_customAxios: AxiosInstance) {

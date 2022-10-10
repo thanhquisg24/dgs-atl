@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/named
+import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
 import { IDonbestLeagueEntity, IDonbestSportBookEntity, IFilterCombine, FilterTypeEnum } from "@adapters/entity";
 import { AxiosResponse } from "axios";
 import { BaseRepository } from "./base-repository";
@@ -7,8 +8,24 @@ import { BaseRepository } from "./base-repository";
 export interface IDonbestFilterRepository {
   fetDefaultFilterCombine(): Promise<IFilterCombine>;
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
+  postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<boolean>;
 }
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
+  postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .postSaveLeagueFilters(payload)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   fetDefaultFilterCombine(): Promise<IFilterCombine> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi

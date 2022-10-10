@@ -5,7 +5,7 @@ export interface IFilterPeriodEntity {
   type: FilterTypeEnum;
   lineTypeId: number;
   dgsLeagueId: number;
-  dgsGameId: number | null;
+  dgsGameId: number;
   period: number;
   enabled: boolean;
   ps: boolean;
@@ -18,16 +18,16 @@ export interface IFilterPeriodEntity {
   total_bookId: number;
   team_total_bookId: number;
   way3_bookId: number;
-  ps_po: number;
+  ps_point: number;
   ps_juice: number;
-  ml_po: number;
+  ml_point: number;
   ml_juice: number;
-  total_po: number;
+  total_point: number;
   total_juice: number;
-  team_total_po: number;
+  team_total_point: number;
   team_total_juice: number;
-  way3_po: number;
+  way3_point: number;
   way3_juice: number;
-  dbGameId: number | null;
-  dbLeagueId: number | null;
+  dbGameId: number;
+  dbLeagueId: number;
 }

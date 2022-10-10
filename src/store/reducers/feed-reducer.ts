@@ -41,7 +41,7 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
       mapFilterLineTypeConfig,
       mapFilterPeriodConfig,
       defaultSelectedLineType_BookId: listLineTypeConfig
-        ? buildKeyLineTypeAndSportbook(listLineTypeConfig[0].lineTypeId, listLineTypeConfig[0].bookId)
+        ? buildKeyLineTypeAndSportbook(listLineTypeConfig[0].lineTypeId, listLineTypeConfig[0].dbSportsBookId)
         : null,
     };
     newState.isLoading = false;

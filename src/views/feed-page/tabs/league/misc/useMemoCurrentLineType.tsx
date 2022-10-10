@@ -8,7 +8,6 @@ export function useMemoCurrentLineType(lineTypeId: number): IDgsLineTypeEntity |
   const listLineType = useAppSelector(getListLineType);
   const resut = React.useMemo(() => {
     const match = find(listLineType, { idLineType: lineTypeId });
-    console.log("🚀 ~ file: useMemoCurrentLineType.tsx ~ line 11 ~ resut ~ match", match, lineTypeId);
     return match || null;
   }, [lineTypeId, listLineType]);
   return resut;

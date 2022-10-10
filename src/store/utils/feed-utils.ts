@@ -37,7 +37,7 @@ export function buildMapFilterLineType(data: IFilterLineTypeEntity[] | undefined
     const reduceObj: IMapFilterLineTypeConfig = data.reduce(
       (obj, cur) => ({
         ...obj,
-        [buildKeyLineTypeAndSportbook(cur.lineTypeId, cur.bookId)]: cur,
+        [buildKeyLineTypeAndSportbook(cur.lineTypeId, cur.dbSportsBookId)]: cur,
         [cur.lineTypeId]: cur,
       }),
       {},

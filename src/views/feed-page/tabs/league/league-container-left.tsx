@@ -4,7 +4,7 @@ import { LeagueOddTitle } from "./league-odd-title";
 import { LeagueOddsRow } from "./league-odds-row";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
-import { Controller, useFormContext } from "react-hook-form";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { getSelectedLeague } from "@store/selector";
 
 interface IProps {
@@ -15,7 +15,7 @@ interface IProps {
 
 function SportBookSelect(props: IProps) {
   const { leagueInfoList, listLineType, listSportBook } = props;
-  const { register, control } = useFormContext();
+  const { control } = useFormContext();
 
   return (
     <Grid container spacing={1}>
@@ -47,7 +47,7 @@ function SportBookSelect(props: IProps) {
           }}
           render={({ field }) => (
             <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
-              <MenuItem value={-1}>Select...</MenuItem>
+              <MenuItem value={0}>Select...</MenuItem>
               {listLineType.map((item) => (
                 <MenuItem key={item.idLineType} value={item.idLineType}>
                   {item.description}
@@ -59,14 +59,14 @@ function SportBookSelect(props: IProps) {
       </Grid>
       <Grid item md={3}>
         <Controller
-          name="bookId"
+          name="dbSportsBookId"
           control={control}
           rules={{
             required: "This Field is Required",
           }}
           render={({ field }) => (
             <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
-              <MenuItem value={-1}>Select...</MenuItem>
+              <MenuItem value={0}>Select...</MenuItem>
               {listSportBook.map((item) => (
                 <MenuItem key={item.idSportsbook} value={item.idSportsbook}>
                   {item.name}
@@ -121,14 +121,25 @@ function SportBookSelect(props: IProps) {
 
 export default function LeagueContainerLeft(props: IProps) {
   const { leagueInfoList, listLineType, listSportBook } = props;
+  const { control } = useFormContext();
+  const { fields } = useFieldArray({
+    control,
+    name: "periodConfig",
+  });
   return (
     <Box sx={{ width: "100%" }}>
       <SportBookSelect leagueInfoList={leagueInfoList} listLineType={listLineType} listSportBook={listSportBook} />
       <LeagueOddTitle />
-      <LeagueOddsRow />
-      <LeagueOddsRow />
-      <LeagueOddsRow />
-      <LeagueOddsRow />
+      {fields.map((item, index) => (
+        <LeagueOddsRow
+          key={item.id}
+          indexField={index}
+          control={control}
+          listSportBook={listSportBook}
+          //@ts-ignore
+          periodCodeNumber={item.period}
+        />
+      ))}
     </Box>
   );
 }
