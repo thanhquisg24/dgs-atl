@@ -1,4 +1,5 @@
 import {
+  IDgsGameEntityWithLeague,
   IDgsLeagueEntity,
   IDgsLineTypeEntity,
   IDonbestLeagueEntity,
@@ -30,7 +31,7 @@ export interface IMapFilterPeriodConfig {
 export interface ILeagueInfoModel {
   dgsLeague: IDgsLeagueEntity;
   donbestLeague: IDonbestLeagueEntity;
-  dgsGames: any[];
+  dgsGames: IDgsGameEntityWithLeague[];
 }
 
 interface IFeedBaseDataFetched {

@@ -9,3 +9,4 @@ export * from "./FilterLineTypeEntity";
 export * from "./FilterPeriodEntity";
 export * from "./FilterTypeEnum";
 export * from "./FilterCombine";
+export * from "./DgsGameEntity";

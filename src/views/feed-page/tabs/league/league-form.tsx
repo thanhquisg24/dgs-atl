@@ -16,11 +16,11 @@ import React from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { shallowEqual } from "react-redux";
 import { RootStateType } from "@store/types";
-import { selectLeagueIdRequest } from "@store/actions";
+import { selectLeagueIdRefresh, selectLeagueIdRequest } from "@store/actions";
 import { FilterTypeEnum, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
 import { get, omit } from "lodash";
 import LeagueFormLegend from "./misc/league-form-legend";
-import { emitStartLoading, emitStopLoading } from "@emiter/AppEmitter";
+import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { diRepositorires } from "@adapters/di";
 // Loading
 
@@ -144,8 +144,11 @@ function LeagueformContent() {
       .postSaveLeagueFilters({ filterLineTypeReq, filterPeriodReq })
       .then(() => {
         emitStopLoading();
+        dispatch(selectLeagueIdRefresh(dgsLeagueId));
+        notifyMessageSuccess("Save success!");
       })
       .catch(() => {
+        notifyMessageError("Save failure! please try again.");
         emitStopLoading();
       });
   };

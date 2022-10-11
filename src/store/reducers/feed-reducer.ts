@@ -1,12 +1,25 @@
+import { IDgsGameEntityWithLeague } from "@adapters/entity";
 import { createReducer } from "@reduxjs/toolkit";
-import { fetchLeagueInfoTreeSuccess, selectGameIdSuccess, selectLeagueIdSuccess } from "@store/actions/feed-action";
-import { CurrentTabType, IFeedModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
+import {
+  expandLeagueSuccess,
+  fetchLeagueInfoTreeSuccess,
+  selectEventFilterSuccess,
+  selectLeagueIdSuccess,
+} from "@store/actions/feed-action";
+import {
+  CurrentTabType,
+  IFeedModel,
+  ILeagueInfoModel,
+  IMapFilterLineTypeConfig,
+  IMapFilterPeriodConfig,
+} from "@store/models/feed-model";
 import {
   buildDgsLeaguesTree,
   buildKeyLineTypeAndSportbook,
   buildMapFilterLineType,
   buildMapFilterPeriod,
 } from "@store/utils/feed-utils";
+import { get } from "lodash";
 
 export const initialFeedState: IFeedModel = {
   selectedGameId: null,
@@ -48,8 +61,17 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     newState.currentTabType = CurrentTabType.LEAGUE;
     return newState;
   });
+  builder.addCase(expandLeagueSuccess, (state, action) => {
+    const gamesWithLeague: IDgsGameEntityWithLeague[] = action.payload.list.map((e) => ({
+      ...e,
+      dgsLeagueId: action.payload.dgsLeagueId,
+    }));
+    state.leagueLeftInfo[action.payload.dgsLeagueId].dgsGames = gamesWithLeague;
+    state.isLoading = false;
+    return state;
+  });
 
-  builder.addCase(selectGameIdSuccess, (state, action) => {
+  builder.addCase(selectEventFilterSuccess, (state, action) => {
     const newState = { ...state };
     newState.selectedGameId = action.payload.id;
     newState.currentTabType = CurrentTabType.GAME;

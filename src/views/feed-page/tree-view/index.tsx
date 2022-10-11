@@ -9,7 +9,7 @@ import Collapse from "@mui/material/Collapse";
 import { animated, useSpring } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
-import { fetchLeagueInfoTreeRequest, selectLeagueIdRequest } from "@store/actions";
+import { expandLeagueRequest, fetchLeagueInfoTreeRequest, selectLeagueIdRequest } from "@store/actions";
 import { getLeagueLeftInfoList } from "@store/selector";
 import { ILeagueInfoModel } from "@store/models/feed-model";
 
@@ -168,7 +168,9 @@ export default function CustomizedTreeView() {
   const dgsLeagueList: ILeagueInfoModel[] = useAppSelector(getLeagueLeftInfoList);
 
   const handleToggle = (e: any, nodeIds: any) => {
-    console.log("🚀 ~ file: index.tsx ~ line 163 ~ handleToggle ~ nodeIds", nodeIds);
+    if (nodeIds && nodeIds.length > 0) {
+      dispatch(expandLeagueRequest(nodeIds[0]));
+    }
   };
   return (
     <TreeView

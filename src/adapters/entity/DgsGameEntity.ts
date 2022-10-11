@@ -1,0 +1,49 @@
+export interface IDgsGameEntity {
+  idGame: number;
+  idEvent: number;
+  visitorTeam: string;
+  homeTeam: string;
+  idSport: string;
+  idGameType: number;
+  gameDateTime: Date;
+  normalGame: number;
+  visitorNumber: number;
+  homeNumber: number;
+  gameStat: string;
+  graded: boolean;
+  hookUps: boolean;
+  online: boolean;
+  onLocal: boolean;
+  numberGame: boolean;
+  eventDate: Date;
+  dateChanged: boolean;
+  timeChanged: boolean;
+  period: number;
+  familyGame: number;
+  hasChildren: boolean;
+  visitorScore: number;
+  homeScore: number;
+  visitorPitcher: string;
+  homePitcher: string;
+  gradedDate: Date;
+  numTeams: number;
+  pitcherChanged: number;
+  lastModification: Date;
+  lastModificationUser: number;
+  idTeamVisitor: number;
+  idTeamHome: number;
+  idBannerType: number;
+  description: string;
+  acceptAutoChanges: boolean;
+  derivOptions: number;
+  gameProviderIdGame: number;
+  idGameProvider: number;
+  noRelated: boolean;
+  totalMaxLines: number;
+  tournamentplacestoPaid: number;
+  tournamentType: number;
+  winnerTeam: number;
+}
+export interface IDgsGameEntityWithLeague extends IDgsGameEntity {
+  dgsLeagueId: number;
+}
