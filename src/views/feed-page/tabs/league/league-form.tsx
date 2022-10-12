@@ -22,6 +22,8 @@ import { get, omit } from "lodash";
 import LeagueFormLegend from "./misc/league-form-legend";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { diRepositorires } from "@adapters/di";
+import LeagueIgnore from "./misc/league-ignore";
+import LeagueLockOdds from "./misc/league-lock-odds";
 // Loading
 
 interface IFromValue extends IFilterLineTypeEntity {
@@ -177,8 +179,23 @@ function LeagueformContent() {
   );
 }
 
-export function Leagueform() {
-  const leagueIdSelected: number | null = useAppSelector(getSelectedLeagueId);
+// export function Leagueform() {
+//   const leagueIdSelected: number | null = useAppSelector(getSelectedLeagueId);
 
-  return leagueIdSelected !== null ? <LeagueformContent /> : <b>Please Select league!</b>;
+//   return leagueIdSelected !== null ? <LeagueformContent /> : <b>Please Select league!</b>;
+// }
+
+export function Leagueform() {
+  return (
+    <fieldset>
+      <legend>Line Type:-League: 2123123</legend>
+      <Grid spacing={gridSpacing} container>
+        <Grid item md={10}>
+          <LeagueIgnore />
+          <LeagueLockOdds />
+        </Grid>
+        <Grid item md={2}></Grid>
+      </Grid>
+    </fieldset>
+  );
 }

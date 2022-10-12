@@ -15,7 +15,7 @@ import {
 } from "@store/utils/feed-utils";
 
 export const initialFeedState: IFeedModel = {
-  selectedGameId: null,
+  selectedGame: null,
   isLoading: false,
   currentTabType: CurrentTabType.LEAGUE,
   selectedDgsLeague: {
@@ -63,11 +63,10 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
   });
 
   builder.addCase(selectEventFilterSuccess, (state, action) => {
-    const newState = { ...state };
-    newState.selectedGameId = action.payload.id;
-    newState.currentTabType = CurrentTabType.GAME;
-    newState.isLoading = false;
-    return newState;
+    state.currentTabType = CurrentTabType.GAME;
+    state.selectedGame = action.payload;
+    state.isLoading = false;
+    return state;
   });
 
   builder.addCase(fetchLeagueInfoTreeSuccess, (state, action) => {
@@ -86,6 +85,10 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
   );
   builder.addMatcher(
     (action) => action.type.endsWith("_FAILURE"),
+    (state) => ({ ...state, isLoading: false }),
+  );
+  builder.addMatcher(
+    (action) => action.type.endsWith("_NOTCHANGE"),
     (state) => ({ ...state, isLoading: false }),
   );
 });

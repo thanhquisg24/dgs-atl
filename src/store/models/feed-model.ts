@@ -52,7 +52,7 @@ interface IFeedUiAction {
     mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
     defaultSelectedLineType: string | null;
   };
-  selectedGameId: number | null;
+  selectedGame: IDgsGameEntityWithLeague | null;
   isLoading: boolean;
   currentTabType: CurrentTabType;
 }

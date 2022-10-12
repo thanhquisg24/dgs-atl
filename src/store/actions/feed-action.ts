@@ -31,8 +31,8 @@ export const selectLeagueIdNotChanged = createAction<undefined>("feed/SELECT_LEA
 export const selectLeagueIdFailure = createAction<string>("feed/SELECT_LEAGUE_ID_FAILURE");
 export const selectLeagueIdRefresh = createAction<number>("feed/SELECT_LEAGUE_ID_REFRESH");
 
-export const selectEventFilterdRequest = createAction<number>("feed/SELECT_GAME_ID_REQUEST");
-export const selectEventFilterSuccess = createAction<{ id: number }>("feed/SELECT_GAME_ID_SUCCESS");
+export const selectEventFilterdRequest = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_REQUEST");
+export const selectEventFilterSuccess = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_SUCCESS");
 export const selectEventFilterFailure = createAction<string>("feed/SELECT_GAME_ID_FAILURE");
 
 export const fetchLeagueInfoTreeRequest = createAction<undefined>("feed/FETCH_LEAGUE_INFO_REQUEST");

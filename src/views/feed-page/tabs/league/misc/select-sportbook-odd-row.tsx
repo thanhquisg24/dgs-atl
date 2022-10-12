@@ -18,7 +18,7 @@ export default function SelectSportbookOdd(props: {
       }}
       render={({ field }) => (
         <Select {...field} size="small" displayEmpty inputProps={{ "aria-label": "Without label" }}>
-          <MenuItem value={0}>Select...</MenuItem>
+          <MenuItem value={0}>Select book...</MenuItem>
           {listSportBook.map((item) => (
             <MenuItem key={item.idSportsbook} value={item.idSportsbook}>
               {item.name}

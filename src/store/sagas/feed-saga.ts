@@ -7,6 +7,9 @@ import {
   fetchLeagueInfoTreeFailure,
   fetchLeagueInfoTreeRequest,
   fetchLeagueInfoTreeSuccess,
+  selectEventFilterdRequest,
+  selectEventFilterFailure,
+  selectEventFilterSuccess,
   selectLeagueIdFailure,
   selectLeagueIdNotChanged,
   selectLeagueIdRefresh,
@@ -102,7 +105,6 @@ function* fetchExpandLeagueSaga(action: ReturnType<typeof expandLeagueRequest>):
     const DgsGames = yield diRepositorires.dgsGame.fetAvaiableDgsGames(action.payload);
     yield put(expandLeagueSuccess({ dgsLeagueId: Number(action.payload), list: DgsGames }));
   } catch (error) {
-    console.log("🚀 ~ file: feed-saga.ts ~ line 105 ~ function*fetchExpandLeagueSaga ~ error", error);
     yield put(expandLeagueFailure("Expand League fail!"));
     notifyMessageError("Expand League fail!");
   }
@@ -111,9 +113,24 @@ function* fetchExpandLeagueSagaWatcher() {
   yield takeLatest(expandLeagueRequest.type, fetchExpandLeagueSaga);
 }
 
+function* fetchFilterEventSaga(action: ReturnType<typeof selectEventFilterdRequest>): Generator | any {
+  try {
+    // const DgsGames = yield diRepositorires.dgsGame.fetAvaiableDgsGames(action.payload);
+    yield put(selectEventFilterSuccess(action.payload));
+  } catch (error) {
+    console.log("🚀 ~ file: feed-saga.ts ~ line 105 ~ function*fetchExpandLeagueSaga ~ error", error);
+    yield put(selectEventFilterFailure("Fetch Event FIlter fail!"));
+    notifyMessageError("Fetch Event FIlter fail!");
+  }
+}
+function* fetchFilterEventSagaWatcher() {
+  yield takeLatest(selectEventFilterdRequest.type, fetchFilterEventSaga);
+}
+
 export const feedWatchers = [
   fetchDgsLeaguesWatcher(),
   fetchSelectedDgsLeaguesSagaWatcher(),
   fetchSelectedDgsLeaguesRefreshSagaWatcher(),
   fetchExpandLeagueSagaWatcher(),
+  fetchFilterEventSagaWatcher(),
 ];

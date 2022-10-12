@@ -1,7 +1,7 @@
 import {
+  IDgsGameEntityWithLeague,
   IDgsLineTypeEntity,
   IDonbestSportBookEntity,
-  IFilterCombine,
   IFilterLineTypeEntity,
   IFilterPeriodEntity,
 } from "@adapters/entity";
@@ -13,6 +13,7 @@ import {
 } from "@store/models/feed-model";
 import { RootStateType } from "../types";
 
+export const getFeedLoading = (state: RootStateType): boolean => state.feed.isLoading;
 export const getSelectedLeagueId = (state: RootStateType): number | null => state.feed.selectedDgsLeague.dgsLeagueId;
 export const getSelectedLeague = (
   state: RootStateType,
@@ -22,7 +23,7 @@ export const getSelectedLeague = (
   mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
   defaultSelectedLineType: string | null;
 } => state.feed.selectedDgsLeague;
-export const getSelectedGameId = (state: RootStateType): number | null => state.feed.selectedGameId;
+export const getSelectedGame = (state: RootStateType): IDgsGameEntityWithLeague | null => state.feed.selectedGame;
 export const getCurrentTabselector = (state: RootStateType): CurrentTabType => state.feed.currentTabType;
 export const getLeagueLeftInfoTree = (
   state: RootStateType,

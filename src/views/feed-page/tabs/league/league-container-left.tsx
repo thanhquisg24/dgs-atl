@@ -1,11 +1,8 @@
+import { IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
 import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { ILeagueInfoModel } from "@store/models/feed-model";
-import { LeagueOddTitle } from "./league-odd-title";
-import { LeagueOddsRow } from "./league-odds-row";
-import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
-import { IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import { getSelectedLeague } from "@store/selector";
+import { LeagueOddsRow } from "./league-odds-row";
 
 interface IProps {
   leagueInfoList: ILeagueInfoModel[];
@@ -28,7 +25,7 @@ function SportBookSelect(props: IProps) {
           }}
           render={({ field }) => (
             <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
-              <MenuItem value={-1}>Select...</MenuItem>
+              <MenuItem value={-1}>Select league...</MenuItem>
               {leagueInfoList.map((item) => (
                 <MenuItem key={item.dgsLeague.idLeague} value={item.dgsLeague.idLeague}>
                   {item.dgsLeague.description}
@@ -47,7 +44,7 @@ function SportBookSelect(props: IProps) {
           }}
           render={({ field }) => (
             <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
-              <MenuItem value={0}>Select...</MenuItem>
+              <MenuItem value={0}>Select linetype...</MenuItem>
               {listLineType.map((item) => (
                 <MenuItem key={item.idLineType} value={item.idLineType}>
                   {item.description}

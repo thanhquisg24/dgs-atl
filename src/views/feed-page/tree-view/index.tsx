@@ -9,7 +9,12 @@ import Collapse from "@mui/material/Collapse";
 import { animated, useSpring } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
-import { expandLeagueRequest, fetchLeagueInfoTreeRequest, selectLeagueIdRequest } from "@store/actions";
+import {
+  expandLeagueRequest,
+  fetchLeagueInfoTreeRequest,
+  selectLeagueIdRequest,
+  selectEventFilterdRequest,
+} from "@store/actions";
 import { getLeagueLeftInfoList } from "@store/selector";
 import { ILeagueInfoModel } from "@store/models/feed-model";
 import { IDgsGameEntityWithLeague } from "@adapters/entity";
@@ -145,8 +150,8 @@ function TreeItemNode(props: IPropsTreeItem) {
     event.stopPropagation();
     if (type === "LEAGUE") {
       dispatch(selectLeagueIdRequest(dgsLeagueId));
-    } else if (type === "GAME") {
-      // dispatch(selectGameIdSuccess(dgsGame));
+    } else if (type === "GAME" && dgsGame !== null) {
+      dispatch(selectEventFilterdRequest(dgsGame));
     }
   };
 
@@ -160,9 +165,6 @@ function TreeItemNode(props: IPropsTreeItem) {
 // interface IState
 
 export default function CustomizedTreeView() {
-  // const [state,setState] = React.useState({
-
-  // })
   const dispatch = useAppDispatch();
   React.useEffect(() => {
     dispatch(fetchLeagueInfoTreeRequest());
