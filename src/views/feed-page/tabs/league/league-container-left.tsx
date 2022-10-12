@@ -66,7 +66,7 @@ function SportBookSelect(props: IProps) {
           }}
           render={({ field }) => (
             <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
-              <MenuItem value={0}>Select...</MenuItem>
+              <MenuItem value={0}>Select book ...</MenuItem>
               {listSportBook.map((item) => (
                 <MenuItem key={item.idSportsbook} value={item.idSportsbook}>
                   {item.name}
@@ -129,7 +129,7 @@ export default function LeagueContainerLeft(props: IProps) {
   return (
     <Box sx={{ width: "100%" }}>
       <SportBookSelect leagueInfoList={leagueInfoList} listLineType={listLineType} listSportBook={listSportBook} />
-      <LeagueOddTitle />
+      {/* <LeagueOddTitle /> */}
       {fields.map((item, index) => (
         <LeagueOddsRow
           key={item.id}

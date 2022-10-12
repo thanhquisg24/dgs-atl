@@ -1,7 +1,6 @@
 import { FilterTypeEnum } from "./FilterTypeEnum";
 
 export interface IFilterLineTypeEntity {
-  id: number | null;
   type: FilterTypeEnum;
   lineTypeId: number;
   dgsLeagueId: number;

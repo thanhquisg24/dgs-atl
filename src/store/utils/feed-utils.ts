@@ -1,16 +1,5 @@
-import {
-  IDgsLeagueEntity,
-  IDonbestLeagueEntity,
-  IFilterCombine,
-  IFilterLineTypeEntity,
-  IFilterPeriodEntity,
-} from "@adapters/entity";
-import {
-  ILeagueInfoModel,
-  IMapFilterCombine,
-  IMapFilterLineTypeConfig,
-  IMapFilterPeriodConfig,
-} from "@store/models/feed-model";
+import { IDgsLeagueEntity, IDonbestLeagueEntity, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
+import { ILeagueInfoModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
 import { get } from "lodash";
 
 export function buildDgsLeaguesTree(
@@ -28,8 +17,8 @@ export function buildDgsLeaguesTree(
   return reduceObj;
 }
 
-export function buildKeyLineTypeAndSportbook(lineTypeId: number, sportbookId: number): string {
-  return `${lineTypeId}_${sportbookId}`;
+export function buildKeyLineType(lineTypeId: number): string {
+  return `${lineTypeId}`;
 }
 
 export function buildMapFilterLineType(data: IFilterLineTypeEntity[] | undefined): IMapFilterLineTypeConfig | null {
@@ -37,8 +26,7 @@ export function buildMapFilterLineType(data: IFilterLineTypeEntity[] | undefined
     const reduceObj: IMapFilterLineTypeConfig = data.reduce(
       (obj, cur) => ({
         ...obj,
-        [buildKeyLineTypeAndSportbook(cur.lineTypeId, cur.dbSportsBookId)]: cur,
-        [cur.lineTypeId]: cur,
+        [buildKeyLineType(cur.lineTypeId)]: cur,
       }),
       {},
     ); //end reduce

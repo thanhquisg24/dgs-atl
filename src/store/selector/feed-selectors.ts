@@ -20,7 +20,7 @@ export const getSelectedLeague = (
   dgsLeagueId: number | null;
   mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null;
   mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
-  defaultSelectedLineType_BookId: string | null;
+  defaultSelectedLineType: string | null;
 } => state.feed.selectedDgsLeague;
 export const getSelectedGameId = (state: RootStateType): number | null => state.feed.selectedGameId;
 export const getCurrentTabselector = (state: RootStateType): CurrentTabType => state.feed.currentTabType;

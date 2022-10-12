@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { expandLeagueRequest, fetchLeagueInfoTreeRequest, selectLeagueIdRequest } from "@store/actions";
 import { getLeagueLeftInfoList } from "@store/selector";
 import { ILeagueInfoModel } from "@store/models/feed-model";
+import { IDgsGameEntityWithLeague } from "@adapters/entity";
 
 function MinusSquare(props: SvgIconProps) {
   return (
@@ -74,50 +75,50 @@ const StyledTreeItem = styled((props: TreeItemProps) => (
   },
 }));
 
-interface IGameItem {
-  id: number;
-  name: string;
-  status: boolean;
-}
-interface INodeLeague {
-  id: number;
-  name: string;
-  games: IGameItem[];
-  status: boolean;
-  countGameFail: number;
-}
-const dataLeague: INodeLeague[] = [
-  {
-    id: 1,
-    name: "BOXING",
-    status: true,
-    countGameFail: 0,
-    games: [
-      {
-        id: 22,
-        name: "08/06:29121:2431642 Hassim Ralman Jr.",
-        status: true,
-      },
-      {
-        id: 23,
-        name: "08/06:29121:2431642 Hassim Ralman Jr.",
-        status: true,
-      },
-      {
-        id: 24,
-        name: "08/06:29121:2431642 Hassim Ralman Jr.",
-        status: true,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "BOXING 2",
-    status: false,
-    countGameFail: 2,
-    games: [],
-  },
-];
+// interface IGameItem {
+//   id: number;
+//   name: string;
+//   status: boolean;
+// }
+// interface INodeLeague {
+//   id: number;
+//   name: string;
+//   games: IGameItem[];
+//   status: boolean;
+//   countGameFail: number;
+// }
+// const dataLeague: INodeLeague[] = [
+//   {
+//     id: 1,
+//     name: "BOXING",
+//     status: true,
+//     countGameFail: 0,
+//     games: [
+//       {
+//         id: 22,
+//         name: "08/06:29121:2431642 Hassim Ralman Jr.",
+//         status: true,
+//       },
+//       {
+//         id: 23,
+//         name: "08/06:29121:2431642 Hassim Ralman Jr.",
+//         status: true,
+//       },
+//       {
+//         id: 24,
+//         name: "08/06:29121:2431642 Hassim Ralman Jr.",
+//         status: true,
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "BOXING 2",
+//     status: false,
+//     countGameFail: 2,
+//     games: [],
+//   },
+// ];
 interface IPropsTreeItem {
   nodeId: string;
   id: number;
@@ -125,11 +126,13 @@ interface IPropsTreeItem {
   status: boolean;
   countGameFail: number;
   type: "GAME" | "LEAGUE";
+  dgsLeagueId: number;
+  dgsGame: IDgsGameEntityWithLeague | null;
   children?: any;
 }
 
 function TreeItemNode(props: IPropsTreeItem) {
-  const { nodeId, label, status, countGameFail, children, id, type } = props;
+  const { nodeId, label, status, countGameFail, children, type, id, dgsLeagueId, dgsGame } = props;
   const dispatch = useAppDispatch();
   const o = React.useMemo(() => {
     return {
@@ -141,9 +144,9 @@ function TreeItemNode(props: IPropsTreeItem) {
   const stopClick = (event: any) => {
     event.stopPropagation();
     if (type === "LEAGUE") {
-      dispatch(selectLeagueIdRequest(id));
+      dispatch(selectLeagueIdRequest(dgsLeagueId));
     } else if (type === "GAME") {
-      // dispatch(selectGameIdSuccess({ id }));
+      // dispatch(selectGameIdSuccess(dgsGame));
     }
   };
 
@@ -190,19 +193,23 @@ export default function CustomizedTreeView() {
             countGameFail={0}
             type="LEAGUE"
             id={item.dgsLeague.idLeague}
+            dgsLeagueId={item.dgsLeague.idLeague}
+            dgsGame={null}
           >
             <>
-              {/* {item.games.map((g) => (
+              {item.dgsGames.map((g: IDgsGameEntityWithLeague) => (
                 <TreeItemNode
-                  key={g.id}
-                  nodeId={g.id.toString()}
-                  label={g.name}
-                  status={g.status}
+                  key={g.idGame}
+                  nodeId={g.idGame.toString()}
+                  label={g.homeTeam}
+                  status
                   countGameFail={0}
                   type="GAME"
-                  id={item.id}
+                  id={g.idGame}
+                  dgsLeagueId={g.dgsLeagueId}
+                  dgsGame={g}
                 />
-              ))} */}
+              ))}
             </>
           </TreeItemNode>
         ))}

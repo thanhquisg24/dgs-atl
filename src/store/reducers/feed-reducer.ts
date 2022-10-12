@@ -6,20 +6,13 @@ import {
   selectEventFilterSuccess,
   selectLeagueIdSuccess,
 } from "@store/actions/feed-action";
-import {
-  CurrentTabType,
-  IFeedModel,
-  ILeagueInfoModel,
-  IMapFilterLineTypeConfig,
-  IMapFilterPeriodConfig,
-} from "@store/models/feed-model";
+import { CurrentTabType, IFeedModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
 import {
   buildDgsLeaguesTree,
-  buildKeyLineTypeAndSportbook,
+  buildKeyLineType,
   buildMapFilterLineType,
   buildMapFilterPeriod,
 } from "@store/utils/feed-utils";
-import { get } from "lodash";
 
 export const initialFeedState: IFeedModel = {
   selectedGameId: null,
@@ -29,7 +22,7 @@ export const initialFeedState: IFeedModel = {
     dgsLeagueId: null,
     mapFilterLineTypeConfig: null,
     mapFilterPeriodConfig: null,
-    defaultSelectedLineType_BookId: null,
+    defaultSelectedLineType: null,
   },
   leagueLeftInfo: {},
   defaultSetting: {
@@ -53,9 +46,7 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
       dgsLeagueId: action.payload.id,
       mapFilterLineTypeConfig,
       mapFilterPeriodConfig,
-      defaultSelectedLineType_BookId: listLineTypeConfig
-        ? buildKeyLineTypeAndSportbook(listLineTypeConfig[0].lineTypeId, listLineTypeConfig[0].dbSportsBookId)
-        : null,
+      defaultSelectedLineType: listLineTypeConfig ? buildKeyLineType(listLineTypeConfig[0].lineTypeId) : null,
     };
     newState.isLoading = false;
     newState.currentTabType = CurrentTabType.LEAGUE;

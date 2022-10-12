@@ -13,11 +13,7 @@ export interface IFilterPeriodEntity {
   total: boolean;
   team_total: boolean;
   way3: boolean;
-  ps_bookId: number;
-  ml_bookId: number;
-  total_bookId: number;
-  team_total_bookId: number;
-  way3_bookId: number;
+  dbSportBookId: number;
   ps_point: number;
   ps_juice: number;
   ml_point: number;

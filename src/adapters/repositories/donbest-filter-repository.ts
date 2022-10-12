@@ -1,6 +1,12 @@
 // eslint-disable-next-line import/named
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
-import { IDonbestLeagueEntity, IDonbestSportBookEntity, IFilterCombine, FilterTypeEnum } from "@adapters/entity";
+import {
+  IDonbestLeagueEntity,
+  IDonbestSportBookEntity,
+  IFilterCombine,
+  FilterTypeEnum,
+  convertFilterCombineResult,
+} from "@adapters/entity";
 import { AxiosResponse } from "axios";
 import { BaseRepository } from "./base-repository";
 
@@ -33,7 +39,7 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            const map: IFilterCombine = data;
+            const map: IFilterCombine = convertFilterCombineResult(data);
             resolve(map);
           } else {
             reject(new Error(`Error HTTP status code ${res.status}`));
@@ -50,7 +56,7 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            const map: IFilterCombine = data;
+            const map: IFilterCombine = convertFilterCombineResult(data);
             resolve(map);
           } else {
             reject(new Error(`Error HTTP status code ${res.status}`));

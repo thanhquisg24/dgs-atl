@@ -50,7 +50,7 @@ interface IFeedUiAction {
     dgsLeagueId: number | null;
     mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null;
     mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
-    defaultSelectedLineType_BookId: string | null;
+    defaultSelectedLineType: string | null;
   };
   selectedGameId: number | null;
   isLoading: boolean;

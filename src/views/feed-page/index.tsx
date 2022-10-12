@@ -10,10 +10,10 @@ import LeagueGameTabs from "./tabs";
 
 const FeedPage = () => (
   <Grid container spacing={gridSpacing}>
-    <Grid item xs={4}>
+    <Grid item xs={3}>
       <DgsScheduleCard />
     </Grid>
-    <Grid item xs={8}>
+    <Grid item xs={9}>
       <RightSideCard>
         <LeagueGameTabs />
       </RightSideCard>

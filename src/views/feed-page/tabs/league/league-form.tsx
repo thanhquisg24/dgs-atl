@@ -29,7 +29,6 @@ interface IFromValue extends IFilterLineTypeEntity {
 }
 const defaultValues: IFromValue = {
   dgsLeagueId: -1,
-  id: null,
   type: FilterTypeEnum.LEAGUE,
   lineTypeId: 0,
   dgsGameId: 0,
@@ -73,8 +72,8 @@ function LeagueformContent() {
 
   React.useEffect(() => {
     const dgsLeagueId = selectedLeagueData.dgsLeagueId ? selectedLeagueData.dgsLeagueId : -1;
-    const itemTmp = selectedLeagueData.defaultSelectedLineType_BookId
-      ? get(selectedLeagueData.mapFilterLineTypeConfig, selectedLeagueData.defaultSelectedLineType_BookId)
+    const itemTmp = selectedLeagueData.defaultSelectedLineType
+      ? get(selectedLeagueData.mapFilterLineTypeConfig, selectedLeagueData.defaultSelectedLineType)
       : null;
     let item: IFilterLineTypeEntity | null = itemTmp || null;
 
@@ -90,7 +89,7 @@ function LeagueformContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     selectedLeagueData.dgsLeagueId,
-    selectedLeagueData.defaultSelectedLineType_BookId,
+    selectedLeagueData.defaultSelectedLineType,
     selectedLeagueData.mapFilterLineTypeConfig,
   ]);
   React.useEffect(() => {
@@ -105,7 +104,7 @@ function LeagueformContent() {
       hookForm.setValue("periodConfig", arrImmutableVersion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchLineTypeId, selectedLeagueData.mapFilterLineTypeConfig, selectedLeagueData.mapFilterPeriodConfig]);
+  }, [watchLineTypeId]);
 
   React.useEffect(() => {
     const keyLinePeriod = `${watchLineTypeId}_${watchBookId}`;
@@ -118,14 +117,12 @@ function LeagueformContent() {
       const periodsVal = hookForm.getValues("periodConfig");
       const arrImmutableVersion = periodsVal.map((e) => ({
         ...e,
-        ps_bookId: watchBookId,
-        ml_bookId: watchBookId,
-        total_bookId: watchBookId,
+        dbSportBookId: watchBookId,
       }));
       hookForm.setValue("periodConfig", arrImmutableVersion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watchBookId, selectedLeagueData.mapFilterLineTypeConfig, selectedLeagueData.mapFilterPeriodConfig]);
+  }, [watchBookId]);
 
   const onSubmit = (data: IFromValue) => {
     const { dgsLeagueId } = data;
@@ -163,14 +160,14 @@ function LeagueformContent() {
       <FormProvider {...hookForm}>
         <form onSubmit={hookForm.handleSubmit(onSubmit)}>
           <Grid spacing={gridSpacing} container>
-            <Grid item md={8}>
+            <Grid item md={10}>
               <LeagueContainerLeft
                 leagueInfoList={Object.values(leagueInfoTree)}
                 listLineType={listLineType}
                 listSportBook={listSportBook}
               />
             </Grid>
-            <Grid item md={4}>
+            <Grid item md={2}>
               <LeagueContainerRight />
             </Grid>
           </Grid>
