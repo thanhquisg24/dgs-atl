@@ -121,9 +121,9 @@ function* fetchExpandLeagueSagaWatcher() {
 function* fetchFilterEventSaga(action: ReturnType<typeof selectEventFilterdRequest>): Generator | any {
   try {
     const { dgsLeagueId, idGame } = action.payload;
-    const eventPeriodFilter = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
+    const eventPeriodFilters = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
     const data = {
-      eventFilterPeriodConfig: eventPeriodFilter,
+      eventFilterPeriodConfig: eventPeriodFilters,
       gameWithLeague: action.payload,
     };
     yield put(selectEventFilterSuccess(data));

@@ -17,22 +17,18 @@ export interface IDonbestFilterRepository {
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
   postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<boolean>;
   postSaveEventFilter(payload: IFilterPeriodEntity): Promise<boolean>;
-  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IFilterPeriodEntity | null>;
+  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IFilterPeriodEntity[]>;
 }
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
-  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IFilterPeriodEntity | null> {
+  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IFilterPeriodEntity[]> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
         .fetEventFilter(dgsLeagueId, dgsGameId)
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            if (data.length > 0) {
-              const item: IFilterPeriodEntity = data[0];
-              resolve(item);
-            } else {
-              resolve(null);
-            }
+            const map: IFilterPeriodEntity[] = data;
+            resolve(map);
           } else {
             reject(new Error(`Error HTTP status code ${res.status}`));
           }

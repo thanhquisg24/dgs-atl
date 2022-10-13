@@ -26,7 +26,7 @@ export const getSelectedLeague = (
 export const getSelectedGame = (
   state: RootStateType,
 ): {
-  eventFilterPeriodConfig: IFilterPeriodEntity | null;
+  eventFilterPeriodConfig: IFilterPeriodEntity[];
   gameWithLeague: IDgsGameEntityWithLeague | null;
 } => state.feed.selectedGame;
 export const getCurrentTabselector = (state: RootStateType): CurrentTabType => state.feed.currentTabType;

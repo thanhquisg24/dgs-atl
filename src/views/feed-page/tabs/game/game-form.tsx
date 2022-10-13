@@ -7,6 +7,7 @@ import { selectEventFilterdRequest } from "@store/actions";
 import { gridSpacing } from "@store/constant";
 import { getFeedLoading, getListLineType, getListSportBook, getSelectedGame } from "@store/selector";
 import { RootStateType } from "@store/types";
+import { find } from "lodash";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { shallowEqual } from "react-redux";
@@ -14,7 +15,7 @@ import { GameOddsRow } from "./game-odds-row";
 import GameSportbookSelect from "./game-sportbook-select";
 
 interface IProps {
-  eventFilterPeriodConfig: IFilterPeriodEntity | null;
+  eventFilterPeriodConfig: IFilterPeriodEntity[];
   gameWithLeague: IDgsGameEntityWithLeague;
 }
 
@@ -55,15 +56,28 @@ function GameFromBody(props: IProps) {
     shallowEqual,
   );
   const hookForm = useForm({ defaultValues });
+  const watchLineTypeId = hookForm.watch("lineTypeId");
 
   React.useEffect(() => {
-    if (eventFilterPeriodConfig) {
-      hookForm.reset({ ...eventFilterPeriodConfig });
+    if (eventFilterPeriodConfig.length > 0) {
+      hookForm.reset({ ...eventFilterPeriodConfig[0] });
     } else {
       hookForm.reset({ ...defaultValues });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventFilterPeriodConfig]);
+
+  React.useEffect(() => {
+    if (watchLineTypeId !== null) {
+      const result = find(eventFilterPeriodConfig, { lineTypeId: watchLineTypeId });
+      if (result) {
+        hookForm.reset({ ...result });
+      } else {
+        hookForm.reset({ ...defaultValues, lineTypeId: watchLineTypeId });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchLineTypeId]);
 
   const onSubmit = (data: IGameFromValue) => {
     console.log("🚀 ~ file: game-form.tsx ~ line 53 ~ onSubmit ~ data", data);
