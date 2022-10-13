@@ -42,11 +42,17 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     const mapFilterPeriodConfig: IMapFilterPeriodConfig | null = buildMapFilterPeriod(
       action.payload.filterCombine?.listFilterPeriod,
     );
+    const defaultSelectedLineTypeInlist = listLineTypeConfig
+      ? buildKeyLineType(listLineTypeConfig[0].lineTypeId)
+      : null;
     newState.selectedDgsLeague = {
       dgsLeagueId: action.payload.id,
       mapFilterLineTypeConfig,
       mapFilterPeriodConfig,
-      defaultSelectedLineType: listLineTypeConfig ? buildKeyLineType(listLineTypeConfig[0].lineTypeId) : null,
+      // eslint-disable-next-line no-nested-ternary
+      defaultSelectedLineType: action.payload.defaultSelectedLineType
+        ? action.payload.defaultSelectedLineType
+        : defaultSelectedLineTypeInlist,
     };
     newState.isLoading = false;
     newState.currentTabType = CurrentTabType.LEAGUE;

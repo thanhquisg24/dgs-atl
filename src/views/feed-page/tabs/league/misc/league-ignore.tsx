@@ -1,21 +1,53 @@
 import { Checkbox, FormControlLabel, Grid, TextField } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 import React from "react";
+import { Controller, useFormContext } from "react-hook-form";
 
-function IgnoreInputPeiceBettween() {
+interface IInputPeiceProp {
+  higherName: string;
+  lowerName: string;
+  checkboxName: string;
+  lowerTitle: string;
+  higherTitle: string;
+}
+
+function IgnoreInputPeiceBettween(props: IInputPeiceProp) {
+  const { higherName, lowerName, checkboxName, lowerTitle, higherTitle } = props;
+  const { control } = useFormContext();
   return (
     <Grid container>
       <Grid item md={12}></Grid>
       <Grid item md={12} sx={{ mt: 1.5 }}>
         <Grid container>
           <Grid item md={5} sx={{ mt: 2, pr: 1 }}>
-            <TextField label="Between" defaultValue="Hello World" size="small" fullWidth />
+            <Controller
+              name={lowerName}
+              control={control}
+              render={({ field }) => <TextField {...field} size="small" label={lowerTitle} fullWidth />}
+            />
           </Grid>
           <Grid item md={5} sx={{ mt: 2, pl: 1 }}>
-            <TextField label="and" defaultValue="Hello World" size="small" fullWidth />
+            <Controller
+              name={higherName}
+              control={control}
+              render={({ field }) => <TextField {...field} size="small" label={higherTitle} fullWidth />}
+            />
           </Grid>
           <Grid item md={2}>
-            <FormControlLabel sx={{ ml: 0 }} value="top" control={<Checkbox />} label="TD" labelPlacement="top" />
+            <Controller
+              name={checkboxName}
+              control={control}
+              render={({ field }) => (
+                <FormControlLabel
+                  sx={{ ml: 0 }}
+                  control={
+                    <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+                  }
+                  label="TD"
+                  labelPlacement="top"
+                />
+              )}
+            />
           </Grid>
         </Grid>
       </Grid>
@@ -23,15 +55,38 @@ function IgnoreInputPeiceBettween() {
   );
 }
 
-function IgnoreInputPeice() {
+function IgnoreInputPeice(props: IInputPeiceProp) {
+  const { higherName, lowerName, checkboxName, lowerTitle, higherTitle } = props;
+  const { control } = useFormContext();
   return (
     <Grid container>
       <Grid item md={10}>
-        <TextField label="Required" defaultValue="Hello World" size="small" fullWidth />
-        <TextField label="Required" defaultValue="Hello World" size="small" fullWidth sx={{ mt: 1.5 }} />
+        <Controller
+          name={higherName}
+          control={control}
+          render={({ field }) => <TextField {...field} size="small" label={higherTitle} fullWidth />}
+        />
+
+        <Controller
+          name={lowerName}
+          control={control}
+          render={({ field }) => <TextField {...field} label={lowerTitle} size="small" fullWidth sx={{ mt: 1.5 }} />}
+        />
       </Grid>
       <Grid item md={2}>
-        <FormControlLabel sx={{ ml: 0 }} value="top" control={<Checkbox />} label="TD" labelPlacement="top" />
+        <Controller
+          name={checkboxName}
+          control={control}
+          render={({ field }) => (
+            <FormControlLabel
+              control={
+                <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+              }
+              label="TD"
+              labelPlacement="top"
+            />
+          )}
+        />
       </Grid>
     </Grid>
   );
@@ -46,25 +101,61 @@ export default function LeagueIgnore() {
 
           <Grid container spacing={gridSpacing}>
             <Grid item md={4}>
-              <IgnoreInputPeice />
+              <IgnoreInputPeice
+                higherName="ignorePSOver"
+                lowerName="ignorePSUnder"
+                checkboxName="ignorePSTD"
+                lowerTitle="PS if Lower"
+                higherTitle="PS if Higher"
+              />
             </Grid>
             <Grid item md={4}>
-              <IgnoreInputPeice />
+              <IgnoreInputPeice
+                higherName="ignoreMLOver"
+                lowerName="ignoreMLUnder"
+                checkboxName="ignoreMLTD"
+                lowerTitle="ML if Lower"
+                higherTitle="ML if Higher"
+              />
             </Grid>
             <Grid item md={4}>
-              <IgnoreInputPeice />
+              <IgnoreInputPeice
+                higherName="ignoreTotalOver"
+                lowerName="ignoreTotalUnder"
+                checkboxName="ignoreTotalTD"
+                lowerTitle="TL if Lower"
+                higherTitle="TL if Higher"
+              />
             </Grid>
           </Grid>
 
           <Grid container spacing={gridSpacing} sx={{ mt: 2.5 }}>
             <Grid item md={4}>
-              <IgnoreInputPeice />
+              <IgnoreInputPeice
+                higherName="JC if Higher"
+                lowerName="JC if Lower"
+                checkboxName="ignorePSJCTD"
+                lowerTitle="JC if Lower"
+                higherTitle="JC if Higher"
+              />
             </Grid>
             <Grid item md={4}>
-              <IgnoreInputPeiceBettween />
+              <IgnoreInputPeiceBettween
+                higherName="ignoreMLRangeUnder"
+                lowerName="ignoreMLRangeOver"
+                checkboxName="ignoreMLRangeTD"
+                lowerTitle="Between"
+                higherTitle="and"
+              />
             </Grid>
             <Grid item md={4}>
-              <IgnoreInputPeice />
+              <IgnoreInputPeice
+                higherName="ignoreTotalJuiceOver"
+                lowerName="ignoreTotalJuiceUnder"
+                checkboxName="ignoreTotalJCTD"
+                lowerTitle="JC if Lower"
+                higherTitle="JC if Higher"
+              />
             </Grid>
           </Grid>
         </fieldset>

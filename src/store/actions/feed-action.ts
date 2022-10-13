@@ -11,6 +11,7 @@ import { createAction } from "@reduxjs/toolkit";
 
 export interface ILeagueFetchDataPayload {
   id: number;
+  defaultSelectedLineType: string | null;
   filterCombine: IFilterCombine | null;
 }
 export interface IInitConfigFeed {
@@ -29,7 +30,9 @@ export const selectLeagueIdRequest = createAction<number>("feed/SELECT_LEAGUE_ID
 export const selectLeagueIdSuccess = createAction<ILeagueFetchDataPayload>("feed/SELECT_LEAGUE_ID_SUCCESS");
 export const selectLeagueIdNotChanged = createAction<undefined>("feed/SELECT_LEAGUE_ID_NOT_SELECT_LEAGUE_ID_NOTCHANGE");
 export const selectLeagueIdFailure = createAction<string>("feed/SELECT_LEAGUE_ID_FAILURE");
-export const selectLeagueIdRefresh = createAction<number>("feed/SELECT_LEAGUE_ID_REFRESH");
+export const selectLeagueIdRefresh = createAction<{ dgsLeagueId: number; defaultSelectedLineType: string | null }>(
+  "feed/SELECT_LEAGUE_ID_REFRESH",
+);
 
 export const selectEventFilterdRequest = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_REQUEST");
 export const selectEventFilterSuccess = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_SUCCESS");

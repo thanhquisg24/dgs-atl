@@ -62,6 +62,7 @@ function* fetchSelectedDgsLeaguesSaga(action: ReturnType<typeof selectLeagueIdRe
         selectLeagueIdSuccess({
           id: action.payload,
           filterCombine: lueagueCombineConfig,
+          defaultSelectedLineType: null,
         }),
       );
     } else {
@@ -82,13 +83,14 @@ function* fetchSelectedDgsLeaguesRefreshSaga(action: ReturnType<typeof selectLea
   try {
     const lueagueCombineConfig = yield diRepositorires.donbestFilter.fetFilterCombine(
       FilterTypeEnum.LEAGUE,
-      action.payload,
+      action.payload.dgsLeagueId,
       0,
     );
     yield put(
       selectLeagueIdSuccess({
-        id: action.payload,
+        id: action.payload.dgsLeagueId,
         filterCombine: lueagueCombineConfig,
+        defaultSelectedLineType: action.payload.defaultSelectedLineType,
       }),
     );
   } catch (error) {

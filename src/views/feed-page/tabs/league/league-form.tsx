@@ -44,6 +44,34 @@ const defaultValues: IFromValue = {
   dbLeagueId: null,
   periodConfig: [],
   autoTimeChange: false,
+  ignoreMLOver: null,
+  ignorePSOver: null,
+  ignoreTotalOver: null,
+  ignoreMLUnder: null,
+  ignorePSUnder: null,
+  ignoreTotalUnder: null,
+  ignoreTotalJuiceOver: null,
+  ignoreTotalJuiceUnder: null,
+  ignorePSJuiceOver: null,
+  ignorePSJuiceUnder: null,
+  ignorePSTD: false,
+  ignoreMLTD: false,
+  ignoreTotalTD: false,
+  ignorePSJCTD: false,
+  ignoreTotalJCTD: false,
+  lockPSAwayJuice: null,
+  lockPSHomeJuice: null,
+  lockTotalOverJuice: null,
+  lockTotalUnderJuice: null,
+  ignoreTeamTotalTD: false,
+  ignoreTeamTotalJCTD: false,
+  ignoreTeamTotalUnder: null,
+  ignoreTeamTotalOver: null,
+  ignoreTeamTotalJuiceOver: null,
+  ignoreTeamTotalJuiceUnder: null,
+  ignoreMLRangeTD: false,
+  ignoreMLRangeOver: null,
+  ignoreMLRangeUnder: null,
 };
 function LeagueformContent() {
   // eslint-disable-next-line operator-linebreak
@@ -121,6 +149,7 @@ function LeagueformContent() {
         ...e,
         dbSportBookId: watchBookId,
       }));
+      console.log("🚀 ~ file: league-form.tsx ~ line 152 ~ arrImmutableVersion ~ watchBookId", watchBookId);
       hookForm.setValue("periodConfig", arrImmutableVersion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -128,6 +157,7 @@ function LeagueformContent() {
 
   const onSubmit = (data: IFromValue) => {
     const { dgsLeagueId } = data;
+    console.log("🚀 ~ file: league-form.tsx ~ line 159 ~ onSubmit ~ data", data);
     const dbInfo = leagueInfoTree[dgsLeagueId];
     const filterPeriodReq = data.periodConfig.map((e) => ({
       ...e,
@@ -135,7 +165,10 @@ function LeagueformContent() {
       dgsLeagueId,
       dbLeagueId: dbInfo.donbestLeague.idLeague,
     }));
-    const filterLineTypeReq = omit(data, ["periodConfig"]);
+    const filterLineTypeReq = {
+      ...omit(data, ["periodConfig"]),
+      filterLineTypeId: { lineTypeId: data.lineTypeId, dgsLeagueId },
+    };
     filterLineTypeReq.dbLeagueId = dbInfo.donbestLeague.idLeague;
     filterLineTypeReq.dgsLeagueId = dgsLeagueId;
     emitStartLoading();
@@ -143,7 +176,7 @@ function LeagueformContent() {
       .postSaveLeagueFilters({ filterLineTypeReq, filterPeriodReq })
       .then(() => {
         emitStopLoading();
-        dispatch(selectLeagueIdRefresh(dgsLeagueId));
+        dispatch(selectLeagueIdRefresh({ dgsLeagueId, defaultSelectedLineType: `${data.lineTypeId}` }));
         notifyMessageSuccess("Save success!");
       })
       .catch(() => {
@@ -168,6 +201,8 @@ function LeagueformContent() {
                 listLineType={listLineType}
                 listSportBook={listSportBook}
               />
+              <LeagueIgnore />
+              <LeagueLockOdds />
             </Grid>
             <Grid item md={2}>
               <LeagueContainerRight />
@@ -179,23 +214,23 @@ function LeagueformContent() {
   );
 }
 
-// export function Leagueform() {
-//   const leagueIdSelected: number | null = useAppSelector(getSelectedLeagueId);
-
-//   return leagueIdSelected !== null ? <LeagueformContent /> : <b>Please Select league!</b>;
-// }
-
 export function Leagueform() {
-  return (
-    <fieldset>
-      <legend>Line Type:-League: 2123123</legend>
-      <Grid spacing={gridSpacing} container>
-        <Grid item md={10}>
-          <LeagueIgnore />
-          <LeagueLockOdds />
-        </Grid>
-        <Grid item md={2}></Grid>
-      </Grid>
-    </fieldset>
-  );
+  const leagueIdSelected: number | null = useAppSelector(getSelectedLeagueId);
+
+  return leagueIdSelected !== null ? <LeagueformContent /> : <b>Please Select league!</b>;
 }
+
+// export function Leagueform() {
+//   return (
+//     <fieldset>
+//       <legend>Line Type:-League: 2123123</legend>
+//       <Grid spacing={gridSpacing} container>
+//         <Grid item md={10}>
+//           <LeagueIgnore />
+//           <LeagueLockOdds />
+//         </Grid>
+//         <Grid item md={2}></Grid>
+//       </Grid>
+//     </fieldset>
+//   );
+// }
