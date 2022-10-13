@@ -39,6 +39,10 @@ export const selectLeagueIdRefresh = createAction<{ dgsLeagueId: number; default
 export const selectEventFilterdRequest = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_REQUEST");
 export const selectEventFilterSuccess = createAction<ISelectedGame>("feed/SELECT_GAME_ID_SUCCESS");
 export const selectEventFilterFailure = createAction<string>("feed/SELECT_GAME_ID_FAILURE");
+export const selectEventFilterdReFresh = createAction<{
+  gameWithLeague: IDgsGameEntityWithLeague;
+  defaultSelectedLineType: string | null;
+}>("feed/SELECT_GAME_ID_REFESH");
 
 export const fetchLeagueInfoTreeRequest = createAction<undefined>("feed/FETCH_LEAGUE_INFO_REQUEST");
 export const fetchLeagueInfoTreeSuccess = createAction<IInitConfigFeed>("feed/FETCH_LEAGUE_INFO_SUCCESS");
@@ -60,6 +64,7 @@ export type CombineFeedActionTypes =
   | ReturnType<typeof selectEventFilterdRequest>
   | ReturnType<typeof selectEventFilterSuccess>
   | ReturnType<typeof selectEventFilterFailure>
+  | ReturnType<typeof selectEventFilterdReFresh>
   | ReturnType<typeof expandLeagueRequest>
   | ReturnType<typeof expandLeagueSuccess>
   | ReturnType<typeof expandLeagueFailure>;

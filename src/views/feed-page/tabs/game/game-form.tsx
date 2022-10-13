@@ -3,7 +3,7 @@ import { FilterTypeEnum, IDgsGameEntityWithLeague, IFilterPeriodEntity } from "@
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useAppSelector, useAppDispatch } from "@hooks/useReduxToolKit";
 import { Button, Grid, Typography } from "@mui/material";
-import { selectEventFilterdRequest } from "@store/actions";
+import { selectEventFilterdRequest, selectEventFilterdReFresh } from "@store/actions";
 import { gridSpacing } from "@store/constant";
 import { getFeedLoading, getListLineType, getListSportBook, getSelectedGame } from "@store/selector";
 import { RootStateType } from "@store/types";
@@ -17,6 +17,7 @@ import GameSportbookSelect from "./game-sportbook-select";
 interface IProps {
   eventFilterPeriodConfig: IFilterPeriodEntity[];
   gameWithLeague: IDgsGameEntityWithLeague;
+  defaultSelectedLineType: string | null;
 }
 
 type IGameFromValue = IFilterPeriodEntity;
@@ -49,7 +50,7 @@ const defaultValues: IGameFromValue = {
 };
 
 function GameFromBody(props: IProps) {
-  const { eventFilterPeriodConfig, gameWithLeague } = props;
+  const { eventFilterPeriodConfig, gameWithLeague, defaultSelectedLineType } = props;
   const dispatch = useAppDispatch();
   const [listLineType, listSportBook] = useAppSelector(
     (reduxState: RootStateType) => [getListLineType(reduxState), getListSportBook(reduxState)],
@@ -60,12 +61,19 @@ function GameFromBody(props: IProps) {
 
   React.useEffect(() => {
     if (eventFilterPeriodConfig.length > 0) {
-      hookForm.reset({ ...eventFilterPeriodConfig[0] });
+      const defaultFilter = defaultSelectedLineType
+        ? find(eventFilterPeriodConfig, { lineTypeId: Number(defaultSelectedLineType) })
+        : null;
+      if (defaultFilter !== null && defaultFilter !== undefined) {
+        hookForm.reset({ ...defaultFilter });
+      } else {
+        hookForm.reset({ ...eventFilterPeriodConfig[0] });
+      }
     } else {
       hookForm.reset({ ...defaultValues });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventFilterPeriodConfig]);
+  }, [eventFilterPeriodConfig, defaultSelectedLineType]);
 
   React.useEffect(() => {
     if (watchLineTypeId !== null) {
@@ -88,7 +96,12 @@ function GameFromBody(props: IProps) {
       .postSaveEventFilter(payload)
       .then(() => {
         emitStopLoading();
-        dispatch(selectEventFilterdRequest(gameWithLeague));
+        dispatch(
+          selectEventFilterdReFresh({
+            gameWithLeague,
+            defaultSelectedLineType,
+          }),
+        );
         notifyMessageSuccess("Save success!");
       })
       .catch(() => {
@@ -139,9 +152,13 @@ function GameFormWithLoading(props: IProps) {
 
 export function GameForm() {
   const gameSelected = useAppSelector(getSelectedGame);
-  const { gameWithLeague, eventFilterPeriodConfig } = gameSelected;
+  const { gameWithLeague, eventFilterPeriodConfig, defaultSelectedLineType } = gameSelected;
   return gameWithLeague !== null ? (
-    <GameFormWithLoading gameWithLeague={gameWithLeague} eventFilterPeriodConfig={eventFilterPeriodConfig} />
+    <GameFormWithLoading
+      gameWithLeague={gameWithLeague}
+      eventFilterPeriodConfig={eventFilterPeriodConfig}
+      defaultSelectedLineType={defaultSelectedLineType}
+    />
   ) : (
     <b>Please Select game!</b>
   );

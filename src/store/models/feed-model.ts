@@ -47,6 +47,7 @@ interface IFeedBaseDataFetched {
 export interface ISelectedGame {
   eventFilterPeriodConfig: IFilterPeriodEntity[];
   gameWithLeague: IDgsGameEntityWithLeague | null;
+  defaultSelectedLineType: string | null;
 }
 interface IFeedUiAction {
   selectedDgsLeague: {

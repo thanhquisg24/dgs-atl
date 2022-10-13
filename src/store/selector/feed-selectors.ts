@@ -10,6 +10,7 @@ import {
   ILeagueInfoModel,
   IMapFilterLineTypeConfig,
   IMapFilterPeriodConfig,
+  ISelectedGame,
 } from "@store/models/feed-model";
 import { RootStateType } from "../types";
 
@@ -23,12 +24,7 @@ export const getSelectedLeague = (
   mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
   defaultSelectedLineType: string | null;
 } => state.feed.selectedDgsLeague;
-export const getSelectedGame = (
-  state: RootStateType,
-): {
-  eventFilterPeriodConfig: IFilterPeriodEntity[];
-  gameWithLeague: IDgsGameEntityWithLeague | null;
-} => state.feed.selectedGame;
+export const getSelectedGame = (state: RootStateType): ISelectedGame => state.feed.selectedGame;
 export const getCurrentTabselector = (state: RootStateType): CurrentTabType => state.feed.currentTabType;
 export const getLeagueLeftInfoTree = (
   state: RootStateType,

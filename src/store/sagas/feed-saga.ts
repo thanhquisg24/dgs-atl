@@ -7,6 +7,7 @@ import {
   fetchLeagueInfoTreeFailure,
   fetchLeagueInfoTreeRequest,
   fetchLeagueInfoTreeSuccess,
+  selectEventFilterdReFresh,
   selectEventFilterdRequest,
   selectEventFilterFailure,
   selectEventFilterSuccess,
@@ -125,6 +126,7 @@ function* fetchFilterEventSaga(action: ReturnType<typeof selectEventFilterdReque
     const data = {
       eventFilterPeriodConfig: eventPeriodFilters,
       gameWithLeague: action.payload,
+      defaultSelectedLineType: eventPeriodFilters.length > 0 ? eventPeriodFilters[0].lineTypeId : null,
     };
     yield put(selectEventFilterSuccess(data));
   } catch (error) {
@@ -136,10 +138,30 @@ function* fetchFilterEventSagaWatcher() {
   yield takeLatest(selectEventFilterdRequest.type, fetchFilterEventSaga);
 }
 
+function* fetchFilterEventRefreshSaga(action: ReturnType<typeof selectEventFilterdReFresh>): Generator | any {
+  try {
+    const { dgsLeagueId, idGame } = action.payload.gameWithLeague;
+    const eventPeriodFilters = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
+    const data = {
+      eventFilterPeriodConfig: eventPeriodFilters,
+      gameWithLeague: action.payload.gameWithLeague,
+      defaultSelectedLineType: action.payload.defaultSelectedLineType,
+    };
+    yield put(selectEventFilterSuccess(data));
+  } catch (error) {
+    yield put(selectEventFilterFailure("Fetch Event FIlter fail!"));
+    notifyMessageError("Fetch Event FIlter fail!");
+  }
+}
+function* fetchFilterEventRefreshSagaWatcher() {
+  yield takeLatest(selectEventFilterdReFresh.type, fetchFilterEventRefreshSaga);
+}
+
 export const feedWatchers = [
   fetchDgsLeaguesWatcher(),
   fetchSelectedDgsLeaguesSagaWatcher(),
   fetchSelectedDgsLeaguesRefreshSagaWatcher(),
   fetchExpandLeagueSagaWatcher(),
   fetchFilterEventSagaWatcher(),
+  fetchFilterEventRefreshSagaWatcher(),
 ];
