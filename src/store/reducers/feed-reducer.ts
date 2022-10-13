@@ -15,7 +15,7 @@ import {
 } from "@store/utils/feed-utils";
 
 export const initialFeedState: IFeedModel = {
-  selectedGame: null,
+  selectedGame: { eventFilterPeriodConfig: null, gameWithLeague: null },
   isLoading: false,
   currentTabType: CurrentTabType.LEAGUE,
   selectedDgsLeague: {
@@ -62,6 +62,7 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     const gamesWithLeague: IDgsGameEntityWithLeague[] = action.payload.list.map((e) => ({
       ...e,
       dgsLeagueId: action.payload.dgsLeagueId,
+      dbLeagueId: action.payload.dbLeagueId,
     }));
     state.leagueLeftInfo[action.payload.dgsLeagueId].dgsGames = gamesWithLeague;
     state.isLoading = false;

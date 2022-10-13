@@ -72,6 +72,7 @@ const defaultValues: IFromValue = {
   ignoreMLRangeTD: false,
   ignoreMLRangeOver: null,
   ignoreMLRangeUnder: null,
+  autoTimeChangeOffset: null,
 };
 function LeagueformContent() {
   // eslint-disable-next-line operator-linebreak
@@ -114,7 +115,8 @@ function LeagueformContent() {
       item = { ...item, dgsLeagueId };
       const itemPeriodsTmp = get(selectedLeagueData.mapFilterPeriodConfig, item.lineTypeId);
       const itemPeriods = itemPeriodsTmp || defaultFilterPeriodSetting || [];
-      hookForm.reset({ ...item, periodConfig: itemPeriods });
+      const dbSportsBookId = itemPeriods.length > 0 ? itemPeriods[0].dbSportBookId : 0;
+      hookForm.reset({ ...item, periodConfig: itemPeriods, dbSportsBookId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -127,7 +129,8 @@ function LeagueformContent() {
     const item: IFilterLineTypeEntity | null = itemTmp || null;
     if (item !== null) {
       const itemPeriods = get(selectedLeagueData.mapFilterPeriodConfig, item.lineTypeId);
-      hookForm.reset({ ...item, periodConfig: itemPeriods });
+      const dbSportsBookId = itemPeriods ? itemPeriods[0].dbSportBookId : 0;
+      hookForm.reset({ ...item, periodConfig: itemPeriods, dbSportsBookId });
     } else {
       const periodsVal = hookForm.getValues("periodConfig");
       const arrImmutableVersion = periodsVal.map((e) => ({ ...e, lineTypeId: watchLineTypeId }));
@@ -137,7 +140,10 @@ function LeagueformContent() {
   }, [watchLineTypeId]);
 
   React.useEffect(() => {
-    const keyLinePeriod = `${watchLineTypeId}_${watchBookId}`;
+    if (watchBookId === undefined) {
+      return;
+    }
+    const keyLinePeriod = `${watchLineTypeId}`;
     const itemTmp = get(selectedLeagueData.mapFilterLineTypeConfig, keyLinePeriod);
     const item: IFilterLineTypeEntity | null = itemTmp || null;
     if (item !== null) {

@@ -6,6 +6,7 @@ import {
   IFilterCombine,
   IDgsGameEntityWithLeague,
   IDgsGameEntity,
+  IFilterPeriodEntity,
 } from "@adapters/entity";
 import { createAction } from "@reduxjs/toolkit";
 
@@ -23,6 +24,7 @@ export interface IInitConfigFeed {
 }
 interface IFetchDgsGameSuccessPayload {
   dgsLeagueId: number;
+  dbLeagueId: number;
   list: IDgsGameEntity[];
 }
 export const selectLeagueId = "feed/SELECT_LEAGUE_ID";
@@ -35,7 +37,10 @@ export const selectLeagueIdRefresh = createAction<{ dgsLeagueId: number; default
 );
 
 export const selectEventFilterdRequest = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_REQUEST");
-export const selectEventFilterSuccess = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_SUCCESS");
+export const selectEventFilterSuccess = createAction<{
+  eventFilterPeriodConfig: IFilterPeriodEntity | null;
+  gameWithLeague: IDgsGameEntityWithLeague | null;
+}>("feed/SELECT_GAME_ID_SUCCESS");
 export const selectEventFilterFailure = createAction<string>("feed/SELECT_GAME_ID_FAILURE");
 
 export const fetchLeagueInfoTreeRequest = createAction<undefined>("feed/FETCH_LEAGUE_INFO_REQUEST");

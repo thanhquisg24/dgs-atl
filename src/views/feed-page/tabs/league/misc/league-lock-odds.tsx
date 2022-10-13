@@ -1,9 +1,9 @@
 import { Grid, TextField } from "@mui/material";
 import { gridSpacing } from "@store/constant";
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 
 export default function LeagueLockOdds() {
-  const { control } = useFormContext();
+  const { register } = useFormContext();
   return (
     <Grid spacing={gridSpacing} container>
       <Grid item md={3}></Grid>
@@ -13,28 +13,42 @@ export default function LeagueLockOdds() {
 
           <Grid container spacing={gridSpacing}>
             <Grid item md={4}>
-              <Controller
-                name="lockPSAwayJuice"
-                control={control}
-                render={({ field }) => <TextField {...field} size="small" label="Away" fullWidth />}
+              <TextField
+                {...register("lockPSAwayJuice")}
+                id="lockPSAwayJuice"
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                label="Away"
+                fullWidth
               />
-              <Controller
-                name="lockPSHomeJuice"
-                control={control}
-                render={({ field }) => <TextField {...field} size="small" label="Home" fullWidth sx={{ mt: 1.5 }} />}
+              <TextField
+                {...register("lockPSHomeJuice")}
+                InputLabelProps={{ shrink: true }}
+                id="lockPSHomeJuice"
+                size="small"
+                label="Home"
+                fullWidth
+                sx={{ mt: 1.5 }}
               />
             </Grid>
             <Grid item md={4}></Grid>
             <Grid item md={4}>
-              <Controller
-                name="lockTotalOverJuice"
-                control={control}
-                render={({ field }) => <TextField {...field} size="small" label="Away" fullWidth />}
+              <TextField
+                {...register("lockTotalOverJuice")}
+                id="lockTotalOverJuice"
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                label="Away"
+                fullWidth
               />
-              <Controller
-                name="lockTotalUnderJuice"
-                control={control}
-                render={({ field }) => <TextField {...field} size="small" label="Home" fullWidth sx={{ mt: 1.5 }} />}
+              <TextField
+                {...register("lockTotalUnderJuice")}
+                id="lockTotalUnderJuice"
+                InputLabelProps={{ shrink: true }}
+                size="small"
+                label="Home"
+                fullWidth
+                sx={{ mt: 1.5 }}
               />
             </Grid>
           </Grid>

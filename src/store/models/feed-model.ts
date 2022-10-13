@@ -44,7 +44,10 @@ interface IFeedBaseDataFetched {
   leagueLeftInfo: { [dgsLeagueId: number]: ILeagueInfoModel };
   defaultFilterCombine: IFilterCombine | null;
 }
-
+export interface ISelectedGame {
+  eventFilterPeriodConfig: IFilterPeriodEntity | null;
+  gameWithLeague: IDgsGameEntityWithLeague | null;
+}
 interface IFeedUiAction {
   selectedDgsLeague: {
     dgsLeagueId: number | null;
@@ -52,7 +55,7 @@ interface IFeedUiAction {
     mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
     defaultSelectedLineType: string | null;
   };
-  selectedGame: IDgsGameEntityWithLeague | null;
+  selectedGame: ISelectedGame;
   isLoading: boolean;
   currentTabType: CurrentTabType;
 }

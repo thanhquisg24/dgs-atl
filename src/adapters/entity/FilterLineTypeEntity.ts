@@ -45,5 +45,6 @@ export interface IFilterLineTypeEntity {
   ignoreMLRangeTD: boolean;
   ignoreMLRangeOver: number | null;
   ignoreMLRangeUnder: number | null;
+  autoTimeChangeOffset: number | null;
   dbLeagueId: number | null;
 }

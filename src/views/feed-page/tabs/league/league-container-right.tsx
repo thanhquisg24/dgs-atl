@@ -2,7 +2,7 @@ import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid, TextField, Ty
 import { Controller, useFormContext } from "react-hook-form";
 
 export default function LeagueContainerRight() {
-  const { control } = useFormContext();
+  const { control, register } = useFormContext();
   return (
     <Box sx={{ width: "100%" }}>
       <FormGroup>
@@ -40,12 +40,12 @@ export default function LeagueContainerRight() {
             sx={{ lineHeight: "60px", mt: 1 }}
           >
             <FormGroup>
-              <Controller
-                name="autoTimeChangeOffset"
-                control={control}
-                render={({ field }) => (
-                  <TextField {...field} size="small" sx={{ maxWidth: "100px" }} label="Offset By" />
-                )}
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                {...register("autoTimeChangeOffset")}
+                size="small"
+                sx={{ maxWidth: "100px" }}
+                label="Offset By"
               />
             </FormGroup>
             <Typography variant="body2" gutterBottom align="left" component="span">

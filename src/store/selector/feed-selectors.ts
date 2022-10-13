@@ -23,7 +23,12 @@ export const getSelectedLeague = (
   mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
   defaultSelectedLineType: string | null;
 } => state.feed.selectedDgsLeague;
-export const getSelectedGame = (state: RootStateType): IDgsGameEntityWithLeague | null => state.feed.selectedGame;
+export const getSelectedGame = (
+  state: RootStateType,
+): {
+  eventFilterPeriodConfig: IFilterPeriodEntity | null;
+  gameWithLeague: IDgsGameEntityWithLeague | null;
+} => state.feed.selectedGame;
 export const getCurrentTabselector = (state: RootStateType): CurrentTabType => state.feed.currentTabType;
 export const getLeagueLeftInfoTree = (
   state: RootStateType,

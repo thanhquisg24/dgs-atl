@@ -13,24 +13,28 @@ interface IInputPeiceProp {
 
 function IgnoreInputPeiceBettween(props: IInputPeiceProp) {
   const { higherName, lowerName, checkboxName, lowerTitle, higherTitle } = props;
-  const { control } = useFormContext();
+  const { control, register } = useFormContext();
   return (
     <Grid container>
       <Grid item md={12}></Grid>
       <Grid item md={12} sx={{ mt: 1.5 }}>
         <Grid container>
           <Grid item md={5} sx={{ mt: 2, pr: 1 }}>
-            <Controller
-              name={lowerName}
-              control={control}
-              render={({ field }) => <TextField {...field} size="small" label={lowerTitle} fullWidth />}
+            <TextField
+              {...register(lowerName)}
+              InputLabelProps={{ shrink: true }}
+              size="small"
+              label={lowerTitle}
+              fullWidth
             />
           </Grid>
           <Grid item md={5} sx={{ mt: 2, pl: 1 }}>
-            <Controller
-              name={higherName}
-              control={control}
-              render={({ field }) => <TextField {...field} size="small" label={higherTitle} fullWidth />}
+            <TextField
+              {...register(higherName)}
+              InputLabelProps={{ shrink: true }}
+              size="small"
+              label={higherTitle}
+              fullWidth
             />
           </Grid>
           <Grid item md={2}>
@@ -57,20 +61,25 @@ function IgnoreInputPeiceBettween(props: IInputPeiceProp) {
 
 function IgnoreInputPeice(props: IInputPeiceProp) {
   const { higherName, lowerName, checkboxName, lowerTitle, higherTitle } = props;
-  const { control } = useFormContext();
+  const { control, register } = useFormContext();
   return (
     <Grid container>
       <Grid item md={10}>
-        <Controller
-          name={higherName}
-          control={control}
-          render={({ field }) => <TextField {...field} size="small" label={higherTitle} fullWidth />}
+        <TextField
+          {...register(higherName)}
+          InputLabelProps={{ shrink: true }}
+          size="small"
+          label={higherTitle}
+          fullWidth
         />
 
-        <Controller
-          name={lowerName}
-          control={control}
-          render={({ field }) => <TextField {...field} label={lowerTitle} size="small" fullWidth sx={{ mt: 1.5 }} />}
+        <TextField
+          {...register(lowerName)}
+          InputLabelProps={{ shrink: true }}
+          label={lowerTitle}
+          size="small"
+          fullWidth
+          sx={{ mt: 1.5 }}
         />
       </Grid>
       <Grid item md={2}>

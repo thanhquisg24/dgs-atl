@@ -1,16 +1,21 @@
+import { diRepositorires } from "@adapters/di";
 import { FilterTypeEnum, IDgsGameEntityWithLeague, IFilterPeriodEntity } from "@adapters/entity";
-import { useAppSelector } from "@hooks/useReduxToolKit";
+import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
+import { useAppSelector, useAppDispatch } from "@hooks/useReduxToolKit";
 import { Button, Grid, Typography } from "@mui/material";
+import { selectEventFilterdRequest } from "@store/actions";
 import { gridSpacing } from "@store/constant";
 import { getFeedLoading, getListLineType, getListSportBook, getSelectedGame } from "@store/selector";
 import { RootStateType } from "@store/types";
+import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { shallowEqual } from "react-redux";
 import { GameOddsRow } from "./game-odds-row";
 import GameSportbookSelect from "./game-sportbook-select";
 
 interface IProps {
-  gameSelected: IDgsGameEntityWithLeague;
+  eventFilterPeriodConfig: IFilterPeriodEntity | null;
+  gameWithLeague: IDgsGameEntityWithLeague;
 }
 
 type IGameFromValue = IFilterPeriodEntity;
@@ -43,54 +48,87 @@ const defaultValues: IGameFromValue = {
 };
 
 function GameFromBody(props: IProps) {
-  const { gameSelected } = props;
-  const isLoading = useAppSelector(getFeedLoading);
+  const { eventFilterPeriodConfig, gameWithLeague } = props;
+  const dispatch = useAppDispatch();
   const [listLineType, listSportBook] = useAppSelector(
     (reduxState: RootStateType) => [getListLineType(reduxState), getListSportBook(reduxState)],
     shallowEqual,
   );
   const hookForm = useForm({ defaultValues });
+
+  React.useEffect(() => {
+    if (eventFilterPeriodConfig) {
+      hookForm.reset({ ...eventFilterPeriodConfig });
+    } else {
+      hookForm.reset({ ...defaultValues });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventFilterPeriodConfig]);
+
+  const onSubmit = (data: IGameFromValue) => {
+    console.log("🚀 ~ file: game-form.tsx ~ line 53 ~ onSubmit ~ data", data);
+    const { dbLeagueId, dgsLeagueId, idGame, gameProviderIdGame: dbGameId } = gameWithLeague;
+    const payload = { ...data, dbLeagueId, dgsLeagueId, dbGameId, dgsGameId: idGame };
+    emitStartLoading();
+    diRepositorires.donbestFilter
+      .postSaveEventFilter(payload)
+      .then(() => {
+        emitStopLoading();
+        dispatch(selectEventFilterdRequest(gameWithLeague));
+        notifyMessageSuccess("Save success!");
+      })
+      .catch(() => {
+        notifyMessageError("Save failure! please try again.");
+        emitStopLoading();
+      });
+  };
   return (
     <fieldset>
       <legend>
-        Settings: {gameSelected.homeTeam} vs {gameSelected.visitorTeam}{" "}
+        Settings: {gameWithLeague.homeTeam} vs {gameWithLeague.visitorTeam}{" "}
       </legend>
       <FormProvider {...hookForm}>
-        <Grid spacing={gridSpacing} container>
-          <Grid item md={8}>
-            <GameSportbookSelect listLineType={listLineType} />
-            <GameOddsRow listSportBook={listSportBook} />
-            <Typography variant="h6" color="secondary" sx={{ mt: 3.5 }}>
-              This event uses the league setting
-            </Typography>
-            {/* <Grid item md={12} sx={{ mt: 3.5, mb: 3.5 }}>
+        <form onSubmit={hookForm.handleSubmit(onSubmit)}>
+          <Grid spacing={gridSpacing} container>
+            <Grid item md={8}>
+              <GameSportbookSelect listLineType={listLineType} />
+              <GameOddsRow listSportBook={listSportBook} />
+              <Typography variant="h6" color="secondary" sx={{ mt: 3.5 }}>
+                This event uses the league setting
+              </Typography>
+              {/* <Grid item md={12} sx={{ mt: 3.5, mb: 3.5 }}>
           </Grid> */}
+            </Grid>
+            <Grid item md={4}></Grid>
           </Grid>
-          <Grid item md={4}></Grid>
-        </Grid>
-        <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
-          <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
-            Sync Odds
-          </Button>
-          <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
-            Use Default
-          </Button>
-          <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
-            Apply
-          </Button>
-        </Grid>
+          <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
+            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+              Sync Odds
+            </Button>
+            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+              Use Default
+            </Button>
+            <Button type="submit" variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+              Apply
+            </Button>
+          </Grid>
+        </form>
       </FormProvider>
     </fieldset>
   );
 }
 
-function GameFormWithLoading(props: { gameSelected: IDgsGameEntityWithLeague }) {
-  const { gameSelected } = props;
+function GameFormWithLoading(props: IProps) {
   const isLoading = useAppSelector(getFeedLoading);
-  return isLoading ? <b>Loading....!</b> : <GameFromBody gameSelected={gameSelected} />;
+  return isLoading ? <b>Loading....!</b> : <GameFromBody {...props} />;
 }
 
 export function GameForm() {
-  const gameSelected: IDgsGameEntityWithLeague | null = useAppSelector(getSelectedGame);
-  return gameSelected !== null ? <GameFormWithLoading gameSelected={gameSelected} /> : <b>Please Select game!</b>;
+  const gameSelected = useAppSelector(getSelectedGame);
+  const { gameWithLeague, eventFilterPeriodConfig } = gameSelected;
+  return gameWithLeague !== null ? (
+    <GameFormWithLoading gameWithLeague={gameWithLeague} eventFilterPeriodConfig={eventFilterPeriodConfig} />
+  ) : (
+    <b>Please Select game!</b>
+  );
 }

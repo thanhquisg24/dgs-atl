@@ -18,7 +18,8 @@ import {
 } from "@store/actions/feed-action";
 import { diRepositorires } from "@adapters/di";
 import { FilterTypeEnum } from "@adapters/entity";
-import { getSelectedLeagueId } from "@store/selector";
+import { getLeagueLeftInfoTree, getSelectedLeagueId } from "@store/selector";
+import { ILeagueInfoModel } from "@store/models/feed-model";
 
 function* fetchDgsLeaguesSaga(): Generator | any {
   try {
@@ -105,7 +106,9 @@ function* fetchSelectedDgsLeaguesRefreshSagaWatcher() {
 function* fetchExpandLeagueSaga(action: ReturnType<typeof expandLeagueRequest>): Generator | any {
   try {
     const DgsGames = yield diRepositorires.dgsGame.fetAvaiableDgsGames(action.payload);
-    yield put(expandLeagueSuccess({ dgsLeagueId: Number(action.payload), list: DgsGames }));
+    const infoTree: { [dgsLeagueId: number]: ILeagueInfoModel } = yield select(getLeagueLeftInfoTree);
+    const dbLeagueId = infoTree[action.payload].donbestLeague.idLeague;
+    yield put(expandLeagueSuccess({ dbLeagueId, dgsLeagueId: Number(action.payload), list: DgsGames }));
   } catch (error) {
     yield put(expandLeagueFailure("Expand League fail!"));
     notifyMessageError("Expand League fail!");
@@ -117,10 +120,14 @@ function* fetchExpandLeagueSagaWatcher() {
 
 function* fetchFilterEventSaga(action: ReturnType<typeof selectEventFilterdRequest>): Generator | any {
   try {
-    // const DgsGames = yield diRepositorires.dgsGame.fetAvaiableDgsGames(action.payload);
-    yield put(selectEventFilterSuccess(action.payload));
+    const { dgsLeagueId, idGame } = action.payload;
+    const eventPeriodFilter = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
+    const data = {
+      eventFilterPeriodConfig: eventPeriodFilter,
+      gameWithLeague: action.payload,
+    };
+    yield put(selectEventFilterSuccess(data));
   } catch (error) {
-    console.log("🚀 ~ file: feed-saga.ts ~ line 105 ~ function*fetchExpandLeagueSaga ~ error", error);
     yield put(selectEventFilterFailure("Fetch Event FIlter fail!"));
     notifyMessageError("Fetch Event FIlter fail!");
   }
