@@ -1,9 +1,10 @@
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
 import { IFilterPeriodEntity } from "@adapters/entity";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 import { AuthApi, IAuthApi } from "./auth-api";
 import queryString from "query-string";
 import customAxios from "./customeAxios";
+import { ISportMapping } from "@adapters/entity/SportMappingEntity";
 
 export interface IItemLeagueMapPost {
   dbSportId: number;
@@ -13,6 +14,7 @@ export interface IItemLeagueMapPost {
 }
 
 interface IApiPostType {
+  postAddSportMappings(payload: ISportMapping[]): Promise<AxiosResponse>;
   postSaveLeagueMappings(payload: IItemLeagueMapPost[]): Promise<AxiosResponse>;
   postSaveLeagueMapping(payload: IItemLeagueMapPost): Promise<AxiosResponse>;
   putActiveItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
@@ -35,18 +37,22 @@ interface IApiFetchType {
 
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 class MainApi extends AuthApi implements IMainApi {
+  postAddSportMappings(payload: ISportMapping[]): Promise<AxiosResponse<any, any>> {
+    return this.Axios.post("/sport-mapping/add-items", payload);
+  }
+
   postSyncLines(dgsIdLeague: number): Promise<AxiosResponse<any, any>> {
     const xFromData = queryString.stringify({
       dgsIdLeague,
     });
-    return this.Axios.post("/dgs/line/sync-league", xFromData);
+    return axios.post("/dgs/line/sync-league", xFromData);
   }
 
   postSyncOdds(dgsIdGame: number): Promise<AxiosResponse<any, any>> {
     const xFromData = queryString.stringify({
       dgsIdGame,
     });
-    return this.Axios.post("/dgs/line/sync-game", xFromData);
+    return axios.post("/dgs/line/sync-game", xFromData);
   }
 
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<AxiosResponse<any, any>> {

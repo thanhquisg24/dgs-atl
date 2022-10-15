@@ -1,4 +1,3 @@
-import { AxiosResponse } from "axios";
 import { BaseRepository } from "./base-repository";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

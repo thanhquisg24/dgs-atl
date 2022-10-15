@@ -5,6 +5,7 @@ import { DGSGameRepository, IDGSGameRepository } from "./dgs-game-repository";
 import { DGSLeagueRepository, IDGSLeagueRepository } from "./dgs-league-repository";
 import { DonbestFilterRepository, IDonbestFilterRepository } from "./donbest-filter-repository";
 import { DonbestLeagueRepository, IDonbestLeagueRepository } from "./donbest-league-repository";
+import { ISportMappingRepository, SportMappingRepository } from "./sport-mapping-repository";
 
 export interface IRepositories {
   degaPlayer: IDegaPlayerRepository;
@@ -13,6 +14,7 @@ export interface IRepositories {
   dgsLeague: IDGSLeagueRepository;
   dgsGame: IDGSGameRepository;
   donbestFilter: IDonbestFilterRepository;
+  sportMapping: ISportMappingRepository;
 }
 
 export default (infrastructure: IInfrastructures): IRepositories => {
@@ -23,5 +25,6 @@ export default (infrastructure: IInfrastructures): IRepositories => {
     dgsLeague: new DGSLeagueRepository(infrastructure),
     dgsGame: new DGSGameRepository(infrastructure),
     donbestFilter: new DonbestFilterRepository(infrastructure),
+    sportMapping: new SportMappingRepository(infrastructure),
   };
 };

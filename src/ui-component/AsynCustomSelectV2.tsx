@@ -1,10 +1,10 @@
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from "@mui/material";
 import { get } from "lodash";
 
-interface IData {
-  value: string | number;
-  text: string;
-}
+// interface IData {
+//   value: string | number;
+//   text: string;
+// }
 
 interface IProps {
   id: string;

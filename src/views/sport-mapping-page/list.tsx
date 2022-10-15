@@ -8,9 +8,7 @@ import MainCard from "@ui-component/cards/MainCard";
 
 const ListSportMappingPage = () => (
   <MainCard title="Sport Mapping">
-    <Typography variant="body2">
-      Hello Sport Mapping
-    </Typography>
+    <Typography variant="body2">Hello Sport Mapping</Typography>
   </MainCard>
 );
 

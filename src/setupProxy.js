@@ -4,7 +4,7 @@ const createProxyMiddleware = require("http-proxy-middleware");
 
 const host = "http://172.31.77.133:8088/";
 // const host = "http://143.198.49.77:8200/";
-const controllers = ["/api"];
+const controllers = ["/api", "/dgs"];
 
 const proxyAll = createProxyMiddleware("/", {
   target: host,

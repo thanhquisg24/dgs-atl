@@ -10,3 +10,4 @@ export * from "./FilterPeriodEntity";
 export * from "./FilterTypeEnum";
 export * from "./FilterCombine";
 export * from "./DgsGameEntity";
+export * from "./SportMappingEntity";
