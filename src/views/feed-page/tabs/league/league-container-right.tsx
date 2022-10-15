@@ -1,7 +1,13 @@
-import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 
-export default function LeagueContainerRight() {
+export default function LeagueContainerRight(props: {
+  onSyncLines: () => void;
+  copyToLeague: () => void;
+  onSyncTimes: () => void;
+  onSyncScores: () => void;
+}) {
+  const { onSyncLines, copyToLeague, onSyncTimes, onSyncScores } = props;
   const { control, register } = useFormContext();
   return (
     <Box sx={{ width: "100%" }}>
@@ -30,7 +36,7 @@ export default function LeagueContainerRight() {
         )}
       />
 
-      <Grid container sx={{ ml: 2.5 }} spacing={1}>
+      {/* <Grid container sx={{ ml: 2.5 }} spacing={1}>
         <Grid item md={6}>
           <Grid
             container
@@ -53,7 +59,7 @@ export default function LeagueContainerRight() {
             </Typography>
           </Grid>
         </Grid>
-      </Grid>
+      </Grid> */}
       <Controller
         name="autoScore"
         control={control}
@@ -65,16 +71,16 @@ export default function LeagueContainerRight() {
         )}
       />
       <Grid container direction="column" justifyContent="flex-start" alignItems="baseline" sx={{ maxWidth: "200px" }}>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth onClick={() => onSyncTimes()}>
           Sync Times
         </Button>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth onClick={() => onSyncScores()}>
           Sync Scores
         </Button>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth onClick={() => onSyncLines()}>
           Sync Lines
         </Button>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth onClick={() => copyToLeague()}>
           Copy to Leagues
         </Button>
         <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>

@@ -18,8 +18,40 @@ export interface IDonbestFilterRepository {
   postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<boolean>;
   postSaveEventFilter(payload: IFilterPeriodEntity): Promise<boolean>;
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IFilterPeriodEntity[]>;
+  postSyncLines(dgsIdLeague: number): Promise<boolean>;
+  postSyncOdds(dgsIdGame: number): Promise<boolean>;
 }
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
+  postSyncLines(dgsIdLeague: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .postSyncLines(dgsIdLeague)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
+  postSyncOdds(dgsIdGame: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .postSyncOdds(dgsIdGame)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IFilterPeriodEntity[]> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi

@@ -56,13 +56,14 @@ function* fetchSelectedDgsLeaguesSaga(action: ReturnType<typeof selectLeagueIdRe
     if (prevSelect !== action.payload) {
       const lueagueCombineConfig = yield diRepositorires.donbestFilter.fetFilterCombine(
         FilterTypeEnum.LEAGUE,
-        action.payload,
+        action.payload.dgsLeagueId,
         0,
       );
 
       yield put(
         selectLeagueIdSuccess({
-          id: action.payload,
+          id: action.payload.dgsLeagueId,
+          dgsSportId: action.payload.dgsSportId,
           filterCombine: lueagueCombineConfig,
           defaultSelectedLineType: null,
         }),
@@ -71,7 +72,7 @@ function* fetchSelectedDgsLeaguesSaga(action: ReturnType<typeof selectLeagueIdRe
       yield put(selectLeagueIdNotChanged());
     }
   } catch (error) {
-    console.log("🚀 ~ file: feed-saga.ts ~ line 57 ~ function*fetchSelectedDgsLeaguesSaga ~ error", error);
+    console.log("🚀 ~ file: feed-saga.ts ~ line 75 ~ function*fetchSelectedDgsLeaguesSaga ~ error", error);
     yield put(selectLeagueIdFailure("Fetch DgsLeagues fail!"));
     notifyMessageError("Fetch DgsLeagues fail!");
   }
@@ -91,6 +92,7 @@ function* fetchSelectedDgsLeaguesRefreshSaga(action: ReturnType<typeof selectLea
     yield put(
       selectLeagueIdSuccess({
         id: action.payload.dgsLeagueId,
+        dgsSportId: action.payload.dgsSportId,
         filterCombine: lueagueCombineConfig,
         defaultSelectedLineType: action.payload.defaultSelectedLineType,
       }),

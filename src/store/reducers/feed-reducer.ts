@@ -15,11 +15,12 @@ import {
 } from "@store/utils/feed-utils";
 
 export const initialFeedState: IFeedModel = {
-  selectedGame: { eventFilterPeriodConfig: [], gameWithLeague: null },
+  selectedGame: { eventFilterPeriodConfig: [], gameWithLeague: null, defaultSelectedLineType: null },
   isLoading: false,
   currentTabType: CurrentTabType.LEAGUE,
   selectedDgsLeague: {
     dgsLeagueId: null,
+    dgsSportId: null,
     mapFilterLineTypeConfig: null,
     mapFilterPeriodConfig: null,
     defaultSelectedLineType: null,
@@ -42,10 +43,14 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     const mapFilterPeriodConfig: IMapFilterPeriodConfig | null = buildMapFilterPeriod(
       action.payload.filterCombine?.listFilterPeriod,
     );
+    // eslint-disable-next-line no-nested-ternary
     const defaultSelectedLineTypeInlist = listLineTypeConfig
-      ? buildKeyLineType(listLineTypeConfig[0].lineTypeId)
+      ? listLineTypeConfig.length > 0
+        ? buildKeyLineType(listLineTypeConfig[0].lineTypeId)
+        : null
       : null;
     newState.selectedDgsLeague = {
+      dgsSportId: action.payload.dgsSportId,
       dgsLeagueId: action.payload.id,
       mapFilterLineTypeConfig,
       mapFilterPeriodConfig,

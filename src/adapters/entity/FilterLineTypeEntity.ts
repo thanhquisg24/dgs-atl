@@ -10,7 +10,7 @@ export interface IFilterLineTypeEntity {
   autoScore: boolean;
   autoTimeChange: boolean;
   useOddsBySports: boolean;
-  useDGSLinkedLineTypes: boolean;
+  // useDGSLinkedLineTypes: boolean;
   preserveFavoriteJuice: boolean;
   followParentExcept: boolean;
 
@@ -45,6 +45,6 @@ export interface IFilterLineTypeEntity {
   ignoreMLRangeTD: boolean;
   ignoreMLRangeOver: number | null;
   ignoreMLRangeUnder: number | null;
-  autoTimeChangeOffset: number | null;
+  // autoTimeChangeOffset: number | null;
   dbLeagueId: number | null;
 }

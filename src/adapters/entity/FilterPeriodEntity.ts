@@ -27,3 +27,38 @@ export interface IFilterPeriodEntity {
   dbGameId: number;
   dbLeagueId: number;
 }
+
+const defaultNHLPeriodItem: IFilterPeriodEntity = {
+  id: null,
+  type: FilterTypeEnum.LEAGUE,
+  lineTypeId: 0,
+  dgsLeagueId: 0,
+  dgsGameId: 0,
+  period: 0,
+  enabled: false,
+  ps: false,
+  ml: false,
+  total: false,
+  team_total: false,
+  way3: false,
+  dbSportBookId: 0,
+  ps_point: 0,
+  ps_juice: 0,
+  ml_point: 0,
+  ml_juice: 0,
+  total_point: 0,
+  total_juice: 0,
+  team_total_point: 0,
+  team_total_juice: 0,
+  way3_point: 0,
+  way3_juice: 0,
+  dbGameId: 0,
+  dbLeagueId: 0,
+};
+
+export const defaultNHLPeriods: IFilterPeriodEntity[] = [
+  defaultNHLPeriodItem,
+  { ...defaultNHLPeriodItem, period: 7 },
+  { ...defaultNHLPeriodItem, period: 8 },
+  { ...defaultNHLPeriodItem, period: 9 },
+];

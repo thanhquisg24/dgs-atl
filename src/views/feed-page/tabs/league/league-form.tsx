@@ -38,7 +38,7 @@ const defaultValues: IFromValue = {
   enabled: false,
   autoScore: false,
   useOddsBySports: false,
-  useDGSLinkedLineTypes: false,
+  // useDGSLinkedLineTypes: false,
   preserveFavoriteJuice: false,
   followParentExcept: false,
   dbLeagueId: null,
@@ -72,7 +72,7 @@ const defaultValues: IFromValue = {
   ignoreMLRangeTD: false,
   ignoreMLRangeOver: null,
   ignoreMLRangeUnder: null,
-  autoTimeChangeOffset: null,
+  // autoTimeChangeOffset: null,
 };
 function LeagueformContent() {
   // eslint-disable-next-line operator-linebreak
@@ -97,9 +97,9 @@ function LeagueformContent() {
   const dispatch = useAppDispatch();
   React.useEffect(() => {
     if (watchdgsLeagueId && watchdgsLeagueId !== -1) {
-      dispatch(selectLeagueIdRequest(watchdgsLeagueId));
+      dispatch(selectLeagueIdRequest({ dgsLeagueId: watchdgsLeagueId, dgsSportId: selectedLeagueData.dgsSportId }));
     }
-  }, [dispatch, watchdgsLeagueId]);
+  }, [dispatch, selectedLeagueData.dgsSportId, watchdgsLeagueId]);
 
   React.useEffect(() => {
     const dgsLeagueId = selectedLeagueData.dgsLeagueId ? selectedLeagueData.dgsLeagueId : -1;
@@ -155,7 +155,6 @@ function LeagueformContent() {
         ...e,
         dbSportBookId: watchBookId,
       }));
-      console.log("🚀 ~ file: league-form.tsx ~ line 152 ~ arrImmutableVersion ~ watchBookId", watchBookId);
       hookForm.setValue("periodConfig", arrImmutableVersion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -182,7 +181,13 @@ function LeagueformContent() {
       .postSaveLeagueFilters({ filterLineTypeReq, filterPeriodReq })
       .then(() => {
         emitStopLoading();
-        dispatch(selectLeagueIdRefresh({ dgsLeagueId, defaultSelectedLineType: `${data.lineTypeId}` }));
+        dispatch(
+          selectLeagueIdRefresh({
+            dgsLeagueId: watchdgsLeagueId,
+            defaultSelectedLineType: `${data.lineTypeId}`,
+            dgsSportId: "",
+          }),
+        );
         notifyMessageSuccess("Save success!");
       })
       .catch(() => {
@@ -191,6 +196,36 @@ function LeagueformContent() {
       });
   };
 
+  const onSyncLines = () => {
+    if (watchdgsLeagueId && watchdgsLeagueId !== -1) {
+      emitStartLoading();
+      diRepositorires.donbestFilter
+        .postSyncLines(watchdgsLeagueId)
+        .then(() => {
+          emitStopLoading();
+          notifyMessageSuccess("Sync Lines success!");
+        })
+        .catch(() => {
+          notifyMessageError("Sync Lines failure! please try again.");
+          emitStopLoading();
+        });
+    }
+  };
+
+  const copyToLeague = (): void => {
+    // eslint-disable-next-line no-alert
+    alert("copyToLeague");
+  };
+
+  const onSyncTimes = (): void => {
+    // eslint-disable-next-line no-alert
+    alert("onSyncTimes");
+  };
+
+  const onSyncScores = (): void => {
+    // eslint-disable-next-line no-alert
+    alert("onSyncTimes");
+  };
   return (
     <fieldset>
       <LeagueFormLegend dgsLeagueId={watchdgsLeagueId || -1} lineTypeId={watchLineTypeId || -1} />
@@ -211,7 +246,12 @@ function LeagueformContent() {
               <LeagueLockOdds />
             </Grid>
             <Grid item md={2}>
-              <LeagueContainerRight />
+              <LeagueContainerRight
+                onSyncLines={onSyncLines}
+                copyToLeague={copyToLeague}
+                onSyncTimes={onSyncTimes}
+                onSyncScores={onSyncScores}
+              />
             </Grid>
           </Grid>
         </form>

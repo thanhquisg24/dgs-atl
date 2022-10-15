@@ -1,4 +1,5 @@
 import {
+  defaultNHLPeriods,
   IDgsGameEntityWithLeague,
   IDgsLineTypeEntity,
   IDonbestSportBookEntity,
@@ -19,6 +20,7 @@ export const getSelectedLeagueId = (state: RootStateType): number | null => stat
 export const getSelectedLeague = (
   state: RootStateType,
 ): {
+  dgsSportId: string | null;
   dgsLeagueId: number | null;
   mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null;
   mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
@@ -41,5 +43,10 @@ export const getListLineType = (state: RootStateType): IDgsLineTypeEntity[] => s
 
 export const getDefaultFilterLineTypeSetting = (state: RootStateType): IFilterLineTypeEntity | null =>
   state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterLineType[0] : null;
-export const getDefaultFilterPeriodSetting = (state: RootStateType): IFilterPeriodEntity[] | null =>
-  state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterPeriod : null;
+export const getDefaultFilterPeriodSetting = (state: RootStateType): IFilterPeriodEntity[] | null => {
+  const { selectedDgsLeague } = state.feed;
+  if (selectedDgsLeague.dgsSportId === "NHL") {
+    return defaultNHLPeriods;
+  }
+  return state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterPeriod : null;
+};

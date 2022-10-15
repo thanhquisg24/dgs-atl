@@ -27,7 +27,7 @@ const defaultValues: IGameFromValue = {
   lineTypeId: 0,
   id: null,
   dgsGameId: 0,
-  period: 0,
+  period: -1,
   enabled: false,
   ps: false,
   ml: false,
@@ -109,6 +109,28 @@ function GameFromBody(props: IProps) {
         emitStopLoading();
       });
   };
+
+  const onSyncOdds = () => {
+    if (gameWithLeague.idGame > 0) {
+      emitStartLoading();
+      diRepositorires.donbestFilter
+        .postSyncOdds(gameWithLeague.idGame)
+        .then(() => {
+          emitStopLoading();
+          notifyMessageSuccess("Sync Odds success!");
+        })
+        .catch(() => {
+          notifyMessageError("Sync Odds failure! please try again.");
+          emitStopLoading();
+        });
+    }
+  };
+
+  const onUseDefault = (): void => {
+    // eslint-disable-next-line no-alert
+    alert("UseDefault");
+  };
+
   return (
     <fieldset>
       <legend>
@@ -129,10 +151,10 @@ function GameFromBody(props: IProps) {
             <Grid item md={4}></Grid>
           </Grid>
           <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
-            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onSyncOdds()}>
               Sync Odds
             </Button>
-            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
+            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onUseDefault()}>
               Use Default
             </Button>
             <Button type="submit" variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>

@@ -133,11 +133,12 @@ interface IPropsTreeItem {
   type: "GAME" | "LEAGUE";
   dgsLeagueId: number;
   dgsGame: IDgsGameEntityWithLeague | null;
+  dgsSportId: string | null;
   children?: any;
 }
 
 function TreeItemNode(props: IPropsTreeItem) {
-  const { nodeId, label, status, countGameFail, children, type, id, dgsLeagueId, dgsGame } = props;
+  const { nodeId, label, status, countGameFail, children, type, id, dgsLeagueId, dgsGame, dgsSportId } = props;
   const dispatch = useAppDispatch();
   const o = React.useMemo(() => {
     return {
@@ -149,7 +150,7 @@ function TreeItemNode(props: IPropsTreeItem) {
   const stopClick = (event: any) => {
     event.stopPropagation();
     if (type === "LEAGUE") {
-      dispatch(selectLeagueIdRequest(dgsLeagueId));
+      dispatch(selectLeagueIdRequest({ dgsLeagueId, dgsSportId }));
     } else if (type === "GAME" && dgsGame !== null) {
       dispatch(selectEventFilterdRequest(dgsGame));
     }
@@ -196,6 +197,7 @@ export default function CustomizedTreeView() {
             type="LEAGUE"
             id={item.dgsLeague.idLeague}
             dgsLeagueId={item.dgsLeague.idLeague}
+            dgsSportId={item.dgsLeague.idSport}
             dgsGame={null}
           >
             <>
@@ -209,6 +211,7 @@ export default function CustomizedTreeView() {
                   type="GAME"
                   id={g.idGame}
                   dgsLeagueId={g.dgsLeagueId}
+                  dgsSportId={item.dgsLeague.idSport}
                   dgsGame={g}
                 />
               ))}

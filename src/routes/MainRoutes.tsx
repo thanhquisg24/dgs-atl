@@ -22,6 +22,9 @@ const FeedHistoryPage = Loadable(lazy(() => import("../views/feed-page/history")
 const ListLeagueMapping = Loadable(lazy(() => import("../views/league-mapping-page/list")));
 const AddLeagueMapping = Loadable(lazy(() => import("../views/league-mapping-page/add")));
 const EditLeagueMapping = Loadable(lazy(() => import("../views/league-mapping-page/edit")));
+
+const ListSportMapping = Loadable(lazy(() => import("../views/sport-mapping-page/list")));
+const AddSportMapping = Loadable(lazy(() => import("../views/sport-mapping-page/add")));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -112,6 +115,14 @@ const MainRoutes = {
     {
       path: "league-page-edit/:leagueId",
       element: <EditLeagueMapping />,
+    },
+    {
+      path: "sport-page-list",
+      element: <ListSportMapping />,
+    },
+    {
+      path: "sport-page-add",
+      element: <AddSportMapping />,
     },
   ],
 };

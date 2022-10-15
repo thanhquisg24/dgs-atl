@@ -52,6 +52,7 @@ export interface ISelectedGame {
 interface IFeedUiAction {
   selectedDgsLeague: {
     dgsLeagueId: number | null;
+    dgsSportId: string | null;
     mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null;
     mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
     defaultSelectedLineType: string | null;
