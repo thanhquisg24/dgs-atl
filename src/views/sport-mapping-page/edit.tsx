@@ -1,18 +1,19 @@
 // material-ui
-import { Box, Typography, Grid, Button } from "@mui/material";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 import { Controller, useForm } from "react-hook-form";
 // project imports
 import MainCard from "@ui-component/cards/MainCard";
-import BasicTable from "./preview-table";
 import React from "react";
 
-import { find } from "lodash";
 import { diRepositorires } from "@adapters/di";
-import { notifyMessageError, emitStopLoading, emitStartLoading, notifyMessageSuccess } from "../../emiter/AppEmitter";
-import { useRouteFunc } from "../../routes/useRouteFunc";
+import { useDataProvider } from "@hooks/useDataProvider";
 import { useGetList } from "@hooks/useGetList";
 import AsynCustomSelectV2 from "@ui-component/AsynCustomSelectV2";
+import { useParams } from "react-router-dom";
+import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "../../emiter/AppEmitter";
+import { IRowSportMapping } from "./add";
+import { find } from "lodash";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
@@ -30,26 +31,6 @@ const Title = () => (
   </Grid>
 );
 
-export interface IRowSportMapping {
-  id: null;
-  dbSportId: number;
-  dbSportName: string;
-  dgsSportId: string;
-  dgsSportName: string;
-}
-export interface IState {
-  rows: IRowSportMapping[];
-}
-function checkAddItemMap(row: IRowSportMapping, list: IRowSportMapping[]) {
-  const isExist = find(list, (item: IRowSportMapping) => {
-    return row.dbSportId === item.dbSportId && row.dgsSportId === item.dgsSportId;
-  });
-  if (isExist) {
-    return false;
-  }
-  return true;
-}
-
 const defaultValues = {
   id: null,
   dbSportId: 0,
@@ -57,7 +38,9 @@ const defaultValues = {
   dgsSportId: "",
   dgsSportName: "",
 };
-const AddSportMapping = () => {
+const EditSportMapping = () => {
+  const { id } = useParams<{ id: string }>();
+  const dataProvider = useDataProvider();
   const listDataDGS = useGetList(
     JSON.stringify({
       resource: "dgs-sports",
@@ -72,70 +55,48 @@ const AddSportMapping = () => {
       sort: { field: "name", order: "ASC" },
     }),
   );
-  const { gotoPage } = useRouteFunc();
   const {
     control,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm({ defaultValues });
 
-  const [state, setState] = React.useState<IState>({
-    rows: [],
-  });
+  React.useEffect(() => {
+    if (id) {
+      dataProvider.getOne("sport-mapping", { id }).then((result: any) => {
+        reset({ ...result });
+        console.log("🚀 ~ file: edit.tsx ~ line 103 ~ dataProvider.getOne ~ result", result);
+      });
+    }
+  }, [dataProvider, id, reset]);
 
   const onSubmit = (data: IRowSportMapping) => {
-    console.log("🚀 ~ file: add.tsx ~ line 88 ~ onSubmit ~ data", data);
     let row = data;
-    if (checkAddItemMap(row, state.rows)) {
-      const db = find(listDataDB.data, (item: any) => {
-        return row.dbSportId === item.idSport;
-      });
-      const dgs = find(listDataDGS.data, (item: any) => {
-        return row.dgsSportId === item.idSport;
-      });
-      if (db) {
-        row = { ...row, dbSportName: db.name };
-      }
-      if (dgs) {
-        row = { ...row, dgsSportName: dgs.sportName };
-      }
-      setState({ rows: [...state.rows, row] });
+    const db = find(listDataDB.data, (item: any) => {
+      return row.dbSportId === item.idSport;
+    });
+    const dgs = find(listDataDGS.data, (item: any) => {
+      return row.dgsSportId === item.idSport;
+    });
+    if (db) {
+      row = { ...row, dbSportName: db.name };
     }
-    // const row: IRowSportMapping = {
-    //   id: null,
-    //   dbSportId: 0,
-    //   dbSportName: "",
-    //   dgsSportId: "",
-    //   dgsSportName: "",
-    // };
-    // if (checkAddItemMap(row, state.rows)) {
-    //   setState({ rows: [...state.rows, row] });
-    // }
-  };
-  const onDeleteRow = (index: number) => {
-    const rows = [...state.rows];
-    rows.splice(index, 1);
-    setState({ rows });
-  };
-
-  function onSave(): void {
+    if (dgs) {
+      row = { ...row, dgsSportName: dgs.sportName };
+    }
     emitStartLoading();
     diRepositorires.sportMapping
-      .postAddSportMappings(state.rows)
+      .postUpdateSportMapping(row)
       .then(() => {
         notifyMessageSuccess("Save successfull!");
-        gotoPage("/sport-page-list");
       })
-      .catch((error) => {
-        const { message } = error.response.data;
-        notifyMessageError(message || error.message);
-        emitStopLoading();
-      })
+      .catch((error) => notifyMessageError(error.message))
       .finally(() => emitStopLoading());
-  }
+  };
 
   return (
-    <MainCard title="Add sport mapping">
+    <MainCard title="Edit sport mapping">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ width: "100%" }}>
           <Title></Title>
@@ -185,23 +146,10 @@ const AddSportMapping = () => {
                 )}
               />
             </Grid>
-            <Grid item md={4}>
-              <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} type="submit">
-                Add item
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid spacing={gridSpacing} container sx={{ mt: 2 }}>
-            <Grid item md={8}>
-              <Typography variant="h3" gutterBottom align="center" component="span">
-                Preview mapping table
-              </Typography>
-              <BasicTable rows={state.rows} onDeleteRow={onDeleteRow} />
-            </Grid>
           </Grid>
 
           <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
-            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onSave()}>
+            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} type="submit">
               Save
             </Button>
           </Grid>
@@ -211,4 +159,4 @@ const AddSportMapping = () => {
   );
 };
 
-export default AddSportMapping;
+export default EditSportMapping;

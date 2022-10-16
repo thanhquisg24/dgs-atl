@@ -85,7 +85,7 @@ const ListLeagueMapping = () => {
 
   return (
     <>
-      <MainCard title="List league mapping">Filter Inputs Here...</MainCard>
+      <MainCard title="League mapping">Filter Inputs Here...</MainCard>
       <Box sx={{ width: "100%" }}>
         <MaterialTable
           tableRef={tableRef}

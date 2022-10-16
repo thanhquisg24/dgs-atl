@@ -14,7 +14,9 @@ export interface IItemLeagueMapPost {
 }
 
 interface IApiPostType {
+  postDeleteSportMappingItems(items: number[]): Promise<AxiosResponse>;
   postAddSportMappings(payload: ISportMapping[]): Promise<AxiosResponse>;
+  postUpdateSportMapping(payload: ISportMapping): Promise<AxiosResponse>;
   postSaveLeagueMappings(payload: IItemLeagueMapPost[]): Promise<AxiosResponse>;
   postSaveLeagueMapping(payload: IItemLeagueMapPost): Promise<AxiosResponse>;
   putActiveItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
@@ -36,7 +38,16 @@ interface IApiFetchType {
 }
 
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
+
 class MainApi extends AuthApi implements IMainApi {
+  postUpdateSportMapping(payload: ISportMapping): Promise<AxiosResponse<any, any>> {
+    return this.Axios.post("/sport-mapping/update-item", payload);
+  }
+
+  postDeleteSportMappingItems(items: number[]): Promise<AxiosResponse> {
+    return this.Axios.post("/sport-mapping/delete-items", items);
+  }
+
   postAddSportMappings(payload: ISportMapping[]): Promise<AxiosResponse<any, any>> {
     return this.Axios.post("/sport-mapping/add-items", payload);
   }

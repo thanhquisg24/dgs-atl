@@ -25,7 +25,7 @@ export default function AsynCustomSelectV2(props: IProps) {
   return (
     <FormControl fullWidth sx={sx}>
       <InputLabel id={id}>{label}</InputLabel>
-      <Select label={label} labelId={id} size={size} {...registerProp}>
+      <Select label={label} labelId={id} size={size} {...registerProp} InputLabelProps={{ shrink: true }}>
         <MenuItem value=""></MenuItem>
         {listData.map((item) => (
           <MenuItem value={get(item, idField)} key={get(item, idField)}>

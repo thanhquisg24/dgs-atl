@@ -25,6 +25,7 @@ const EditLeagueMapping = Loadable(lazy(() => import("../views/league-mapping-pa
 
 const ListSportMapping = Loadable(lazy(() => import("../views/sport-mapping-page/list")));
 const AddSportMapping = Loadable(lazy(() => import("../views/sport-mapping-page/add")));
+const EditSportMapping = Loadable(lazy(() => import("../views/sport-mapping-page/edit")));
 // ==============================|| MAIN ROUTING ||============================== //
 
 const MainRoutes = {
@@ -123,6 +124,10 @@ const MainRoutes = {
     {
       path: "sport-page-add",
       element: <AddSportMapping />,
+    },
+    {
+      path: "sport-page-edit/:id",
+      element: <EditSportMapping />,
     },
   ],
 };

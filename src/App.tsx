@@ -19,6 +19,7 @@ import { appInitAction } from "@store/actions";
 import DataProviderContext from "./context/DataProviderContext";
 import { restProvider } from "@adapters/infrastructures/dataProvider";
 import SimpleBackdrop from "@ui-component/loading-backdrop";
+import { ConfirmProvider } from "material-ui-confirm";
 
 // ==============================|| APP ||============================== //
 
@@ -38,7 +39,9 @@ const App = () => {
         <ThemeProvider theme={themes(customization)}>
           <CssBaseline />
           <NavigationScroll>
-            <Routes />
+            <ConfirmProvider>
+              <Routes />
+            </ConfirmProvider>
           </NavigationScroll>
           <SimpleBackdrop />
           <ToastMessage />
