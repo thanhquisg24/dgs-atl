@@ -30,9 +30,10 @@ const EditSportMapping = Loadable(lazy(() => import("../views/sport-mapping-page
 
 const MainRoutes = {
   element: (
-    <RequireAuth>
-      <MainLayout />
-    </RequireAuth>
+    <MainLayout />
+    // <RequireAuth>
+    //   <MainLayout />
+    // </RequireAuth>
   ),
   children: [
     {

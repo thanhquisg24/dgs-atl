@@ -59,11 +59,12 @@ function* fetchSelectedDgsLeaguesSaga(action: ReturnType<typeof selectLeagueIdRe
         action.payload.dgsLeagueId,
         0,
       );
-
+      const leagueTree: { [dgsLeagueId: number]: ILeagueInfoModel } = yield select(getLeagueLeftInfoTree);
+      const dgsSportId = leagueTree[action.payload.dgsLeagueId].dgsLeague.idSport;
       yield put(
         selectLeagueIdSuccess({
           id: action.payload.dgsLeagueId,
-          dgsSportId: action.payload.dgsSportId,
+          dgsSportId,
           filterCombine: lueagueCombineConfig,
           defaultSelectedLineType: null,
         }),
@@ -89,10 +90,12 @@ function* fetchSelectedDgsLeaguesRefreshSaga(action: ReturnType<typeof selectLea
       action.payload.dgsLeagueId,
       0,
     );
+    const leagueTree: { [dgsLeagueId: number]: ILeagueInfoModel } = yield select(getLeagueLeftInfoTree);
+    const dgsSportId = leagueTree[action.payload.dgsLeagueId].dgsLeague.idSport;
     yield put(
       selectLeagueIdSuccess({
         id: action.payload.dgsLeagueId,
-        dgsSportId: action.payload.dgsSportId,
+        dgsSportId,
         filterCombine: lueagueCombineConfig,
         defaultSelectedLineType: action.payload.defaultSelectedLineType,
       }),

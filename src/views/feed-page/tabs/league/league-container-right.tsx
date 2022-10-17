@@ -2,13 +2,14 @@ import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid } from "@mui/m
 import { Controller, useFormContext } from "react-hook-form";
 
 export default function LeagueContainerRight(props: {
+  isNewItem: boolean;
   onSyncLines: () => void;
   copyToLeague: () => void;
   onSyncTimes: () => void;
   onSyncScores: () => void;
 }) {
-  const { onSyncLines, copyToLeague, onSyncTimes, onSyncScores } = props;
-  const { control, register } = useFormContext();
+  const { onSyncLines, copyToLeague, onSyncTimes, onSyncScores, isNewItem } = props;
+  const { control } = useFormContext();
   return (
     <Box sx={{ width: "100%" }}>
       <FormGroup>
@@ -71,20 +72,21 @@ export default function LeagueContainerRight(props: {
         )}
       />
       <Grid container direction="column" justifyContent="flex-start" alignItems="baseline" sx={{ maxWidth: "200px" }}>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth onClick={() => onSyncTimes()}>
-          Sync Times
+        <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1, mb: 2 }} fullWidth color="success">
+          {isNewItem ? "Save" : "Update"}
         </Button>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth onClick={() => onSyncScores()}>
-          Sync Scores
-        </Button>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth onClick={() => onSyncLines()}>
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncLines()}>
           Sync Lines
         </Button>
-        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth onClick={() => copyToLeague()}>
-          Copy to Leagues
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncScores()}>
+          Sync Scores
         </Button>
-        <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth>
-          Apply
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncTimes()}>
+          Sync Times
+        </Button>
+
+        <Button variant="contained" sx={{ flex: 1, mt: 2 }} fullWidth onClick={() => copyToLeague()}>
+          Copy to Leagues
         </Button>
       </Grid>
       {/* <FormGroup>

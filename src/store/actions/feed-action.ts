@@ -8,7 +8,7 @@ import {
   IDgsGameEntity,
 } from "@adapters/entity";
 import { createAction } from "@reduxjs/toolkit";
-import { ISelectedGame } from "@store/models/feed-model";
+import { CurrentTabType, ISelectedGame } from "@store/models/feed-model";
 
 export interface ILeagueFetchDataPayload {
   id: number;
@@ -29,15 +29,12 @@ interface IFetchDgsGameSuccessPayload {
   list: IDgsGameEntity[];
 }
 export const selectLeagueId = "feed/SELECT_LEAGUE_ID";
-export const selectLeagueIdRequest = createAction<{ dgsLeagueId: number; dgsSportId: string | null }>(
-  "feed/SELECT_LEAGUE_ID_REQUEST",
-);
+export const selectLeagueIdRequest = createAction<{ dgsLeagueId: number }>("feed/SELECT_LEAGUE_ID_REQUEST");
 export const selectLeagueIdSuccess = createAction<ILeagueFetchDataPayload>("feed/SELECT_LEAGUE_ID_SUCCESS");
 export const selectLeagueIdNotChanged = createAction<undefined>("feed/SELECT_LEAGUE_ID_NOT_SELECT_LEAGUE_ID_NOTCHANGE");
 export const selectLeagueIdFailure = createAction<string>("feed/SELECT_LEAGUE_ID_FAILURE");
 export const selectLeagueIdRefresh = createAction<{
   dgsLeagueId: number;
-  dgsSportId: string | null;
   defaultSelectedLineType: string | null;
 }>("feed/SELECT_LEAGUE_ID_REFRESH");
 
@@ -57,6 +54,8 @@ export const expandLeagueRequest = createAction<number>("feed/EXPAND_LEAGUE_REQU
 export const expandLeagueSuccess = createAction<IFetchDgsGameSuccessPayload>("feed/EXPAND_LEAGUE_SUCCESS");
 export const expandLeagueFailure = createAction<string>("feed/EXPAND_LEAGUE_FAILURE");
 
+export const switchTabAction = createAction<CurrentTabType>("feed/SWITCH_TAB_ACTION");
+
 export type CombineFeedActionTypes =
   | ReturnType<typeof fetchLeagueInfoTreeRequest>
   | ReturnType<typeof fetchLeagueInfoTreeSuccess>
@@ -72,4 +71,5 @@ export type CombineFeedActionTypes =
   | ReturnType<typeof selectEventFilterdReFresh>
   | ReturnType<typeof expandLeagueRequest>
   | ReturnType<typeof expandLeagueSuccess>
-  | ReturnType<typeof expandLeagueFailure>;
+  | ReturnType<typeof expandLeagueFailure>
+  | ReturnType<typeof switchTabAction>;

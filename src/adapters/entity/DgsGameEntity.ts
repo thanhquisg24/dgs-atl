@@ -5,7 +5,7 @@ export interface IDgsGameEntity {
   homeTeam: string;
   idSport: string;
   idGameType: number;
-  gameDateTime: Date;
+  gameDateTime: string;
   normalGame: number;
   visitorNumber: number;
   homeNumber: number;
@@ -15,7 +15,7 @@ export interface IDgsGameEntity {
   online: boolean;
   onLocal: boolean;
   numberGame: boolean;
-  eventDate: Date;
+  eventDate: string;
   dateChanged: boolean;
   timeChanged: boolean;
   period: number;
@@ -25,10 +25,10 @@ export interface IDgsGameEntity {
   homeScore: number;
   visitorPitcher: string;
   homePitcher: string;
-  gradedDate: Date;
+  gradedDate: string;
   numTeams: number;
   pitcherChanged: number;
-  lastModification: Date;
+  lastModification: string;
   lastModificationUser: number;
   idTeamVisitor: number;
   idTeamHome: number;

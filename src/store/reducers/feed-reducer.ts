@@ -5,6 +5,7 @@ import {
   fetchLeagueInfoTreeSuccess,
   selectEventFilterSuccess,
   selectLeagueIdSuccess,
+  switchTabAction,
 } from "@store/actions/feed-action";
 import { CurrentTabType, IFeedModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
 import {
@@ -91,6 +92,12 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     newState.isLoading = false;
     return newState;
   });
+
+  builder.addCase(switchTabAction, (state, action) => {
+    state.currentTabType = action.payload;
+    return state;
+  });
+
   builder.addMatcher(
     (action) => action.type.endsWith("_REQUEST"),
     (state) => ({ ...state, isLoading: true }),

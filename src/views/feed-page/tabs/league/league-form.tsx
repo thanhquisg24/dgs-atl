@@ -1,27 +1,28 @@
-import { Grid } from "@mui/material";
-import { gridSpacing } from "@store/constant";
-import LeagueContainerLeft from "./league-container-left";
-import LeagueContainerRight from "./league-container-right";
+import { diRepositorires } from "@adapters/di";
+import { FilterTypeEnum, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
+import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
+import { Grid } from "@mui/material";
+import { selectLeagueIdRefresh } from "@store/actions";
+import { gridSpacing } from "@store/constant";
 import {
+  getDefaultFilterLineTypeSetting,
+  getDefaultFilterPeriodSetting,
   getLeagueLeftInfoTree,
-  getSelectedLeagueId,
   getListLineType,
   getListSportBook,
   getSelectedLeague,
-  getDefaultFilterPeriodSetting,
-  getDefaultFilterLineTypeSetting,
+  getSelectedLeagueId,
 } from "@store/selector";
-import React from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { shallowEqual } from "react-redux";
 import { RootStateType } from "@store/types";
-import { selectLeagueIdRefresh, selectLeagueIdRequest } from "@store/actions";
-import { FilterTypeEnum, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
+import { checkExistsItemIntree } from "@utils/index";
 import { get, omit } from "lodash";
+import React from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { shallowEqual } from "react-redux";
+import LeagueContainerLeft from "./league-container-left";
+import LeagueContainerRight from "./league-container-right";
 import LeagueFormLegend from "./misc/league-form-legend";
-import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
-import { diRepositorires } from "@adapters/di";
 import LeagueIgnore from "./misc/league-ignore";
 import LeagueLockOdds from "./misc/league-lock-odds";
 // Loading
@@ -95,14 +96,10 @@ function LeagueformContent() {
   const watchBookId = hookForm.watch("dbSportsBookId");
 
   const dispatch = useAppDispatch();
-  React.useEffect(() => {
-    if (watchdgsLeagueId && watchdgsLeagueId !== -1) {
-      dispatch(selectLeagueIdRequest({ dgsLeagueId: watchdgsLeagueId, dgsSportId: selectedLeagueData.dgsSportId }));
-    }
-  }, [dispatch, selectedLeagueData.dgsSportId, watchdgsLeagueId]);
 
   React.useEffect(() => {
     const dgsLeagueId = selectedLeagueData.dgsLeagueId ? selectedLeagueData.dgsLeagueId : -1;
+    // console.log("🚀 ~ file: league-form.tsx ~ line 108 ~ React.useEffect ~ dgsLeagueId", dgsLeagueId);
     const itemTmp = selectedLeagueData.defaultSelectedLineType
       ? get(selectedLeagueData.mapFilterLineTypeConfig, selectedLeagueData.defaultSelectedLineType)
       : null;
@@ -119,11 +116,8 @@ function LeagueformContent() {
       hookForm.reset({ ...item, periodConfig: itemPeriods, dbSportsBookId });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    selectedLeagueData.dgsLeagueId,
-    selectedLeagueData.defaultSelectedLineType,
-    selectedLeagueData.mapFilterLineTypeConfig,
-  ]);
+  }, [selectedLeagueData.dgsLeagueId]);
+
   React.useEffect(() => {
     const itemTmp = get(selectedLeagueData.mapFilterLineTypeConfig, watchLineTypeId);
     const item: IFilterLineTypeEntity | null = itemTmp || null;
@@ -185,7 +179,6 @@ function LeagueformContent() {
           selectLeagueIdRefresh({
             dgsLeagueId: watchdgsLeagueId,
             defaultSelectedLineType: `${data.lineTypeId}`,
-            dgsSportId: "",
           }),
         );
         notifyMessageSuccess("Save success!");
@@ -241,12 +234,14 @@ function LeagueformContent() {
                 leagueInfoList={Object.values(leagueInfoTree)}
                 listLineType={listLineType}
                 listSportBook={listSportBook}
+                savedLineTypeConfig={selectedLeagueData.mapFilterLineTypeConfig}
               />
               <LeagueIgnore />
               <LeagueLockOdds />
             </Grid>
             <Grid item md={2}>
               <LeagueContainerRight
+                isNewItem={checkExistsItemIntree(selectedLeagueData.mapFilterLineTypeConfig, watchLineTypeId)}
                 onSyncLines={onSyncLines}
                 copyToLeague={copyToLeague}
                 onSyncTimes={onSyncTimes}

@@ -1,6 +1,9 @@
 import { IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
+import { useAppDispatch } from "@hooks/useReduxToolKit";
 import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from "@mui/material";
-import { ILeagueInfoModel } from "@store/models/feed-model";
+import { selectLeagueIdRequest } from "@store/actions";
+import { ILeagueInfoModel, IMapFilterLineTypeConfig } from "@store/models/feed-model";
+import { checkExistsItemIntree } from "@utils/index";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { LeagueOddsRow } from "./league-odds-row";
 
@@ -8,12 +11,22 @@ interface IProps {
   leagueInfoList: ILeagueInfoModel[];
   listLineType: IDgsLineTypeEntity[];
   listSportBook: IDonbestSportBookEntity[];
+  savedLineTypeConfig: IMapFilterLineTypeConfig | null;
+}
+
+function CustomTextInSelectBox(props: { text: string; tree: any; itemKey: string | number }) {
+  const { text, tree, itemKey } = props;
+  return checkExistsItemIntree(tree, itemKey) ? <b>{text}</b> : <>{text}</>;
 }
 
 function SportBookSelect(props: IProps) {
-  const { leagueInfoList, listLineType, listSportBook } = props;
+  const { leagueInfoList, listLineType, listSportBook, savedLineTypeConfig } = props;
   const { control } = useFormContext();
-
+  const dispatch = useAppDispatch();
+  const onChangeSelectLeague = (e: any) => {
+    const { value } = e.target;
+    dispatch(selectLeagueIdRequest({ dgsLeagueId: value }));
+  };
   return (
     <Grid container spacing={1}>
       <Grid item md={5}>
@@ -24,7 +37,12 @@ function SportBookSelect(props: IProps) {
             required: "This Field is Required",
           }}
           render={({ field }) => (
-            <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
+            <Select
+              {...field}
+              onChange={(e) => onChangeSelectLeague(e)}
+              inputProps={{ "aria-label": "Without label" }}
+              fullWidth
+            >
               <MenuItem value={-1}>Select league...</MenuItem>
               {leagueInfoList.map((item) => (
                 <MenuItem key={item.dgsLeague.idLeague} value={item.dgsLeague.idLeague}>
@@ -47,7 +65,7 @@ function SportBookSelect(props: IProps) {
               <MenuItem value={0}>Select linetype...</MenuItem>
               {listLineType.map((item) => (
                 <MenuItem key={item.idLineType} value={item.idLineType}>
-                  {item.description}
+                  <CustomTextInSelectBox text={item.description} tree={savedLineTypeConfig} itemKey={item.idLineType} />
                 </MenuItem>
               ))}
             </Select>
@@ -117,7 +135,7 @@ function SportBookSelect(props: IProps) {
 }
 
 export default function LeagueContainerLeft(props: IProps) {
-  const { leagueInfoList, listLineType, listSportBook } = props;
+  const { leagueInfoList, listLineType, listSportBook, savedLineTypeConfig } = props;
   const { control } = useFormContext();
   const { fields } = useFieldArray({
     control,
@@ -125,7 +143,12 @@ export default function LeagueContainerLeft(props: IProps) {
   });
   return (
     <Box sx={{ width: "100%" }}>
-      <SportBookSelect leagueInfoList={leagueInfoList} listLineType={listLineType} listSportBook={listSportBook} />
+      <SportBookSelect
+        leagueInfoList={leagueInfoList}
+        listLineType={listLineType}
+        listSportBook={listSportBook}
+        savedLineTypeConfig={savedLineTypeConfig}
+      />
       {/* <LeagueOddTitle /> */}
       {fields.map((item, index) => (
         <LeagueOddsRow
