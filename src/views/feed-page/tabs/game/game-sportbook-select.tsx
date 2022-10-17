@@ -1,15 +1,16 @@
-import { IDgsLineTypeEntity } from "@adapters/entity";
-import { FormControl, Grid, MenuItem, Select, Typography } from "@mui/material";
+import { IDgsLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
+import { FormControl, Grid, MenuItem, Select } from "@mui/material";
 import { Controller, useFormContext } from "react-hook-form";
 
-export default function GameSportbookSelect(props: { listLineType: IDgsLineTypeEntity[] }) {
-  const { listLineType } = props;
+export default function GameSportbookSelect(props: {
+  listLineType: IDgsLineTypeEntity[];
+  eventFilterPeriodConfig: IFilterPeriodEntity[];
+}) {
+  const { listLineType, eventFilterPeriodConfig } = props;
   const { control } = useFormContext();
   return (
     <Grid container spacing={1}>
-      <Grid item md={4}>
-        <Typography variant="h6">(00 :00 / 07:00)</Typography>
-      </Grid>
+      <Grid item md={4}></Grid>
       <Grid item md={5}>
         <FormControl size="small" fullWidth>
           <Controller
@@ -23,7 +24,11 @@ export default function GameSportbookSelect(props: { listLineType: IDgsLineTypeE
                 <MenuItem value={0}>Select linetype...</MenuItem>
                 {listLineType.map((item) => (
                   <MenuItem key={item.idLineType} value={item.idLineType}>
-                    {item.description}
+                    {eventFilterPeriodConfig.length > 0 && eventFilterPeriodConfig[0].lineTypeId === item.idLineType ? (
+                      <b>{item.description}</b>
+                    ) : (
+                      item.description
+                    )}
                   </MenuItem>
                 ))}
               </Select>

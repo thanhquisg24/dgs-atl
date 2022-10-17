@@ -8,6 +8,7 @@ import {
   convertFilterCombineResult,
   IFilterPeriodEntity,
 } from "@adapters/entity";
+import { IEventFilterEntity } from "@adapters/entity/EventFilterEntity";
 import { AxiosResponse } from "axios";
 import { BaseRepository } from "./base-repository";
 
@@ -17,7 +18,7 @@ export interface IDonbestFilterRepository {
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
   postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<boolean>;
   postSaveEventFilter(payload: IFilterPeriodEntity): Promise<boolean>;
-  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IFilterPeriodEntity[]>;
+  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IEventFilterEntity>;
   postSyncLines(dgsIdLeague: number): Promise<boolean>;
   postSyncOdds(dgsIdGame: number): Promise<boolean>;
 }
@@ -52,14 +53,14 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
     });
   }
 
-  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IFilterPeriodEntity[]> {
+  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IEventFilterEntity> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
         .fetEventFilter(dgsLeagueId, dgsGameId)
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            const map: IFilterPeriodEntity[] = data;
+            const map: IEventFilterEntity = data;
             resolve(map);
           } else {
             reject(new Error(`Error HTTP status code ${res.status}`));

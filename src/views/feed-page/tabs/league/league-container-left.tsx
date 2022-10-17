@@ -13,12 +13,10 @@ interface IProps {
   listSportBook: IDonbestSportBookEntity[];
   savedLineTypeConfig: IMapFilterLineTypeConfig | null;
 }
-
 function CustomTextInSelectBox(props: { text: string; tree: any; itemKey: string | number }) {
   const { text, tree, itemKey } = props;
   return checkExistsItemIntree(tree, itemKey) ? <b>{text}</b> : <>{text}</>;
 }
-
 function SportBookSelect(props: IProps) {
   const { leagueInfoList, listLineType, listSportBook, savedLineTypeConfig } = props;
   const { control } = useFormContext();

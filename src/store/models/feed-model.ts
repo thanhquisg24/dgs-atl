@@ -48,6 +48,7 @@ export interface ISelectedGame {
   eventFilterPeriodConfig: IFilterPeriodEntity[];
   gameWithLeague: IDgsGameEntityWithLeague | null;
   defaultSelectedLineType: string | null;
+  eventLineTypes: IDgsLineTypeEntity[];
 }
 interface IFeedUiAction {
   selectedDgsLeague: {

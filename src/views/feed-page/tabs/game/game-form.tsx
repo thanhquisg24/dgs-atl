@@ -1,20 +1,19 @@
 import { diRepositorires } from "@adapters/di";
-import { FilterTypeEnum, IDgsGameEntityWithLeague, IFilterPeriodEntity } from "@adapters/entity";
+import { FilterTypeEnum, IDgsGameEntityWithLeague, IDgsLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
-import { useAppSelector, useAppDispatch } from "@hooks/useReduxToolKit";
+import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { Button, Grid, Typography } from "@mui/material";
-import { selectEventFilterdRequest, selectEventFilterdReFresh } from "@store/actions";
+import { selectEventFilterdReFresh } from "@store/actions";
 import { gridSpacing } from "@store/constant";
-import { getFeedLoading, getListLineType, getListSportBook, getSelectedGame } from "@store/selector";
-import { RootStateType } from "@store/types";
+import { getFeedLoading, getListSportBook, getSelectedGame } from "@store/selector";
 import { find } from "lodash";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { shallowEqual } from "react-redux";
 import { GameOddsRow } from "./game-odds-row";
 import GameSportbookSelect from "./game-sportbook-select";
 
 interface IProps {
+  eventLineTypes: IDgsLineTypeEntity[];
   eventFilterPeriodConfig: IFilterPeriodEntity[];
   gameWithLeague: IDgsGameEntityWithLeague;
   defaultSelectedLineType: string | null;
@@ -50,12 +49,9 @@ const defaultValues: IGameFromValue = {
 };
 
 function GameFromBody(props: IProps) {
-  const { eventFilterPeriodConfig, gameWithLeague, defaultSelectedLineType } = props;
+  const { eventFilterPeriodConfig, gameWithLeague, defaultSelectedLineType, eventLineTypes } = props;
   const dispatch = useAppDispatch();
-  const [listLineType, listSportBook] = useAppSelector(
-    (reduxState: RootStateType) => [getListLineType(reduxState), getListSportBook(reduxState)],
-    shallowEqual,
-  );
+  const listSportBook = useAppSelector(getListSportBook);
   const hookForm = useForm({ defaultValues });
   const watchLineTypeId = hookForm.watch("lineTypeId");
 
@@ -126,11 +122,6 @@ function GameFromBody(props: IProps) {
     }
   };
 
-  const onUseDefault = (): void => {
-    // eslint-disable-next-line no-alert
-    alert("UseDefault");
-  };
-
   return (
     <fieldset>
       <legend>
@@ -139,8 +130,8 @@ function GameFromBody(props: IProps) {
       <FormProvider {...hookForm}>
         <form onSubmit={hookForm.handleSubmit(onSubmit)}>
           <Grid spacing={gridSpacing} container>
-            <Grid item md={8}>
-              <GameSportbookSelect listLineType={listLineType} />
+            <Grid item md={9}>
+              <GameSportbookSelect listLineType={eventLineTypes} eventFilterPeriodConfig={eventFilterPeriodConfig} />
               <GameOddsRow listSportBook={listSportBook} />
               <Typography variant="h6" color="secondary" sx={{ mt: 3.5 }}>
                 This event uses the league setting
@@ -148,17 +139,15 @@ function GameFromBody(props: IProps) {
               {/* <Grid item md={12} sx={{ mt: 3.5, mb: 3.5 }}>
           </Grid> */}
             </Grid>
-            <Grid item md={4}></Grid>
+            <Grid item md={3}></Grid>
           </Grid>
           <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
             <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onSyncOdds()}>
               Sync Odds
             </Button>
-            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onUseDefault()}>
-              Use Default
-            </Button>
+
             <Button type="submit" variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
-              Apply
+              Save
             </Button>
           </Grid>
         </form>
@@ -174,12 +163,13 @@ function GameFormWithLoading(props: IProps) {
 
 export function GameForm() {
   const gameSelected = useAppSelector(getSelectedGame);
-  const { gameWithLeague, eventFilterPeriodConfig, defaultSelectedLineType } = gameSelected;
+  const { gameWithLeague, eventFilterPeriodConfig, defaultSelectedLineType, eventLineTypes } = gameSelected;
   return gameWithLeague !== null ? (
     <GameFormWithLoading
       gameWithLeague={gameWithLeague}
       eventFilterPeriodConfig={eventFilterPeriodConfig}
       defaultSelectedLineType={defaultSelectedLineType}
+      eventLineTypes={eventLineTypes}
     />
   ) : (
     <b>Please Select game!</b>

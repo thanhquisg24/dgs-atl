@@ -16,7 +16,12 @@ import {
 } from "@store/utils/feed-utils";
 
 export const initialFeedState: IFeedModel = {
-  selectedGame: { eventFilterPeriodConfig: [], gameWithLeague: null, defaultSelectedLineType: null },
+  selectedGame: {
+    eventFilterPeriodConfig: [],
+    gameWithLeague: null,
+    defaultSelectedLineType: null,
+    eventLineTypes: [],
+  },
   isLoading: false,
   currentTabType: CurrentTabType.LEAGUE,
   selectedDgsLeague: {

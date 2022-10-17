@@ -73,7 +73,6 @@ function* fetchSelectedDgsLeaguesSaga(action: ReturnType<typeof selectLeagueIdRe
       yield put(selectLeagueIdNotChanged());
     }
   } catch (error) {
-    console.log("🚀 ~ file: feed-saga.ts ~ line 75 ~ function*fetchSelectedDgsLeaguesSaga ~ error", error);
     yield put(selectLeagueIdFailure("Fetch DgsLeagues fail!"));
     notifyMessageError("Fetch DgsLeagues fail!");
   }
@@ -129,7 +128,8 @@ function* fetchFilterEventSaga(action: ReturnType<typeof selectEventFilterdReque
     const { dgsLeagueId, idGame } = action.payload;
     const eventPeriodFilters = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
     const data = {
-      eventFilterPeriodConfig: eventPeriodFilters,
+      eventFilterPeriodConfig: eventPeriodFilters.eventFilterPeriod,
+      eventLineTypes: eventPeriodFilters.eventLineTypes,
       gameWithLeague: action.payload,
       defaultSelectedLineType: eventPeriodFilters.length > 0 ? eventPeriodFilters[0].lineTypeId : null,
     };
@@ -148,7 +148,8 @@ function* fetchFilterEventRefreshSaga(action: ReturnType<typeof selectEventFilte
     const { dgsLeagueId, idGame } = action.payload.gameWithLeague;
     const eventPeriodFilters = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
     const data = {
-      eventFilterPeriodConfig: eventPeriodFilters,
+      eventFilterPeriodConfig: eventPeriodFilters.eventFilterPeriod,
+      eventLineTypes: eventPeriodFilters.eventLineTypes,
       gameWithLeague: action.payload.gameWithLeague,
       defaultSelectedLineType: action.payload.defaultSelectedLineType,
     };
