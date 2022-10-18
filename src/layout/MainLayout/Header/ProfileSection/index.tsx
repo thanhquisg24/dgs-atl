@@ -26,9 +26,10 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 // material-ui
-import { useAppDispatch } from "@hooks/useReduxToolKit";
+import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { useTheme } from "@mui/material/styles";
 import { doLogoutRequest } from "@store/actions/auth-action";
+import { getAuthSelector } from "@store/selector";
 
 // ==============================|| PROFILE MENU ||============================== //
 
@@ -39,6 +40,7 @@ const ProfileSection = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [open, setOpen] = useState(false);
   const dispatch = useAppDispatch();
+  const auth = useAppSelector(getAuthSelector);
   /**
    * anchorRef is used on different componets and specifying one type leads to other components throwing an error
    * */
@@ -146,9 +148,9 @@ const ProfileSection = () => {
                   <Box sx={{ p: 2 }}>
                     <Stack>
                       <Stack direction="row" spacing={0.5} alignItems="center">
-                        <Typography variant="h4">Good Morning,</Typography>
+                        <Typography variant="h4">Hello,</Typography>
                         <Typography component="span" variant="h4" sx={{ fontWeight: 400 }}>
-                          Johne Doe
+                          {auth.currentUser?.username}
                         </Typography>
                       </Stack>
                       <Typography variant="subtitle2">Project Admin</Typography>

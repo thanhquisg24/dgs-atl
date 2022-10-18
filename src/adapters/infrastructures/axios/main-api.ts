@@ -1,10 +1,10 @@
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
 import { IFilterPeriodEntity } from "@adapters/entity";
-import axios, { AxiosResponse } from "axios";
-import { AuthApi, IAuthApi } from "./auth-api";
-import queryString from "query-string";
-import customAxios from "./customeAxios";
 import { ISportMapping } from "@adapters/entity/SportMappingEntity";
+import { AxiosResponse } from "axios";
+import queryString from "query-string";
+import { AuthApi, IAuthApi } from "./auth-api";
+import customAxios from "./customeAxios";
 
 export interface IItemLeagueMapPost {
   dbSportId: number;
@@ -56,14 +56,14 @@ class MainApi extends AuthApi implements IMainApi {
     const xFromData = queryString.stringify({
       dgsIdLeague,
     });
-    return axios.post("/dgs/line/sync-league", xFromData);
+    return this.Axios.post("/db-filter/sync-league", xFromData);
   }
 
   postSyncOdds(dgsIdGame: number): Promise<AxiosResponse<any, any>> {
     const xFromData = queryString.stringify({
       dgsIdGame,
     });
-    return axios.post("/dgs/line/sync-game", xFromData);
+    return this.Axios.post("/db-filter/sync-game", xFromData);
   }
 
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<AxiosResponse<any, any>> {

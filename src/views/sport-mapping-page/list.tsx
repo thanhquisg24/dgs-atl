@@ -3,7 +3,7 @@ import { diRepositorires } from "@adapters/di";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useDataProvider } from "@hooks/useDataProvider";
 import { Edit } from "@mui/icons-material";
-import { IconButton, Typography } from "@mui/material";
+import { IconButton } from "@mui/material";
 
 // project imports
 import MainCard from "@ui-component/cards/MainCard";
@@ -27,7 +27,7 @@ const ListSportMappingPage = () => {
   const tableRef = React.createRef<any>();
   const dataProvider = useDataProvider();
   const getData = (query: any): any =>
-    new Promise((resolve, reject) => {
+    new Promise((resolve) => {
       dataProvider
         .getList("sport-mapping", {
           pagination: {

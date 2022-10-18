@@ -24,8 +24,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import useScriptRef from "../../../../hooks/useScriptRef";
 // material-ui
-import { useTheme } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
+import { useTheme } from "@mui/material/styles";
 import { doLoginRequest, ILoginPayload } from "@store/actions/auth-action";
 import { getAuthSelector } from "@store/selector/auth-selectors";
 
@@ -103,37 +103,37 @@ const FirebaseLogin = ({ ...others }) => {
 
       <Formik
         initialValues={{
-          email: "info@codedthemes.com",
-          password: "123456",
+          username: "cliff",
+          password: "esca888",
           submit: null,
         }}
         validationSchema={Yup.object().shape({
-          email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
+          username: Yup.string().max(255).required("username is required"),
           password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={handleSubmit}
       >
-        {({ errors, handleBlur, handleChange, handleSubmit, isSubmitting, touched, values }) => (
+        {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
             <FormControl
               fullWidth
-              error={Boolean(touched.email && errors.email)}
+              error={Boolean(touched.username && errors.username)}
               sx={{ ...theme.typography.customInput }}
             >
-              <InputLabel htmlFor="outlined-adornment-email-login">Username</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-username-login">Username</InputLabel>
               <OutlinedInput
-                id="outlined-adornment-email-login"
+                id="outlined-adornment-username-login"
                 type="text"
-                value={values.email}
+                value={values.username}
                 name="username"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 label="Username"
                 inputProps={{}}
               />
-              {touched.email && errors.email && (
-                <FormHelperText error id="standard-weight-helper-text-email-login">
-                  {errors.email}
+              {touched.username && errors.username && (
+                <FormHelperText error id="standard-weight-helper-text-username-login">
+                  {errors.username}
                 </FormHelperText>
               )}
             </FormControl>

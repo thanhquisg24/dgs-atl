@@ -1,7 +1,7 @@
 // material-ui
 
 // project imports
-import { CardContent, Divider, Grid, Typography } from "@mui/material";
+import { CardContent, Grid } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 import MainCard from "@ui-component/cards/MainCard";
 import CustomizedTreeView from "./tree-view";

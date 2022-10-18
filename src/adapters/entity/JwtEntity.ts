@@ -1,8 +1,6 @@
-import { IBaseEntity } from "./BaseEntity";
-
-export interface IJwtEntity extends IBaseEntity {
+export interface IJwtEntity {
   token: string;
   type: string;
   refreshToken: string;
-  tokenExpiration: number;
+  tokenExpiration?: number;
 }

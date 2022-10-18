@@ -1,13 +1,14 @@
 import { IJwtEntity, IUserEntity } from "@adapters/entity";
+import { setAxiosHeaderAuth } from "@adapters/infrastructures/axios/customeAxios";
 import { IAuthRepository } from "@adapters/repositories/auth-repository";
 import { AxiosResponse } from "axios";
 import { diInfrastructures } from "../di/index";
 
 export interface IAuthUseCase {
   postLogin(username: string, password: string): Promise<IUserEntity>;
-  postLogout(userId: number): Promise<string>;
+  postLogout(username: string): Promise<string>;
   postRefreshToken(refreshToken: string): Promise<IJwtEntity>;
-  getCheckToken(token: string): Promise<boolean>;
+  postCheckToken(token: string): Promise<boolean>;
   checkInitLocalStorageLogin(): Promise<IUserEntity>;
 }
 export class AuthUseCase implements IAuthUseCase {
@@ -19,26 +20,24 @@ export class AuthUseCase implements IAuthUseCase {
 
   checkInitLocalStorageLogin(): Promise<IUserEntity> {
     const store = diInfrastructures.webStorage.getToken();
-    console.log("🚀 ~ file: auth-usecase.ts ~ line 22 ~ AuthUseCase ~ checkInitLocalStorageLogin ~ store", store);
     if (store === null) {
-      return Promise.reject(new Error("Not found token in sore "));
+      return Promise.reject(new Error("Not found token in store "));
     }
+    setAxiosHeaderAuth(store.token);
     return new Promise((resolve, reject) => {
       this.repository
-        .getCheckToken(store.token)
+        .postCheckToken(store.refreshToken)
         .then((res: AxiosResponse) => {
           console.log("🚀 ~ file: auth-usecase.ts ~ line 30 ~ AuthUseCase ~ .then ~ res", res);
           if (res.status === 200) {
-            const { data } = res;
-            if (data._rcode === "SUCCESS") {
-              const user: IUserEntity = {
-                ...data,
-                ...store,
-                tokenExpiration: 3600,
-                type: "Bearer ",
-              };
-              resolve(user);
-            }
+            // const { data } = res;
+            const user: IUserEntity = {
+              // ...data,
+              ...store,
+              type: "Bearer ",
+            };
+            console.log("🚀 ~ file: auth-usecase.ts ~ line 34 ~ AuthUseCase ~ .then ~ user", user);
+            resolve(user);
           }
           reject(new Error(`CheckToken Error HTTP status code ${res.status}`));
         })
@@ -46,8 +45,8 @@ export class AuthUseCase implements IAuthUseCase {
     });
   }
 
-  private storeAuth(token: string, refreshToken: string): void {
-    diInfrastructures.webStorage.addToken(token, refreshToken);
+  private storeAuth(token: string, refreshToken: string, username: string): void {
+    diInfrastructures.webStorage.addToken(token, refreshToken, username);
   }
 
   private removeAuth(): void {
@@ -61,10 +60,9 @@ export class AuthUseCase implements IAuthUseCase {
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            if (data._rcode === "SUCCESS") {
-              this.storeAuth(res.data.token, res.data.refreshToken);
-              resolve(res.data);
-            }
+            this.storeAuth(data.token, data.refreshToken, data.username);
+            setAxiosHeaderAuth(data.token);
+            resolve(data);
           }
           reject(new Error(`Login Error HTTP status code ${res.status}`));
         })
@@ -72,17 +70,15 @@ export class AuthUseCase implements IAuthUseCase {
     });
   }
 
-  postLogout(userId: number): Promise<string> {
+  postLogout(username: string): Promise<string> {
     return new Promise((resolve, reject) => {
       this.repository
-        .postLogout(userId)
+        .postLogout(username)
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
-            const { data } = res;
-            if (data._rcode === "SUCCESS") {
-              this.removeAuth();
-              resolve("Logout Success!");
-            }
+            this.removeAuth();
+            setAxiosHeaderAuth("");
+            resolve("Logout Success!");
           }
           reject(new Error(`Logout Error HTTP status code ${res.status}`));
         })
@@ -97,10 +93,8 @@ export class AuthUseCase implements IAuthUseCase {
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            if (data._rcode === "SUCCESS") {
-              this.storeAuth(res.data.accessToken, res.data.refreshToken);
-              resolve(res.data);
-            }
+            diInfrastructures.webStorage.setToken(data.accessToken, data.refreshToken);
+            resolve(res.data);
           }
           reject(new Error(`RefreshToken Error HTTP status code ${res.status}`));
         })
@@ -108,16 +102,13 @@ export class AuthUseCase implements IAuthUseCase {
     });
   }
 
-  getCheckToken(token: string): Promise<boolean> {
+  postCheckToken(token: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.repository
-        .getCheckToken(token)
+        .postCheckToken(token)
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
-            const { data } = res;
-            if (data._rcode === "SUCCESS") {
-              resolve(true);
-            }
+            resolve(true);
           }
           reject(new Error(`CheckToken Error HTTP status code ${res.status}`));
         })

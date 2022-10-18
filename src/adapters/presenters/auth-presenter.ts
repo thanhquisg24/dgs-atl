@@ -17,15 +17,15 @@ export class AuthPresenter implements IAuthPresenter {
     return this.useCase.postLogin(username, password);
   }
 
-  postLogout(userId: number): Promise<string> {
-    return this.useCase.postLogout(userId);
+  postLogout(username: string): Promise<string> {
+    return this.useCase.postLogout(username);
   }
 
   postRefreshToken(refreshToken: string): Promise<IJwtEntity> {
     return this.useCase.postRefreshToken(refreshToken);
   }
 
-  getCheckToken(token: string): Promise<boolean> {
-    return this.useCase.getCheckToken(token);
+  postCheckToken(token: string): Promise<boolean> {
+    return this.useCase.postCheckToken(token);
   }
 }

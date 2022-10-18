@@ -6,6 +6,7 @@ import {
   doLoginFailure,
   doLoginRequest,
   doLoginSuccess,
+  doLogoutFailure,
   doLogoutRequest,
   doLogoutSuccess,
   doRefreshTokenFailure,
@@ -27,13 +28,13 @@ import { delay, put, select, takeLatest } from "redux-saga/effects";
 // };
 function* loginSaga(action: ReturnType<typeof doLoginRequest>): Generator | any {
   try {
-    yield delay(1000);
+    // yield delay(1000);
     const resData: IUserEntity = yield presenter.auth.postLogin(action.payload.username, action.payload.password);
     yield put(doLoginSuccess(resData));
-    yield delay(2000);
+    yield delay(1000 * 60 * 60 * 5); //interval refresh 5 hour
     yield put(doRefreshTokenRequest(resData.refreshToken));
   } catch (error) {
-    // yield put(doLoginFailure("Login fail!"));
+    yield put(doLoginFailure("Login fail!"));
     notifyMessageError("Login fail!");
   }
 }
@@ -41,12 +42,11 @@ function* loginSaga(action: ReturnType<typeof doLoginRequest>): Generator | any 
 function* logoutSaga(): Generator | any {
   try {
     const auth: IAuthModel = yield select(getAuthSelector);
-    const userId = auth.currentUser ? auth.currentUser.userId : 0;
-    console.log("🚀 ~ file: auth-saga.ts ~ line 42 ~ function*logoutSaga ~ userId", userId);
-    yield presenter.auth.postLogout(userId);
+    const username = auth.currentUser ? auth.currentUser.username : "";
+    yield presenter.auth.postLogout(username);
     yield put(doLogoutSuccess());
   } catch (error) {
-    // yield put(doLogoutFailure("Logout fail!"));
+    yield put(doLogoutFailure("Logout fail!"));
     notifyMessageError("Logout fail!");
   }
 }
@@ -59,7 +59,7 @@ function* refreshTokenSaga(action: ReturnType<typeof doRefreshTokenRequest>): Ge
     yield put(doRefreshTokenSuccess(refreshData));
     yield put(doRefreshTokenRequest(refreshData.refreshToken));
   } catch (error) {
-    // yield put(doRefreshTokenFailure("Refresh token fail!"));
+    yield put(doRefreshTokenFailure("Refresh token fail!"));
     notifyMessageError("Refresh token fail!");
   }
 }
@@ -72,7 +72,7 @@ function* initAuthTokenSaga(): Generator | any {
     yield put(doLoginSuccess(user));
   } catch (error) {
     yield put(doLoginFailure(error.message));
-    // notifyMessageError(error.message);
+    notifyMessageError(error.message);
   }
 }
 

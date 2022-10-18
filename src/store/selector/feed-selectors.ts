@@ -1,6 +1,5 @@
 import {
   defaultNHLPeriods,
-  IDgsGameEntityWithLeague,
   IDgsLineTypeEntity,
   IDonbestSportBookEntity,
   IFilterLineTypeEntity,

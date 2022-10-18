@@ -59,7 +59,6 @@ const EditLeagueMapping = () => {
   const { gotoPage } = useRouteFunc();
   const {
     control,
-    setValue,
     handleSubmit,
     watch,
     reset,
@@ -110,7 +109,7 @@ const EditLeagueMapping = () => {
     };
     diRepositorires.donbestLeague
       .postSaveLeagueMapping(row)
-      .then((result) => {
+      .then(() => {
         notifyMessageSuccess("Save successfull!");
         gotoPage("/league-page-list");
       })
