@@ -45,9 +45,9 @@ interface IFeedBaseDataFetched {
   defaultFilterCombine: IFilterCombine | null;
 }
 export interface ISelectedGame {
-  eventFilterPeriodConfig: IFilterPeriodEntity[];
+  mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
   gameWithLeague: IDgsGameEntityWithLeague | null;
-  defaultSelectedLineType: string | null;
+  defaultSelectedLineType: string | null | number;
   eventLineTypes: IDgsLineTypeEntity[];
 }
 interface IFeedUiAction {
@@ -56,7 +56,7 @@ interface IFeedUiAction {
     dgsSportId: string | null;
     mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null;
     mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
-    defaultSelectedLineType: string | null;
+    defaultSelectedLineType: string | null | number;
   };
   selectedGame: ISelectedGame;
   isLoading: boolean;

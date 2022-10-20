@@ -22,7 +22,7 @@ interface IApiPostType {
   putActiveItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
   putDisabledItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
   postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<AxiosResponse>;
-  postSaveEventFilter(payload: IFilterPeriodEntity): Promise<AxiosResponse>;
+  postSaveEventFilters(payload: IFilterPeriodEntity[]): Promise<AxiosResponse>;
   postSyncLines(dgsIdLeague: number): Promise<AxiosResponse>;
   postSyncOdds(dgsIdGame: number): Promise<AxiosResponse>;
 }
@@ -81,7 +81,7 @@ class MainApi extends AuthApi implements IMainApi {
     });
   }
 
-  postSaveEventFilter(payload: IFilterPeriodEntity): Promise<AxiosResponse<any, any>> {
+  postSaveEventFilters(payload: IFilterPeriodEntity[]): Promise<AxiosResponse<any, any>> {
     return this.Axios.post("/db-filter/save-filter-event", payload);
   }
 

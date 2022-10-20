@@ -17,7 +17,7 @@ import {
 
 export const initialFeedState: IFeedModel = {
   selectedGame: {
-    eventFilterPeriodConfig: [],
+    mapFilterPeriodConfig: null,
     gameWithLeague: null,
     defaultSelectedLineType: null,
     eventLineTypes: [],
@@ -82,7 +82,15 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
 
   builder.addCase(selectEventFilterSuccess, (state, action) => {
     state.currentTabType = CurrentTabType.GAME;
-    state.selectedGame = action.payload;
+    const mapFilterPeriodConfig: IMapFilterPeriodConfig | null = buildMapFilterPeriod(
+      action.payload.eventFilterPeriodConfig,
+    );
+    state.selectedGame = {
+      mapFilterPeriodConfig,
+      gameWithLeague: action.payload.gameWithLeague,
+      defaultSelectedLineType: action.payload.defaultSelectedLineType,
+      eventLineTypes: action.payload.eventLineTypes,
+    };
     state.isLoading = false;
     return state;
   });

@@ -1,19 +1,20 @@
 import {
-  IDonbestLeagueEntity,
+  IDgsGameEntity,
+  IDgsGameEntityWithLeague,
   IDgsLeagueEntity,
   IDgsLineTypeEntity,
+  IDonbestLeagueEntity,
   IDonbestSportBookEntity,
   IFilterCombine,
-  IDgsGameEntityWithLeague,
-  IDgsGameEntity,
+  IFilterPeriodEntity,
 } from "@adapters/entity";
 import { createAction } from "@reduxjs/toolkit";
-import { CurrentTabType, ISelectedGame } from "@store/models/feed-model";
+import { CurrentTabType } from "@store/models/feed-model";
 
 export interface ILeagueFetchDataPayload {
   id: number;
   dgsSportId: string | null;
-  defaultSelectedLineType: string | null;
+  defaultSelectedLineType: string | null | number;
   filterCombine: IFilterCombine | null;
 }
 export interface IInitConfigFeed {
@@ -28,6 +29,12 @@ interface IFetchDgsGameSuccessPayload {
   dbLeagueId: number;
   list: IDgsGameEntity[];
 }
+interface IFetchEventPeriodSuccess {
+  eventFilterPeriodConfig: IFilterPeriodEntity[];
+  gameWithLeague: IDgsGameEntityWithLeague | null;
+  defaultSelectedLineType: string | null | number;
+  eventLineTypes: IDgsLineTypeEntity[];
+}
 export const selectLeagueId = "feed/SELECT_LEAGUE_ID";
 export const selectLeagueIdRequest = createAction<{ dgsLeagueId: number }>("feed/SELECT_LEAGUE_ID_REQUEST");
 export const selectLeagueIdSuccess = createAction<ILeagueFetchDataPayload>("feed/SELECT_LEAGUE_ID_SUCCESS");
@@ -35,15 +42,15 @@ export const selectLeagueIdNotChanged = createAction<undefined>("feed/SELECT_LEA
 export const selectLeagueIdFailure = createAction<string>("feed/SELECT_LEAGUE_ID_FAILURE");
 export const selectLeagueIdRefresh = createAction<{
   dgsLeagueId: number;
-  defaultSelectedLineType: string | null;
+  defaultSelectedLineType: string | number | null;
 }>("feed/SELECT_LEAGUE_ID_REFRESH");
 
 export const selectEventFilterdRequest = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_REQUEST");
-export const selectEventFilterSuccess = createAction<ISelectedGame>("feed/SELECT_GAME_ID_SUCCESS");
+export const selectEventFilterSuccess = createAction<IFetchEventPeriodSuccess>("feed/SELECT_GAME_ID_SUCCESS");
 export const selectEventFilterFailure = createAction<string>("feed/SELECT_GAME_ID_FAILURE");
 export const selectEventFilterdReFresh = createAction<{
   gameWithLeague: IDgsGameEntityWithLeague;
-  defaultSelectedLineType: string | null;
+  defaultSelectedLineType: string | null | number;
 }>("feed/SELECT_GAME_ID_REFESH");
 
 export const fetchLeagueInfoTreeRequest = createAction<undefined>("feed/FETCH_LEAGUE_INFO_REQUEST");

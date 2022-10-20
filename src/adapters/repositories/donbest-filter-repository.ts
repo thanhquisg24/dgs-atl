@@ -17,7 +17,7 @@ export interface IDonbestFilterRepository {
   fetDefaultFilterCombine(): Promise<IFilterCombine>;
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
   postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<boolean>;
-  postSaveEventFilter(payload: IFilterPeriodEntity): Promise<boolean>;
+  postSaveEventFilters(payload: IFilterPeriodEntity[]): Promise<boolean>;
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IEventFilterEntity>;
   postSyncLines(dgsIdLeague: number): Promise<boolean>;
   postSyncOdds(dgsIdGame: number): Promise<boolean>;
@@ -70,10 +70,10 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
     });
   }
 
-  postSaveEventFilter(payload: IFilterPeriodEntity): Promise<boolean> {
+  postSaveEventFilters(payload: IFilterPeriodEntity[]): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
-        .postSaveEventFilter(payload)
+        .postSaveEventFilters(payload)
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             resolve(true);

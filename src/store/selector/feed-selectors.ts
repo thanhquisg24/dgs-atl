@@ -1,5 +1,6 @@
 import {
   defaultNHLPeriods,
+  FilterTypeEnum,
   IDgsLineTypeEntity,
   IDonbestSportBookEntity,
   IFilterLineTypeEntity,
@@ -23,7 +24,7 @@ export const getSelectedLeague = (
   dgsLeagueId: number | null;
   mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null;
   mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
-  defaultSelectedLineType: string | null;
+  defaultSelectedLineType: string | null | number;
 } => state.feed.selectedDgsLeague;
 export const getSelectedGame = (state: RootStateType): ISelectedGame => state.feed.selectedGame;
 export const getCurrentTabselector = (state: RootStateType): CurrentTabType => state.feed.currentTabType;
@@ -48,4 +49,29 @@ export const getDefaultFilterPeriodSetting = (state: RootStateType): IFilterPeri
     return defaultNHLPeriods;
   }
   return state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterPeriod : null;
+};
+
+export const getDefaultFilterPeriodSettingByEvent = (state: RootStateType): IFilterPeriodEntity[] => {
+  const { selectedGame } = state.feed;
+  let result: IFilterPeriodEntity[] = [];
+  const idSport = selectedGame.gameWithLeague ? selectedGame.gameWithLeague.idSport : "";
+  if (idSport.trim() === "NHL") {
+    result = defaultNHLPeriods;
+  } else {
+    result = state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterPeriod : [];
+  }
+  if (selectedGame.gameWithLeague) {
+    const { dgsLeagueId, dbLeagueId, gameProviderIdGame, idGame } = selectedGame.gameWithLeague;
+    const arrImmutableVersion = result.map((e) => ({
+      ...e,
+      dbLeagueId,
+      dgsLeagueId,
+      dbGameId: gameProviderIdGame,
+      dgsGameId: idGame,
+      type: FilterTypeEnum.EVENT,
+    }));
+    return arrImmutableVersion;
+  }
+
+  return [];
 };

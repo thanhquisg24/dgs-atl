@@ -21,6 +21,7 @@ import { diRepositorires } from "@adapters/di";
 import { FilterTypeEnum } from "@adapters/entity";
 import { getLeagueLeftInfoTree, getSelectedLeagueId } from "@store/selector";
 import { ILeagueInfoModel } from "@store/models/feed-model";
+import { IEventFilterEntity } from "@adapters/entity/EventFilterEntity";
 
 function* fetchDgsLeaguesSaga(): Generator | any {
   try {
@@ -126,10 +127,13 @@ function* fetchExpandLeagueSagaWatcher() {
 function* fetchFilterEventSaga(action: ReturnType<typeof selectEventFilterdRequest>): Generator | any {
   try {
     const { dgsLeagueId, idGame } = action.payload;
-    const eventPeriodFilters = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
+    const eventPeriodFilters: IEventFilterEntity = yield diRepositorires.donbestFilter.fetEventFilter(
+      dgsLeagueId,
+      idGame,
+    );
     // eslint-disable-next-line operator-linebreak
     const defaultSelectedLineType =
-      eventPeriodFilters.eventLineTypes.length > 0 ? eventPeriodFilters.eventLineTypes[0].idLineType : 0;
+      eventPeriodFilters.eventFilterPeriod.length > 0 ? eventPeriodFilters.eventFilterPeriod[0].lineTypeId : 0;
     const data = {
       eventFilterPeriodConfig: eventPeriodFilters.eventFilterPeriod,
       eventLineTypes: eventPeriodFilters.eventLineTypes,

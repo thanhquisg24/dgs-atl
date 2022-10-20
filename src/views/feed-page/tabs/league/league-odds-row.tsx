@@ -1,7 +1,8 @@
 import { IDonbestSportBookEntity } from "@adapters/entity";
 import { Checkbox, FormControl, FormControlLabel, Grid } from "@mui/material";
 import { periodCodeText } from "@utils/period-code-text";
-import { Control, Controller, FieldValues } from "react-hook-form";
+import { get } from "lodash";
+import { Control, Controller, FieldValues, useFormContext } from "react-hook-form";
 import { LeaguePtsItem } from "./league-pts-item";
 import SelectSportbookOdd from "./misc/select-sportbook-odd-row";
 
@@ -114,6 +115,9 @@ interface IProps {
 // }
 export function LeagueOddsRow(props: IProps) {
   const { indexField, control, listSportBook, periodCodeNumber } = props;
+  const {
+    formState: { errors },
+  } = useFormContext();
   return (
     <Grid container spacing={1} sx={{ mt: 2.5 }} className={indexField % 2 === 0 ? "odd-row-0" : "odd-row-1"}>
       <Grid item md={3} sx={{ pr: 5 }}>
@@ -138,6 +142,7 @@ export function LeagueOddsRow(props: IProps) {
                 listSportBook={listSportBook}
                 control={control}
                 name={`periodConfig[${indexField}].dbSportBookId`}
+                errorMsg={get(errors, `periodConfig[${indexField}].dbSportBookId`)?.message}
               />
             </FormControl>
           </Grid>

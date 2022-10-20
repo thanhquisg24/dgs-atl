@@ -1,6 +1,6 @@
 import { IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
 import { useAppDispatch } from "@hooks/useReduxToolKit";
-import { Box, Checkbox, FormControlLabel, Grid, MenuItem, Select, Typography } from "@mui/material";
+import { Box, Checkbox, FormControlLabel, FormHelperText, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { selectLeagueIdRequest } from "@store/actions";
 import { ILeagueInfoModel, IMapFilterLineTypeConfig } from "@store/models/feed-model";
 import { checkExistsItemIntree } from "@utils/index";
@@ -19,7 +19,10 @@ function CustomTextInSelectBox(props: { text: string; tree: any; itemKey: string
 }
 function SportBookSelect(props: IProps) {
   const { leagueInfoList, listLineType, listSportBook, savedLineTypeConfig } = props;
-  const { control } = useFormContext();
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
   const dispatch = useAppDispatch();
   const onChangeSelectLeague = (e: any) => {
     const { value } = e.target;
@@ -33,21 +36,28 @@ function SportBookSelect(props: IProps) {
           control={control}
           rules={{
             required: "This Field is Required",
+            min: {
+              value: 1,
+              message: "This Field is Required",
+            },
           }}
           render={({ field }) => (
-            <Select
-              {...field}
-              onChange={(e) => onChangeSelectLeague(e)}
-              inputProps={{ "aria-label": "Without label" }}
-              fullWidth
-            >
-              <MenuItem value={-1}>Select league...</MenuItem>
-              {leagueInfoList.map((item) => (
-                <MenuItem key={item.dgsLeague.idLeague} value={item.dgsLeague.idLeague}>
-                  {item.dgsLeague.description}
-                </MenuItem>
-              ))}
-            </Select>
+            <>
+              <Select
+                {...field}
+                onChange={(e) => onChangeSelectLeague(e)}
+                inputProps={{ "aria-label": "Without label" }}
+                fullWidth
+              >
+                <MenuItem value={-1}>Select league...</MenuItem>
+                {leagueInfoList.map((item) => (
+                  <MenuItem key={item.dgsLeague.idLeague} value={item.dgsLeague.idLeague}>
+                    {item.dgsLeague.description}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.dgsLeagueId && <FormHelperText error>{errors.dgsLeagueId?.message}</FormHelperText>}
+            </>
           )}
         />
       </Grid>
@@ -57,16 +67,27 @@ function SportBookSelect(props: IProps) {
           control={control}
           rules={{
             required: "This Field is Required",
+            min: {
+              value: 1,
+              message: "This Field is Required",
+            },
           }}
           render={({ field }) => (
-            <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
-              <MenuItem value={0}>Select linetype...</MenuItem>
-              {listLineType.map((item) => (
-                <MenuItem key={item.idLineType} value={item.idLineType}>
-                  <CustomTextInSelectBox text={item.description} tree={savedLineTypeConfig} itemKey={item.idLineType} />
-                </MenuItem>
-              ))}
-            </Select>
+            <>
+              <Select {...field} displayEmpty inputProps={{ "aria-label": "Without label" }} fullWidth>
+                <MenuItem value={0}>Select linetype...</MenuItem>
+                {listLineType.map((item) => (
+                  <MenuItem key={item.idLineType} value={item.idLineType}>
+                    <CustomTextInSelectBox
+                      text={item.description}
+                      tree={savedLineTypeConfig}
+                      itemKey={item.idLineType}
+                    />
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.lineTypeId && <FormHelperText error>{errors.lineTypeId?.message}</FormHelperText>}
+            </>
           )}
         />
       </Grid>

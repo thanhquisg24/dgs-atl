@@ -5,89 +5,102 @@ import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { Button, Grid, Typography } from "@mui/material";
 import { selectEventFilterdReFresh } from "@store/actions";
 import { gridSpacing } from "@store/constant";
-import { getFeedLoading, getListSportBook, getSelectedGame } from "@store/selector";
-import { find } from "lodash";
+import { IMapFilterPeriodConfig } from "@store/models/feed-model";
+import {
+  getDefaultFilterPeriodSettingByEvent,
+  getFeedLoading,
+  getListSportBook,
+  getSelectedGame,
+} from "@store/selector";
+import { get } from "lodash";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { GameOddsRow } from "./game-odds-row";
+import { GameOddsRows } from "./game-odds-rows";
 import GameSportbookSelect from "./game-sportbook-select";
 
 interface IProps {
   eventLineTypes: IDgsLineTypeEntity[];
-  eventFilterPeriodConfig: IFilterPeriodEntity[];
+  mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
   gameWithLeague: IDgsGameEntityWithLeague;
-  defaultSelectedLineType: string | null;
+  defaultSelectedLineType: string | null | number;
 }
 
-type IGameFromValue = IFilterPeriodEntity;
+type IGameFromValue = {
+  periodConfig: IFilterPeriodEntity[];
+  dbSportsBookId: number;
+  lineTypeId: number;
+};
 const defaultValues: IGameFromValue = {
-  dgsLeagueId: -1,
-  type: FilterTypeEnum.EVENT,
+  periodConfig: [],
   lineTypeId: 0,
-  id: null,
-  dgsGameId: 0,
-  period: -1,
-  enabled: true,
-  ps: true,
-  ml: true,
-  total: true,
-  dbSportBookId: 0,
-  ps_point: 0,
-  ps_juice: 0,
-  ml_point: 0,
-  ml_juice: 0,
-  total_point: 0,
-  total_juice: 0,
-  dbGameId: 0,
-  dbLeagueId: 0,
+  dbSportsBookId: 0,
 };
 
 function GameFromBody(props: IProps) {
-  const { eventFilterPeriodConfig, gameWithLeague, defaultSelectedLineType, eventLineTypes } = props;
+  const { mapFilterPeriodConfig, gameWithLeague, defaultSelectedLineType, eventLineTypes } = props;
   const dispatch = useAppDispatch();
   const listSportBook = useAppSelector(getListSportBook);
+  const defaultFilterPeriodSetting = useAppSelector(getDefaultFilterPeriodSettingByEvent);
   const hookForm = useForm({
     defaultValues,
   });
+
   const watchLineTypeId = hookForm.watch("lineTypeId");
+  const watchBookId = hookForm.watch("dbSportsBookId");
 
   React.useEffect(() => {
-    if (eventFilterPeriodConfig.length > 0) {
-      const defaultFilter = defaultSelectedLineType
-        ? find(eventFilterPeriodConfig, { lineTypeId: Number(defaultSelectedLineType) })
-        : null;
-      if (defaultFilter !== null && defaultFilter !== undefined) {
-        hookForm.reset({ ...defaultFilter });
-      } else {
-        hookForm.reset({ ...eventFilterPeriodConfig[0] });
+    if (defaultSelectedLineType) {
+      const itemPeriods = get(mapFilterPeriodConfig, defaultSelectedLineType);
+      if (itemPeriods) {
+        hookForm.reset({ ...defaultValues, periodConfig: itemPeriods, lineTypeId: Number(defaultSelectedLineType) });
       }
     } else {
-      console.log(
-        "🚀 ~ file: game-form.tsx ~ line 55 ~ React.useEffect ~ defaultSelectedLineType",
-        defaultSelectedLineType,
-      );
-      hookForm.reset({ ...defaultValues, lineTypeId: defaultSelectedLineType ? Number(defaultSelectedLineType) : 0 });
+      hookForm.reset({ ...defaultValues, periodConfig: defaultFilterPeriodSetting });
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventFilterPeriodConfig, defaultSelectedLineType]);
+  }, [mapFilterPeriodConfig, defaultSelectedLineType]);
 
   React.useEffect(() => {
-    if (watchLineTypeId !== null) {
-      const result = find(eventFilterPeriodConfig, { lineTypeId: watchLineTypeId });
-      if (result) {
-        hookForm.reset({ ...result, lineTypeId: watchLineTypeId });
-      }
+    const itemPeriods = get(mapFilterPeriodConfig, watchLineTypeId);
+    if (itemPeriods) {
+      hookForm.setValue("periodConfig", itemPeriods);
+    } else {
+      const periodsVal = hookForm.getValues("periodConfig");
+      const arrImmutableVersion = periodsVal.map((e) => ({ ...e, lineTypeId: watchLineTypeId }));
+      hookForm.setValue("periodConfig", arrImmutableVersion);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchLineTypeId]);
-
+  React.useEffect(() => {
+    if (watchBookId === undefined || watchBookId < 1) {
+      return;
+    }
+    const periodsVal = hookForm.getValues("periodConfig");
+    const arrImmutableVersion = periodsVal.map((e) => ({
+      ...e,
+      dbSportBookId: watchBookId,
+    }));
+    hookForm.setValue("periodConfig", arrImmutableVersion);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [watchBookId]);
   const onSubmit = (data: IGameFromValue) => {
-    console.log("🚀 ~ file: game-form.tsx ~ line 53 ~ onSubmit ~ data", data);
-    const { dbLeagueId, dgsLeagueId, idGame, gameProviderIdGame: dbGameId } = gameWithLeague;
-    const payload = { ...data, dbLeagueId, dgsLeagueId, dbGameId, dgsGameId: idGame };
+    // console.log("🚀 ~ file: game-form.tsx ~ line 53 ~ onSubmit ~ data", data);
+    const { dbLeagueId, dgsLeagueId, idGame, gameProviderIdGame } = gameWithLeague;
+    // const payload = { ...data, dbLeagueId, dgsLeagueId, dbGameId, dgsGameId: idGame };
+    const arrImmutableVersion = data.periodConfig.map((e) => ({
+      ...e,
+      dbLeagueId,
+      dgsLeagueId,
+      dbGameId: gameProviderIdGame,
+      dgsGameId: idGame,
+      type: FilterTypeEnum.EVENT,
+      lineTypeId: data.lineTypeId,
+    }));
+    const payload = arrImmutableVersion;
     emitStartLoading();
     diRepositorires.donbestFilter
-      .postSaveEventFilter(payload)
+      .postSaveEventFilters(payload)
       .then(() => {
         emitStopLoading();
         dispatch(
@@ -129,8 +142,8 @@ function GameFromBody(props: IProps) {
         <form onSubmit={hookForm.handleSubmit(onSubmit)}>
           <Grid spacing={gridSpacing} container>
             <Grid item md={9}>
-              <GameSportbookSelect listLineType={eventLineTypes} eventFilterPeriodConfig={eventFilterPeriodConfig} />
-              <GameOddsRow listSportBook={listSportBook} />
+              <GameSportbookSelect listLineType={eventLineTypes} listSportBook={listSportBook} />
+              <GameOddsRows listSportBook={listSportBook} />
               <Typography variant="h6" color="secondary" sx={{ mt: 3.5 }}>
                 This event uses the league setting
               </Typography>
@@ -161,11 +174,11 @@ function GameFormWithLoading(props: IProps) {
 
 export function GameForm() {
   const gameSelected = useAppSelector(getSelectedGame);
-  const { gameWithLeague, eventFilterPeriodConfig, defaultSelectedLineType, eventLineTypes } = gameSelected;
+  const { gameWithLeague, mapFilterPeriodConfig, defaultSelectedLineType, eventLineTypes } = gameSelected;
   return gameWithLeague !== null ? (
     <GameFormWithLoading
       gameWithLeague={gameWithLeague}
-      eventFilterPeriodConfig={eventFilterPeriodConfig}
+      mapFilterPeriodConfig={mapFilterPeriodConfig}
       defaultSelectedLineType={defaultSelectedLineType}
       eventLineTypes={eventLineTypes}
     />
