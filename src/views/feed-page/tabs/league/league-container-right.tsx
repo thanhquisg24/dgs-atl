@@ -2,13 +2,15 @@ import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid } from "@mui/m
 import { Controller, useFormContext } from "react-hook-form";
 
 export default function LeagueContainerRight(props: {
-  isNewItem: boolean;
+  isExistsItem: boolean;
   onSyncLines: () => void;
   copyToLeague: () => void;
   onSyncTimes: () => void;
   onSyncScores: () => void;
+  onSyncGames: () => void;
+  onDelete: () => void;
 }) {
-  const { onSyncLines, copyToLeague, onSyncTimes, onSyncScores, isNewItem } = props;
+  const { onSyncLines, copyToLeague, onSyncTimes, onSyncScores, onSyncGames, onDelete, isExistsItem } = props;
   const { control } = useFormContext();
   return (
     <Box sx={{ width: "100%" }}>
@@ -61,7 +63,7 @@ export default function LeagueContainerRight(props: {
           </Grid>
         </Grid>
       </Grid> */}
-      <Controller
+      {/* <Controller
         name="autoScore"
         control={control}
         render={({ field }) => (
@@ -70,14 +72,18 @@ export default function LeagueContainerRight(props: {
             label="Auto Score"
           />
         )}
-      />
+      /> */}
       <Grid container direction="column" justifyContent="flex-start" alignItems="baseline" sx={{ maxWidth: "200px" }}>
         <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1, mb: 2 }} fullWidth color="success">
-          {isNewItem ? "Save" : "Update"}
+          {isExistsItem ? "Update" : "Save"}
         </Button>
         <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncLines()}>
           Sync Lines
         </Button>
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncGames()}>
+          Sync Games
+        </Button>
+
         <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncScores()}>
           Sync Scores
         </Button>
@@ -88,6 +94,11 @@ export default function LeagueContainerRight(props: {
         <Button variant="contained" sx={{ flex: 1, mt: 2 }} fullWidth onClick={() => copyToLeague()}>
           Copy to Leagues
         </Button>
+        {isExistsItem && (
+          <Button variant="contained" sx={{ flex: 1, mt: 2 }} fullWidth color="error" onClick={() => onDelete()}>
+            Delete
+          </Button>
+        )}
       </Grid>
       {/* <FormGroup>
         <FormControlLabel control={<Button variant="outlined">Outlined</Button>} label="Use Odds By Sport" />

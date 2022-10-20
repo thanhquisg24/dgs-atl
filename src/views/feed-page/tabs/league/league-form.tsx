@@ -24,7 +24,6 @@ import LeagueContainerLeft from "./league-container-left";
 import LeagueContainerRight from "./league-container-right";
 import LeagueFormLegend from "./misc/league-form-legend";
 import LeagueIgnore from "./misc/league-ignore";
-import LeagueLockOdds from "./misc/league-lock-odds";
 // Loading
 
 interface IFromValue extends IFilterLineTypeEntity {
@@ -37,11 +36,8 @@ const defaultValues: IFromValue = {
   dgsGameId: 0,
   dbSportsBookId: 0,
   enabled: false,
-  autoScore: false,
-  useOddsBySports: false,
   // useDGSLinkedLineTypes: false,
   preserveFavoriteJuice: false,
-  followParentExcept: false,
   dbLeagueId: null,
   periodConfig: [],
   autoTimeChange: false,
@@ -60,10 +56,6 @@ const defaultValues: IFromValue = {
   ignoreTotalTD: false,
   ignorePSJCTD: false,
   ignoreTotalJCTD: false,
-  lockPSAwayJuice: null,
-  lockPSHomeJuice: null,
-  lockTotalOverJuice: null,
-  lockTotalUnderJuice: null,
   ignoreTeamTotalTD: false,
   ignoreTeamTotalJCTD: false,
   ignoreTeamTotalUnder: null,
@@ -73,7 +65,7 @@ const defaultValues: IFromValue = {
   ignoreMLRangeTD: false,
   ignoreMLRangeOver: null,
   ignoreMLRangeUnder: null,
-  // autoTimeChangeOffset: null,
+  useOddsBySports: false,
 };
 function LeagueformContent() {
   // eslint-disable-next-line operator-linebreak
@@ -137,20 +129,21 @@ function LeagueformContent() {
     if (watchBookId === undefined) {
       return;
     }
-    const keyLinePeriod = `${watchLineTypeId}`;
-    const itemTmp = get(selectedLeagueData.mapFilterLineTypeConfig, keyLinePeriod);
-    const item: IFilterLineTypeEntity | null = itemTmp || null;
-    if (item !== null) {
-      const itemPeriods = get(selectedLeagueData.mapFilterPeriodConfig, item.lineTypeId);
-      hookForm.reset({ ...item, periodConfig: itemPeriods });
-    } else {
-      const periodsVal = hookForm.getValues("periodConfig");
-      const arrImmutableVersion = periodsVal.map((e) => ({
-        ...e,
-        dbSportBookId: watchBookId,
-      }));
-      hookForm.setValue("periodConfig", arrImmutableVersion);
-    }
+    // console.log("🚀 ~ file: league-form.tsx ~ line 130 ~ React.useEffect ~ watchBookId", watchBookId);
+    // const keyLinePeriod = `${watchLineTypeId}`;
+    // const itemTmp = get(selectedLeagueData.mapFilterLineTypeConfig, keyLinePeriod);
+    // const item: IFilterLineTypeEntity | null = itemTmp || null;
+    // if (item !== null) {
+    //   const itemPeriods = get(selectedLeagueData.mapFilterPeriodConfig, item.lineTypeId);
+    //   hookForm.reset({ ...item, periodConfig: itemPeriods });
+    // } else {
+    const periodsVal = hookForm.getValues("periodConfig");
+    const arrImmutableVersion = periodsVal.map((e) => ({
+      ...e,
+      dbSportBookId: watchBookId,
+    }));
+    hookForm.setValue("periodConfig", arrImmutableVersion);
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchBookId]);
 
@@ -219,6 +212,15 @@ function LeagueformContent() {
     // eslint-disable-next-line no-alert
     alert("onSyncTimes");
   };
+  const onSyncGames = (): void => {
+    // eslint-disable-next-line no-alert
+    alert("onSyncGames");
+  };
+
+  const onDelete = (): void => {
+    // eslint-disable-next-line no-alert
+    alert("onDelete");
+  };
   return (
     <fieldset>
       <LeagueFormLegend dgsLeagueId={watchdgsLeagueId || -1} lineTypeId={watchLineTypeId || -1} />
@@ -237,15 +239,16 @@ function LeagueformContent() {
                 savedLineTypeConfig={selectedLeagueData.mapFilterLineTypeConfig}
               />
               <LeagueIgnore />
-              <LeagueLockOdds />
             </Grid>
             <Grid item md={2}>
               <LeagueContainerRight
-                isNewItem={checkExistsItemIntree(selectedLeagueData.mapFilterLineTypeConfig, watchLineTypeId)}
+                isExistsItem={checkExistsItemIntree(selectedLeagueData.mapFilterLineTypeConfig, watchLineTypeId)}
                 onSyncLines={onSyncLines}
                 copyToLeague={copyToLeague}
                 onSyncTimes={onSyncTimes}
                 onSyncScores={onSyncScores}
+                onSyncGames={onSyncGames}
+                onDelete={onDelete}
               />
             </Grid>
           </Grid>

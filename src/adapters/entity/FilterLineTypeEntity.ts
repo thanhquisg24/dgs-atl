@@ -7,12 +7,11 @@ export interface IFilterLineTypeEntity {
   dgsGameId: number;
   dbSportsBookId: number;
   enabled: boolean;
-  autoScore: boolean;
   autoTimeChange: boolean;
   useOddsBySports: boolean;
   // useDGSLinkedLineTypes: boolean;
   preserveFavoriteJuice: boolean;
-  followParentExcept: boolean;
+  // followParentExcept: boolean;
 
   ignoreMLOver: number | null;
   ignorePSOver: number | null;
@@ -25,16 +24,14 @@ export interface IFilterLineTypeEntity {
   ignorePSJuiceOver: number | null;
   ignorePSJuiceUnder: number | null;
   ignorePSTD: boolean;
-
   ignoreMLTD: boolean;
-
   ignoreTotalTD: boolean;
   ignorePSJCTD: boolean;
   ignoreTotalJCTD: boolean;
-  lockPSAwayJuice: number | null;
-  lockPSHomeJuice: number | null;
-  lockTotalOverJuice: number | null;
-  lockTotalUnderJuice: number | null;
+  // lockPSAwayJuice: number | null;
+  // lockPSHomeJuice: number | null;
+  // lockTotalOverJuice: number | null;
+  // lockTotalUnderJuice: number | null;
 
   ignoreTeamTotalTD: boolean;
   ignoreTeamTotalJCTD: boolean;

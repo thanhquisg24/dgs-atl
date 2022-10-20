@@ -127,12 +127,16 @@ function* fetchFilterEventSaga(action: ReturnType<typeof selectEventFilterdReque
   try {
     const { dgsLeagueId, idGame } = action.payload;
     const eventPeriodFilters = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
+    // eslint-disable-next-line operator-linebreak
+    const defaultSelectedLineType =
+      eventPeriodFilters.eventLineTypes.length > 0 ? eventPeriodFilters.eventLineTypes[0].idLineType : 0;
     const data = {
       eventFilterPeriodConfig: eventPeriodFilters.eventFilterPeriod,
       eventLineTypes: eventPeriodFilters.eventLineTypes,
       gameWithLeague: action.payload,
-      defaultSelectedLineType: eventPeriodFilters.length > 0 ? eventPeriodFilters[0].lineTypeId : null,
+      defaultSelectedLineType,
     };
+
     yield put(selectEventFilterSuccess(data));
   } catch (error) {
     yield put(selectEventFilterFailure("Fetch Event FIlter fail!"));

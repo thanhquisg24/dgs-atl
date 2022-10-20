@@ -27,12 +27,10 @@ const defaultValues: IGameFromValue = {
   id: null,
   dgsGameId: 0,
   period: -1,
-  enabled: false,
-  ps: false,
-  ml: false,
-  total: false,
-  team_total: false,
-  way3: false,
+  enabled: true,
+  ps: true,
+  ml: true,
+  total: true,
   dbSportBookId: 0,
   ps_point: 0,
   ps_juice: 0,
@@ -40,10 +38,6 @@ const defaultValues: IGameFromValue = {
   ml_juice: 0,
   total_point: 0,
   total_juice: 0,
-  team_total_point: 0,
-  team_total_juice: 0,
-  way3_point: 0,
-  way3_juice: 0,
   dbGameId: 0,
   dbLeagueId: 0,
 };
@@ -52,7 +46,9 @@ function GameFromBody(props: IProps) {
   const { eventFilterPeriodConfig, gameWithLeague, defaultSelectedLineType, eventLineTypes } = props;
   const dispatch = useAppDispatch();
   const listSportBook = useAppSelector(getListSportBook);
-  const hookForm = useForm({ defaultValues });
+  const hookForm = useForm({
+    defaultValues,
+  });
   const watchLineTypeId = hookForm.watch("lineTypeId");
 
   React.useEffect(() => {
@@ -66,7 +62,11 @@ function GameFromBody(props: IProps) {
         hookForm.reset({ ...eventFilterPeriodConfig[0] });
       }
     } else {
-      hookForm.reset({ ...defaultValues });
+      console.log(
+        "🚀 ~ file: game-form.tsx ~ line 55 ~ React.useEffect ~ defaultSelectedLineType",
+        defaultSelectedLineType,
+      );
+      hookForm.reset({ ...defaultValues, lineTypeId: defaultSelectedLineType ? Number(defaultSelectedLineType) : 0 });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventFilterPeriodConfig, defaultSelectedLineType]);
@@ -75,9 +75,7 @@ function GameFromBody(props: IProps) {
     if (watchLineTypeId !== null) {
       const result = find(eventFilterPeriodConfig, { lineTypeId: watchLineTypeId });
       if (result) {
-        hookForm.reset({ ...result });
-      } else {
-        hookForm.reset({ ...defaultValues, lineTypeId: watchLineTypeId });
+        hookForm.reset({ ...result, lineTypeId: watchLineTypeId });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
