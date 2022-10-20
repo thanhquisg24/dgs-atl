@@ -35,11 +35,17 @@ interface IApiFetchType {
 
   fetCombineFilter(type: string, dgsLeagueId: number, lineTypeId: number): Promise<AxiosResponse>;
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<AxiosResponse>;
+
+  fetFeedLeagues(): Promise<AxiosResponse>;
 }
 
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 
 class MainApi extends AuthApi implements IMainApi {
+  fetFeedLeagues(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("db-league/get-feed-league");
+  }
+
   postUpdateSportMapping(payload: ISportMapping): Promise<AxiosResponse<any, any>> {
     return this.Axios.post("/sport-mapping/update-item", payload);
   }

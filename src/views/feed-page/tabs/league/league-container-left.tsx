@@ -95,25 +95,7 @@ function SportBookSelect(props: IProps) {
           Linked From: None
         </Typography>
       </Grid>
-      <Grid item md={4}>
-        <Controller
-          name="followParentExcept"
-          control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={
-                <Checkbox
-                  onChange={(e) => field.onChange(e.target.checked)}
-                  checked={field.value}
-                  size="small"
-                  disabled
-                />
-              }
-              label="Follow Except"
-            />
-          )}
-        />
-      </Grid>
+      <Grid item md={4}></Grid>
       <Grid item md={3}>
         <Controller
           name="enabled"

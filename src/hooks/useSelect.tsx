@@ -38,7 +38,6 @@ export function useSelect(props: IProps): IUseSelect {
   //   const stringfyQuery = React.useMemo(() => JSON.stringify(query));
   const defaultQueryOnSuccess = React.useCallback(
     (data: any) => {
-      console.log("🚀 ~ file: useSelect.tsx ~ line 38 ~ defaultQueryOnSuccess ~ data", data);
       setOptions({
         list: data.map((item: any) => ({
           label: item[optionLabel],

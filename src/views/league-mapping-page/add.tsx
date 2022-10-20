@@ -1,5 +1,5 @@
 // material-ui
-import { Box, Typography, Grid, Button } from "@mui/material";
+import { Box, Typography, Grid, Button, FormControlLabel, Checkbox } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 import { Controller, useForm } from "react-hook-form";
 // project imports
@@ -13,16 +13,19 @@ import { find } from "lodash";
 import { diRepositorires } from "@adapters/di";
 import { notifyMessageError, emitStopLoading, emitStartLoading, notifyMessageSuccess } from "../../emiter/AppEmitter";
 import { useRouteFunc } from "../../routes/useRouteFunc";
+import AsynCustomSelectV2 from "@ui-component/AsynCustomSelectV2";
+import { GameStatListData } from "./game-stat-selectbox";
+import FeedLeagueSelectbox from "./feed-league-selectbox";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
   <Grid container spacing={gridSpacing}>
-    <Grid item md={4}>
+    <Grid item md={2}>
       <Typography variant="h3" gutterBottom align="center" component="span">
         DonBest
       </Typography>
     </Grid>
-    <Grid item md={4}>
+    <Grid item md={2}>
       <Typography variant="h3" gutterBottom align="center" component="span">
         DGS
       </Typography>
@@ -30,7 +33,19 @@ const Title = () => (
   </Grid>
 );
 
-export interface IRowLeagueMapping {
+interface IFromValues {
+  idLeagueForOdds: number | string;
+  autoGameCreation: boolean;
+  defaultGameStat: string;
+  defaultIdGameType: number | string;
+  dbSportId: number | null | string;
+  dbLeagueId: number | null;
+  dgsSportId: string | null;
+  dgsLeagueId: number | null;
+  autoScore: boolean;
+  enabled: boolean;
+}
+export interface IRowLeagueMapping extends IFromValues {
   dbSportId: number;
   dbSportName: string;
   dbLeagueId: number;
@@ -39,6 +54,9 @@ export interface IRowLeagueMapping {
   dgsSportName: string;
   dgsLeagueId: number;
   dgsLeagueName: string;
+  defaultIdGameTypeName: string;
+  idLeagueForOddsName: string;
+  defaultGameStatName: string;
 }
 export interface IState {
   rows: IRowLeagueMapping[];
@@ -53,11 +71,17 @@ function checkAddItemMap(row: IRowLeagueMapping, list: IRowLeagueMapping[]) {
   return true;
 }
 
-const defaultValues = {
+const defaultValues: IFromValues = {
   dbSportId: "",
-  dbLeagueId: "",
+  dbLeagueId: null,
   dgsSportId: "",
-  dgsLeagueId: "",
+  dgsLeagueId: null,
+  idLeagueForOdds: "",
+  autoGameCreation: false,
+  defaultGameStat: "",
+  defaultIdGameType: "",
+  enabled: false,
+  autoScore: false,
 };
 const AddLeagueMapping = () => {
   const { gotoPage } = useRouteFunc();
@@ -68,8 +92,8 @@ const AddLeagueMapping = () => {
     watch,
     formState: { errors },
   } = useForm({ defaultValues });
-  const watchDgsSport = watch("dgsSportId", "");
-  const watchDbSport = watch("dbSportId", "");
+  const watchDgsSport = watch("dgsSportId");
+  const watchDbSport = watch("dbSportId");
   const [state, setState] = React.useState<IState>({
     rows: [],
   });
@@ -83,18 +107,18 @@ const AddLeagueMapping = () => {
   }, [watchDgsSport]);
 
   const filterDbSport = React.useMemo(() => {
-    if (watchDbSport === "") {
+    if (watchDbSport === null) {
       return null;
     }
     return { dbSport: { idSport: watchDbSport }, dgsIdLeague: null };
   }, [watchDbSport]);
   React.useEffect(() => {
-    setValue("dgsLeagueId", "");
+    setValue("dgsLeagueId", null);
   }, [setValue, watchDgsSport]);
 
   const onSubmit = (data: any) => {
-    console.log("🚀 ~ file: add.tsx ~ line 88 ~ onSubmit ~ data", data);
-    // const multipleValues = getValues(["test", "test1"]);
+    console.log("🚀 ~ file: add.tsx ~ line 121 ~ onSubmit ~ data", data);
+    const gs = find(GameStatListData, { id: data.defaultGameStat });
     const row: IRowLeagueMapping = {
       dbSportId: data.dbSportId,
       dbSportName: "",
@@ -104,6 +128,15 @@ const AddLeagueMapping = () => {
       dgsSportName: "",
       dgsLeagueId: data.dgsLeagueId.id,
       dgsLeagueName: data.dgsLeagueId.label,
+      idLeagueForOdds: data.idLeagueForOdds.id,
+      autoGameCreation: data.autoGameCreation,
+      defaultGameStat: data.defaultGameStat,
+      defaultIdGameType: data.defaultIdGameType.id,
+      enabled: data.enabled,
+      defaultIdGameTypeName: data.defaultIdGameType.label,
+      idLeagueForOddsName: data.idLeagueForOdds.label,
+      defaultGameStatName: gs ? gs.text : "",
+      autoScore: data.autoScore,
     };
     if (checkAddItemMap(row, state.rows)) {
       setState({ rows: [...state.rows, row] });
@@ -116,19 +149,21 @@ const AddLeagueMapping = () => {
   };
 
   function onSave(): void {
-    emitStartLoading();
-    diRepositorires.donbestLeague
-      .postSaveLeagueMappings(state.rows)
-      .then(() => {
-        notifyMessageSuccess("Save successfull!");
-        gotoPage("/league-page-list");
-      })
-      .catch((error) => {
-        const { message } = error.response.data;
-        notifyMessageError(message || error.message);
-        emitStopLoading();
-      })
-      .finally(() => emitStopLoading());
+    if (state.rows.length > 0) {
+      emitStartLoading();
+      diRepositorires.donbestLeague
+        .postSaveLeagueMappings(state.rows)
+        .then(() => {
+          notifyMessageSuccess("Save successfull!");
+          gotoPage("/league-page-list");
+        })
+        .catch((error) => {
+          const { message } = error.response.data;
+          notifyMessageError(message || error.message);
+          emitStopLoading();
+        })
+        .finally(() => emitStopLoading());
+    }
   }
 
   return (
@@ -137,7 +172,7 @@ const AddLeagueMapping = () => {
         <Box sx={{ width: "100%" }}>
           <Title></Title>
           <Grid spacing={gridSpacing} container sx={{ mt: 2 }}>
-            <Grid item md={4}>
+            <Grid item md={2}>
               <Controller
                 name="dbSportId"
                 control={control}
@@ -186,9 +221,27 @@ const AddLeagueMapping = () => {
                   />
                 )}
               />
+
+              <Controller
+                control={control}
+                name="idLeagueForOdds"
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <FeedLeagueSelectbox
+                    sx={{ mt: 2 }}
+                    id="feed-league-select"
+                    label="DonBest Feed League"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.idLeagueForOdds?.message}
+                    idField="id"
+                    textField="name"
+                  />
+                )}
+              />
             </Grid>
 
-            <Grid item md={4}>
+            <Grid item md={2}>
               <Controller
                 name="dgsSportId"
                 control={control}
@@ -240,14 +293,95 @@ const AddLeagueMapping = () => {
                 )}
               />
             </Grid>
-            <Grid item md={4}>
+            <Grid item md={2}>
+              <Controller
+                name="defaultGameStat"
+                control={control}
+                rules={{
+                  required: "This Field is Required",
+                }}
+                render={({ field }) => (
+                  <AsynCustomSelectV2
+                    id="db-game-stat-select"
+                    label="Default Game Stat"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.defaultGameStat?.message}
+                    idField="id"
+                    textField="text"
+                    listData={GameStatListData}
+                  ></AsynCustomSelectV2>
+                )}
+              />
+              <Controller
+                control={control}
+                name="defaultIdGameType"
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <CustomAutoCompleteV2
+                    sx={{ mt: 2 }}
+                    id="id-default-game-type"
+                    label="Default Game Type"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.defaultIdGameType?.message}
+                    idField="idGameType"
+                    textField="description"
+                    queryStr={JSON.stringify({
+                      resource: "dgs-game-type",
+                      perPage: 50,
+                      sort: { field: "description", order: "ASC" },
+                    })}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item md={2}>
+              <Controller
+                name="autoGameCreation"
+                control={control}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+                    }
+                    label="Auto Game Creation"
+                  />
+                )}
+              />
+              <Controller
+                name="autoScore"
+                control={control}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+                    }
+                    label="Auto score"
+                  />
+                )}
+              />
+              <Controller
+                name="enabled"
+                control={control}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+                    }
+                    label="Active"
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item md={12}>
               <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} type="submit">
                 Add item
               </Button>
             </Grid>
           </Grid>
           <Grid spacing={gridSpacing} container sx={{ mt: 2 }}>
-            <Grid item md={8}>
+            <Grid item md={10}>
               <Typography variant="h3" gutterBottom align="center" component="span">
                 Preview mapping table
               </Typography>
@@ -255,8 +389,13 @@ const AddLeagueMapping = () => {
             </Grid>
           </Grid>
 
-          <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
-            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onSave()}>
+          <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" sx={{ mt: 3.5 }}>
+            <Button
+              variant="contained"
+              color="success"
+              sx={{ flex: 1, ml: 1, maxWidth: "110px" }}
+              onClick={() => onSave()}
+            >
               Save
             </Button>
           </Grid>

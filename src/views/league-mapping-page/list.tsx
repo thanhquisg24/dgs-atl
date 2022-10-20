@@ -15,10 +15,17 @@ const columns: any = [
     title: "ID",
     field: "idLeague",
   },
-  { title: "Name", field: "name" },
   { title: "Donbest Sport", field: "dbSport", render: (rowData: any) => rowData.dbSport.name },
   { title: "DGS Sport", field: "dgsIdSport" },
-  { title: "DGS League", field: "dgsIdLeague" },
+  { title: "Donbest League", field: "name" },
+  { title: "Feed League", field: "idLeagueForOddsName" },
+  { title: "DGS League", field: "dgsLeagueName" },
+
+  { title: "Game Type", field: "defaultIdGameTypeName" },
+  { title: "Game Stat", field: "defaultGameStatName" },
+  { title: "Auto Score", field: "autoScore", type: "boolean" },
+  { title: "Auto Game Creation", field: "autoGameCreation", type: "boolean" },
+
   { title: "Enabled", field: "enabled", type: "boolean" },
 ];
 const ListLeagueMapping = () => {

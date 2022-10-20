@@ -7,6 +7,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { IRowLeagueMapping } from "./add";
+import BooleanIcon from "./icon-review-table";
 // import { red } from "@material-ui/core";
 
 // const useStyles = makeStyles({
@@ -27,16 +29,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 // ];
 
 interface IProps {
-  rows: {
-    dbSportId: number;
-    dbSportName: string;
-    dbLeagueId: number;
-    dbLeagueName: string;
-    dgsSportId: string;
-    dgsSportName: string;
-    dgsLeagueId: number;
-    dgsLeagueName: string;
-  }[];
+  rows: IRowLeagueMapping[];
   onDeleteRow: (index: number) => void;
 }
 
@@ -48,7 +41,13 @@ export default function BasicTable(props: IProps) {
         <TableHead>
           <TableRow>
             <TableCell>DonBest League</TableCell>
+            <TableCell>DonBest Feed League</TableCell>
             <TableCell>DGS League</TableCell>
+            <TableCell>Default Game Stat</TableCell>
+            <TableCell>Default Game Type</TableCell>
+            <TableCell>Auto Score </TableCell>
+            <TableCell>Auto Game Creation</TableCell>
+            <TableCell>Active</TableCell>
             <TableCell></TableCell>
           </TableRow>
         </TableHead>
@@ -59,7 +58,25 @@ export default function BasicTable(props: IProps) {
                 {row.dbLeagueId} - {row.dbLeagueName}
               </TableCell>
               <TableCell>
+                {row.idLeagueForOdds} - {row.idLeagueForOddsName}
+              </TableCell>
+              <TableCell>
                 {row.dgsLeagueId} - {row.dgsLeagueName}
+              </TableCell>
+              <TableCell>
+                {row.defaultGameStat} - {row.defaultGameStatName}
+              </TableCell>
+              <TableCell>
+                {row.defaultIdGameType} - {row.defaultIdGameTypeName}
+              </TableCell>
+              <TableCell>
+                <BooleanIcon status={row.autoScore} />
+              </TableCell>
+              <TableCell>
+                <BooleanIcon status={row.autoGameCreation} />
+              </TableCell>
+              <TableCell>
+                <BooleanIcon status={row.enabled} />
               </TableCell>
               <TableCell>
                 <DeleteIcon color="error" sx={{ cursor: "pointer" }} onClick={() => onDeleteRow(index)}></DeleteIcon>

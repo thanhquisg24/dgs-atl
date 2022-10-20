@@ -31,7 +31,7 @@ function* loginSaga(action: ReturnType<typeof doLoginRequest>): Generator | any 
     // yield delay(1000);
     const resData: IUserEntity = yield presenter.auth.postLogin(action.payload.username, action.payload.password);
     yield put(doLoginSuccess(resData));
-    yield delay(1000 * 60 * 60 * 5); //interval refresh 5 hour
+    yield delay(1000 * 60 * 25); //interval refresh 25 minute
     yield put(doRefreshTokenRequest(resData.refreshToken));
   } catch (error) {
     yield put(doLoginFailure("Login fail!"));
@@ -54,7 +54,7 @@ function* logoutSaga(): Generator | any {
 function* refreshTokenSaga(action: ReturnType<typeof doRefreshTokenRequest>): Generator | any {
   // yield call(api);
   try {
-    yield delay(1000 * 60 * 60 * 5); //interval refresh 5 hour
+    yield delay(1000 * 60 * 25); //interval refresh 25 minute
     const refreshData = yield presenter.auth.postRefreshToken(action.payload);
     yield put(doRefreshTokenSuccess(refreshData));
     yield put(doRefreshTokenRequest(refreshData.refreshToken));

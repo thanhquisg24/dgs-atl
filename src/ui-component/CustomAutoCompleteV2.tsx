@@ -26,16 +26,13 @@ export default function CustomAutoCompleteV2(props: IProps) {
     dependencyField,
   });
   const loading = options.isFetching;
-  React.useEffect(() => {
-    console.log("🚀 ~ file: CustomAutoCompleteV2.tsx ~ line 37 ~ React.useEffect ~ re render");
-  }, []);
+
   return (
     <FormControl fullWidth sx={sx}>
       <Autocomplete
         value={registerProp.value}
         isOptionEqualToValue={(option: any, value) => {
-          console.log("🚀 ~ file: CustomAutoCompleteV2.tsx ~ line 37 ~ CustomAutoCompleteV2 ~ option", option);
-          return value === "" || option.id === value.id;
+          return value === "" || value === 0 || option.id === value.id;
         }}
         getOptionLabel={(item) => {
           const str = options.list.find((p) => p?.id?.toString() === item?.id?.toString())?.label;
@@ -50,16 +47,11 @@ export default function CustomAutoCompleteV2(props: IProps) {
         options={options.list}
         loading={loading}
         onInputChange={(event, newInputValue) => {
-          console.log(
-            "🚀 ~ file: CustomAutoCompleteV2.tsx ~ line 43 ~ CustomAutoCompleteV2 ~ newInputValue",
-            newInputValue,
-          );
           if (onSearch) {
             onSearch(newInputValue);
           }
         }}
         onChange={(_, value) => {
-          console.log("🚀 ~ file: CustomAutoCompleteV2.tsx ~ line 48 ~ CustomAutoCompleteV2 ~ value", value);
           registerProp.onChange(value);
         }}
         renderInput={(params) => <TextField {...params} label={label} />}

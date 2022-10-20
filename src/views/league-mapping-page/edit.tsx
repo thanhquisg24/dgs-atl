@@ -1,5 +1,5 @@
 // material-ui
-import { Box, Button, Grid, Typography } from "@mui/material";
+import { Box, Button, Checkbox, FormControlLabel, Grid, Typography } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 import { Controller, useForm } from "react-hook-form";
 // project imports
@@ -13,6 +13,10 @@ import { useParams } from "react-router-dom";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "../../emiter/AppEmitter";
 import { useRouteFunc } from "../../routes/useRouteFunc";
 import { diRepositorires } from "@adapters/di";
+import { find } from "lodash";
+import { GameStatListData } from "./game-stat-selectbox";
+import FeedLeagueSelectbox from "./feed-league-selectbox";
+import AsynCustomSelectV2 from "@ui-component/AsynCustomSelectV2";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
@@ -30,7 +34,23 @@ const Title = () => (
   </Grid>
 );
 
-export interface IRowLeagueMapping {
+export interface IState {
+  donbestItem: any;
+}
+
+interface IFromValue {
+  idLeagueForOdds: number | string;
+  autoGameCreation: boolean;
+  defaultGameStat: string;
+  defaultIdGameType: number | string;
+  dbSportId: number | null | string;
+  dbLeagueId: number | null;
+  dgsSportId: string | null;
+  dgsLeagueId: number | null | string | any;
+  autoScore: boolean;
+  enabled: boolean;
+}
+interface IRowLeagueMapping extends IFromValue {
   dbSportId: number;
   dbSportName: string;
   dbLeagueId: number;
@@ -39,23 +59,28 @@ export interface IRowLeagueMapping {
   dgsSportName: string;
   dgsLeagueId: number;
   dgsLeagueName: string;
-}
-export interface IState {
-  donbestItem: any;
-}
-
-interface IFromValue {
-  dgsSportId: any;
-  dgsLeagueId: any;
+  defaultIdGameTypeName: string;
+  idLeagueForOddsName: string;
+  defaultGameStatName: string;
+  autoScore: boolean;
+  enabled: boolean;
+  autoGameCreation: boolean;
 }
 const defaultValues: IFromValue = {
   dgsSportId: "",
   dgsLeagueId: "",
+  idLeagueForOdds: "",
+  autoGameCreation: false,
+  defaultGameStat: "",
+  defaultIdGameType: "",
+  dbSportId: null,
+  dbLeagueId: null,
+  autoScore: false,
+  enabled: false,
 };
 const EditLeagueMapping = () => {
   const { leagueId } = useParams<{ leagueId: string }>();
   const dataProvider = useDataProvider();
-  console.log("🚀 ~ file: edit.tsx ~ line 65 ~ EditLeagueMapping ~ leagueId", leagueId);
   const { gotoPage } = useRouteFunc();
   const {
     control,
@@ -65,18 +90,18 @@ const EditLeagueMapping = () => {
     formState: { errors },
   } = useForm({ defaultValues });
   const watchDgsSport = watch("dgsSportId", "");
-  const watchDgsLeague = watch("dgsLeagueId", "");
+  // const watchDgsLeague = watch("dgsLeagueId", "");
   const [state, setState] = React.useState<IState>({
     donbestItem: null,
   });
 
   // control.getFieldState;
   const filterDgsSport = React.useMemo(() => {
-    if (watchDgsSport === "" && watchDgsLeague === "") {
+    if (watchDgsSport === "") {
       return null;
     }
-    return { idSport: watchDgsSport, idLeague: watchDgsLeague.id };
-  }, [watchDgsSport, watchDgsLeague]);
+    return { idSport: watchDgsSport };
+  }, [watchDgsSport]);
 
   // React.useEffect(() => {
   //   setValue("dgsLeagueId", "");
@@ -86,10 +111,13 @@ const EditLeagueMapping = () => {
     if (leagueId) {
       dataProvider.getOne("db-league", { id: leagueId }).then((result: any) => {
         setState({ donbestItem: result });
-        reset({ dgsSportId: result.dgsIdSport, dgsLeagueId: { id: result.dgsIdLeague } });
-        // setValue("dgsSportId", result.dgsIdSport);
-        // setValue("dgsLeagueId", { id: result.dgsIdLeague });
-        console.log("🚀 ~ file: edit.tsx ~ line 103 ~ dataProvider.getOne ~ result", result);
+        reset({
+          ...result,
+          dgsSportId: result.dgsIdSport,
+          dgsLeagueId: { id: result.dgsIdLeague },
+          defaultIdGameType: { id: result.defaultIdGameType },
+          idLeagueForOdds: { id: result.idLeagueForOdds },
+        });
       });
     }
   }, [dataProvider, leagueId, reset]);
@@ -97,6 +125,7 @@ const EditLeagueMapping = () => {
   const onSubmit = (data: any) => {
     emitStartLoading();
     // const multipleValues = getValues(["test", "test1"]);
+    const gs = find(GameStatListData, { id: data.defaultGameStat });
     const row: IRowLeagueMapping = {
       dbSportId: state.donbestItem?.dbSport.idSport,
       dbSportName: "",
@@ -106,6 +135,15 @@ const EditLeagueMapping = () => {
       dgsSportName: "",
       dgsLeagueId: data.dgsLeagueId.id,
       dgsLeagueName: data.dgsLeagueId.label,
+      idLeagueForOdds: data.idLeagueForOdds.id,
+      autoGameCreation: data.autoGameCreation,
+      defaultGameStat: data.defaultGameStat,
+      defaultIdGameType: data.defaultIdGameType.id,
+      enabled: data.enabled,
+      defaultIdGameTypeName: data.defaultIdGameType.label,
+      idLeagueForOddsName: data.idLeagueForOdds.label,
+      defaultGameStatName: gs ? gs.text : "",
+      autoScore: data.autoScore,
     };
     diRepositorires.donbestLeague
       .postSaveLeagueMapping(row)
@@ -123,7 +161,7 @@ const EditLeagueMapping = () => {
         <Box sx={{ width: "100%" }}>
           <Title></Title>
           <Grid spacing={gridSpacing} container sx={{ mt: 2 }}>
-            <Grid item md={4}>
+            <Grid item md={2}>
               <Typography variant="h5" gutterBottom align="left" component="p">
                 Sport:
               </Typography>
@@ -136,9 +174,27 @@ const EditLeagueMapping = () => {
               <Typography variant="body1" gutterBottom align="left" component="p" sx={{ ml: 2 }}>
                 {state.donbestItem?.idLeague} - {state.donbestItem?.name}
               </Typography>
+
+              <Controller
+                control={control}
+                name="idLeagueForOdds"
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <FeedLeagueSelectbox
+                    sx={{ mt: 2 }}
+                    id="feed-league-select"
+                    label="DonBest Feed League"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.idLeagueForOdds?.message}
+                    idField="id"
+                    textField="name"
+                  />
+                )}
+              />
             </Grid>
 
-            <Grid item md={4}>
+            <Grid item md={2}>
               <Controller
                 name="dgsSportId"
                 control={control}
@@ -191,6 +247,87 @@ const EditLeagueMapping = () => {
                   )}
                 />
               )}
+            </Grid>
+            <Grid item md={2}>
+              <Controller
+                name="defaultGameStat"
+                control={control}
+                rules={{
+                  required: "This Field is Required",
+                }}
+                render={({ field }) => (
+                  <AsynCustomSelectV2
+                    id="db-game-stat-select"
+                    label="Default Game Stat"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.defaultGameStat?.message}
+                    idField="id"
+                    textField="text"
+                    listData={GameStatListData}
+                  ></AsynCustomSelectV2>
+                )}
+              />
+              <Controller
+                control={control}
+                name="defaultIdGameType"
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <CustomAutoCompleteV2
+                    sx={{ mt: 2 }}
+                    id="id-default-game-type"
+                    label="Default Game Type"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.defaultIdGameType?.message}
+                    idField="idGameType"
+                    textField="description"
+                    queryStr={JSON.stringify({
+                      resource: "dgs-game-type",
+                      perPage: 50,
+                      sort: { field: "description", order: "ASC" },
+                    })}
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item md={2}>
+              <Controller
+                name="autoGameCreation"
+                control={control}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+                    }
+                    label="Auto Game Creation"
+                  />
+                )}
+              />
+              <Controller
+                name="autoScore"
+                control={control}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+                    }
+                    label="Auto score"
+                  />
+                )}
+              />
+              <Controller
+                name="enabled"
+                control={control}
+                render={({ field }) => (
+                  <FormControlLabel
+                    control={
+                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
+                    }
+                    label="Active"
+                  />
+                )}
+              />
             </Grid>
           </Grid>
 

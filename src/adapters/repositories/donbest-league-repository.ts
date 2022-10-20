@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/named
 import { IDonbestLeagueEntity, IDonbestSportBookEntity } from "@adapters/entity";
+import { IFeedLeagueEntity } from "@adapters/entity/FeedLeagueEntity";
 import { IItemLeagueMapPost } from "@adapters/infrastructures/axios/main-api";
 import { AxiosResponse } from "axios";
 import { BaseRepository } from "./base-repository";
@@ -12,8 +13,26 @@ export interface IDonbestLeagueRepository {
   putDisabledItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
   fetAvaiableDonbestLeague(): Promise<IDonbestLeagueEntity[]>;
   fetAvaiableDonbestSportBook(): Promise<IDonbestSportBookEntity[]>;
+  fetFeedLeagues(): Promise<IFeedLeagueEntity[]>;
 }
 export class DonbestLeagueRepository extends BaseRepository implements IDonbestLeagueRepository {
+  fetFeedLeagues(): Promise<IFeedLeagueEntity[]> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .fetFeedLeagues()
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            const { data } = res;
+            const map: IFeedLeagueEntity[] = data;
+            resolve(map);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   fetAvaiableDonbestSportBook(): Promise<IDonbestSportBookEntity[]> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
