@@ -27,6 +27,7 @@ export interface IInitConfigFeed {
 interface IFetchDgsGameSuccessPayload {
   dgsLeagueId: number;
   dbLeagueId: number;
+  dbSportId: number;
   list: IDgsGameEntity[];
 }
 interface IFetchEventPeriodSuccess {

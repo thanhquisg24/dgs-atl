@@ -1,6 +1,7 @@
 import { FilterTypeEnum } from "./FilterTypeEnum";
 
 export interface IFilterLineTypeEntity {
+  id: number;
   type: FilterTypeEnum;
   lineTypeId: number;
   dgsLeagueId: number;
@@ -13,16 +14,16 @@ export interface IFilterLineTypeEntity {
   preserveFavoriteJuice: boolean;
   // followParentExcept: boolean;
 
-  ignoreMLOver: number | null;
-  ignorePSOver: number | null;
-  ignoreTotalOver: number | null;
-  ignoreMLUnder: number | null;
-  ignorePSUnder: number | null;
-  ignoreTotalUnder: number | null;
-  ignoreTotalJuiceOver: number | null;
-  ignoreTotalJuiceUnder: number | null;
-  ignorePSJuiceOver: number | null;
-  ignorePSJuiceUnder: number | null;
+  ignoreMLHigher: number | null;
+  ignorePSHigher: number | null;
+  ignoreTotalHigher: number | null;
+  ignoreMLLower: number | null;
+  ignorePSLower: number | null;
+  ignoreTotalLower: number | null;
+  ignoreTotalJuiceHigher: number | null;
+  ignoreTotalJuiceLower: number | null;
+  ignorePSJuiceHigher: number | null;
+  ignorePSJuiceLower: number | null;
   ignorePSTD: boolean;
   ignoreMLTD: boolean;
   ignoreTotalTD: boolean;
@@ -30,18 +31,19 @@ export interface IFilterLineTypeEntity {
   ignoreTotalJCTD: boolean;
   // lockPSAwayJuice: number | null;
   // lockPSHomeJuice: number | null;
-  // lockTotalOverJuice: number | null;
-  // lockTotalUnderJuice: number | null;
+  // lockTotalHigherJuice: number | null;
+  // lockTotalLowerJuice: number | null;
 
-  ignoreTeamTotalTD: boolean;
-  ignoreTeamTotalJCTD: boolean;
-  ignoreTeamTotalUnder: number | null;
-  ignoreTeamTotalOver: number | null;
-  ignoreTeamTotalJuiceOver: number | null;
-  ignoreTeamTotalJuiceUnder: number | null;
+  // ignoreTeamTotalTD: boolean;
+  // ignoreTeamTotalJCTD: boolean;
+  // ignoreTeamTotalLower: number | null;
+  // ignoreTeamTotalHigher: number | null;
+  // ignoreTeamTotalJuiceHigher: number | null;
+  // ignoreTeamTotalJuiceLower: number | null;
   ignoreMLRangeTD: boolean;
-  ignoreMLRangeOver: number | null;
-  ignoreMLRangeUnder: number | null;
+  ignoreMLRangeHigher: number | null;
+  ignoreMLRangeLower: number | null;
   // autoTimeChangeOffset: number | null;
   dbLeagueId: number | null;
+  dbSportId: number;
 }

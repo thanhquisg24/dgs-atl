@@ -24,6 +24,7 @@ interface IApiPostType {
   postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<AxiosResponse>;
   postSaveEventFilters(payload: IFilterPeriodEntity[]): Promise<AxiosResponse>;
   postSyncLines(dgsIdLeague: number): Promise<AxiosResponse>;
+  postSyncLeagueGame(dgsIdLeague: number): Promise<AxiosResponse>;
   postSyncOdds(dgsIdGame: number): Promise<AxiosResponse>;
 }
 interface IApiFetchType {
@@ -42,6 +43,13 @@ interface IApiFetchType {
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 
 class MainApi extends AuthApi implements IMainApi {
+  postSyncLeagueGame(dgsIdLeague: number): Promise<AxiosResponse<any, any>> {
+    const xFromData = queryString.stringify({
+      dgsIdLeague,
+    });
+    return this.Axios.post("/db-filter/sync-league-game", xFromData);
+  }
+
   fetFeedLeagues(): Promise<AxiosResponse<any, any>> {
     return this.Axios.get("db-league/get-feed-league");
   }

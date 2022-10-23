@@ -114,7 +114,8 @@ function* fetchExpandLeagueSaga(action: ReturnType<typeof expandLeagueRequest>):
     const DgsGames = yield diRepositorires.dgsGame.fetAvaiableDgsGames(action.payload);
     const infoTree: { [dgsLeagueId: number]: ILeagueInfoModel } = yield select(getLeagueLeftInfoTree);
     const dbLeagueId = infoTree[action.payload].donbestLeague.idLeague;
-    yield put(expandLeagueSuccess({ dbLeagueId, dgsLeagueId: Number(action.payload), list: DgsGames }));
+    const dbSportId = infoTree[action.payload].donbestLeague.dbSport.idSport;
+    yield put(expandLeagueSuccess({ dbSportId, dbLeagueId, dgsLeagueId: Number(action.payload), list: DgsGames }));
   } catch (error) {
     yield put(expandLeagueFailure("Expand League fail!"));
     notifyMessageError("Expand League fail!");

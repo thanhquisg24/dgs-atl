@@ -12,6 +12,7 @@ import {
   getListSportBook,
   getSelectedGame,
 } from "@store/selector";
+import { checkExistsItemIntree } from "@utils/index";
 import { get } from "lodash";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -25,7 +26,7 @@ interface IProps {
   defaultSelectedLineType: string | null | number;
 }
 
-type IGameFromValue = {
+export type IGameFromValue = {
   periodConfig: IFilterPeriodEntity[];
   dbSportsBookId: number;
   lineTypeId: number;
@@ -36,6 +37,22 @@ const defaultValues: IGameFromValue = {
   dbSportsBookId: 0,
 };
 
+const buildEventPeriodPayload = (data: IGameFromValue, gameWithLeague: IDgsGameEntityWithLeague) => {
+  const { dbLeagueId, dgsLeagueId, idGame, gameProviderIdGame, dbSportId } = gameWithLeague;
+  // const payload = { ...data, dbLeagueId, dgsLeagueId, dbGameId, dgsGameId: idGame };
+  const arrImmutableVersion = data.periodConfig.map((e) => ({
+    ...e,
+    dbSportId,
+    dbLeagueId,
+    dgsLeagueId,
+    dbGameId: gameProviderIdGame,
+    dgsGameId: idGame,
+    type: FilterTypeEnum.EVENT,
+    lineTypeId: data.lineTypeId,
+  }));
+  const payload = arrImmutableVersion;
+  return payload;
+};
 function GameFromBody(props: IProps) {
   const { mapFilterPeriodConfig, gameWithLeague, defaultSelectedLineType, eventLineTypes } = props;
   const dispatch = useAppDispatch();
@@ -84,20 +101,12 @@ function GameFromBody(props: IProps) {
     hookForm.setValue("periodConfig", arrImmutableVersion);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchBookId]);
+  const isExistsItem = React.useMemo(() => {
+    return checkExistsItemIntree(mapFilterPeriodConfig, watchLineTypeId);
+  }, [mapFilterPeriodConfig, watchLineTypeId]);
+
   const onSubmit = (data: IGameFromValue) => {
-    // console.log("🚀 ~ file: game-form.tsx ~ line 53 ~ onSubmit ~ data", data);
-    const { dbLeagueId, dgsLeagueId, idGame, gameProviderIdGame } = gameWithLeague;
-    // const payload = { ...data, dbLeagueId, dgsLeagueId, dbGameId, dgsGameId: idGame };
-    const arrImmutableVersion = data.periodConfig.map((e) => ({
-      ...e,
-      dbLeagueId,
-      dgsLeagueId,
-      dbGameId: gameProviderIdGame,
-      dgsGameId: idGame,
-      type: FilterTypeEnum.EVENT,
-      lineTypeId: data.lineTypeId,
-    }));
-    const payload = arrImmutableVersion;
+    const payload = buildEventPeriodPayload(data, gameWithLeague);
     emitStartLoading();
     diRepositorires.donbestFilter
       .postSaveEventFilters(payload)
@@ -118,21 +127,36 @@ function GameFromBody(props: IProps) {
   };
 
   const onSyncOdds = () => {
-    if (gameWithLeague.idGame > 0) {
-      emitStartLoading();
-      diRepositorires.donbestFilter
-        .postSyncOdds(gameWithLeague.idGame)
-        .then(() => {
-          emitStopLoading();
-          notifyMessageSuccess("Sync Odds success!");
-        })
-        .catch(() => {
-          notifyMessageError("Sync Odds failure! please try again.");
-          emitStopLoading();
-        });
-    }
+    hookForm.trigger().then((result: boolean) => {
+      if (result) {
+        const data: IGameFromValue = hookForm.getValues();
+        const payload = buildEventPeriodPayload(data, gameWithLeague);
+        emitStartLoading();
+        diRepositorires.donbestFilter
+          .postSaveEventFilters(payload)
+          .then(() => {
+            diRepositorires.donbestFilter
+              .postSyncOdds(gameWithLeague.idGame)
+              .then(() => {
+                emitStopLoading();
+                notifyMessageSuccess("Sync Odds success!");
+              })
+              .catch(() => {
+                notifyMessageError("Sync Odds failure! please try again.");
+                emitStopLoading();
+              }); //end sync
+          })
+          .catch(() => {
+            notifyMessageError("Sync Odds failure! please try again.");
+            emitStopLoading();
+          }); //end save
+      }
+    }); //end trgger
   };
-
+  const onDelete = (): void => {
+    // eslint-disable-next-line no-alert
+    alert("onDelete");
+  };
   return (
     <fieldset>
       <legend>
@@ -142,7 +166,11 @@ function GameFromBody(props: IProps) {
         <form onSubmit={hookForm.handleSubmit(onSubmit)}>
           <Grid spacing={gridSpacing} container>
             <Grid item md={9}>
-              <GameSportbookSelect listLineType={eventLineTypes} listSportBook={listSportBook} />
+              <GameSportbookSelect
+                listLineType={eventLineTypes}
+                listSportBook={listSportBook}
+                mapFilterPeriodConfig={mapFilterPeriodConfig}
+              />
               <GameOddsRows listSportBook={listSportBook} />
               <Typography variant="h6" color="secondary" sx={{ mt: 3.5 }}>
                 This event uses the league setting
@@ -150,16 +178,33 @@ function GameFromBody(props: IProps) {
               {/* <Grid item md={12} sx={{ mt: 3.5, mb: 3.5 }}>
           </Grid> */}
             </Grid>
-            <Grid item md={3}></Grid>
-          </Grid>
-          <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
-            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onSyncOdds()}>
-              Sync Odds
-            </Button>
-
-            <Button type="submit" variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }}>
-              Save
-            </Button>
+            <Grid item md={3}>
+              <Grid
+                container
+                direction="column"
+                justifyContent="flex-start"
+                alignItems="baseline"
+                sx={{ maxWidth: "200px" }}
+              >
+                <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="success">
+                  {isExistsItem ? "Update" : "Save"}
+                </Button>
+                <Button variant="contained" sx={{ flex: 1, mt: 2 }} onClick={() => onSyncOdds()} fullWidth>
+                  Sync Odds
+                </Button>
+                {isExistsItem && (
+                  <Button
+                    variant="contained"
+                    sx={{ flex: 1, mt: 2 }}
+                    fullWidth
+                    color="error"
+                    onClick={() => onDelete()}
+                  >
+                    Delete
+                  </Button>
+                )}
+              </Grid>
+            </Grid>
           </Grid>
         </form>
       </FormProvider>

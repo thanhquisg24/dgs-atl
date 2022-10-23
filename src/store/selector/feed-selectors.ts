@@ -75,3 +75,18 @@ export const getDefaultFilterPeriodSettingByEvent = (state: RootStateType): IFil
 
   return [];
 };
+
+export const getStepPts = (state: RootStateType): number => {
+  const { selectedGame, currentTabType, selectedDgsLeague } = state.feed;
+  let idSport = "";
+  if (currentTabType === CurrentTabType.LEAGUE) {
+    idSport = selectedDgsLeague.dgsSportId ? selectedDgsLeague.dgsSportId : "";
+  }
+  if (currentTabType === CurrentTabType.GAME) {
+    idSport = selectedGame.gameWithLeague ? selectedGame.gameWithLeague.idSport : "";
+  }
+  if (idSport.trim() === "SOC") {
+    return 0.25;
+  }
+  return 0.5;
+};

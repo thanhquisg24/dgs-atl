@@ -9,3 +9,15 @@
   background-color: inherit;
   padding-bottom: 10px;
 }
+
+.color-active {
+  font-weight: bold;
+  color: #007fff;
+}
+
+.color-disabled {
+  font-weight: bold;
+  /* color: #757575; */
+}
+.color-default {
+}

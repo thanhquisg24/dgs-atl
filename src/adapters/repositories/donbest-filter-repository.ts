@@ -1,11 +1,11 @@
 // eslint-disable-next-line import/named
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
 import {
+  convertFilterCombineResult,
+  FilterTypeEnum,
   IDonbestLeagueEntity,
   IDonbestSportBookEntity,
   IFilterCombine,
-  FilterTypeEnum,
-  convertFilterCombineResult,
   IFilterPeriodEntity,
 } from "@adapters/entity";
 import { IEventFilterEntity } from "@adapters/entity/EventFilterEntity";
@@ -21,8 +21,24 @@ export interface IDonbestFilterRepository {
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IEventFilterEntity>;
   postSyncLines(dgsIdLeague: number): Promise<boolean>;
   postSyncOdds(dgsIdGame: number): Promise<boolean>;
+  postSyncLeagueGame(dgsIdLeague: number): Promise<boolean>;
 }
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
+  postSyncLeagueGame(dgsIdLeague: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .postSyncLeagueGame(dgsIdLeague)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   postSyncLines(dgsIdLeague: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
@@ -124,7 +140,7 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            const map: IFilterCombine = convertFilterCombineResult(data);
+            const map: IFilterCombine = data;
             resolve(map);
           } else {
             reject(new Error(`Error HTTP status code ${res.status}`));

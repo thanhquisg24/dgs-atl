@@ -2,7 +2,7 @@ import { Box, Drawer, useMediaQuery } from "@mui/material";
 import { BrowserView, MobileView } from "react-device-detect";
 
 import LogoSection from "../LogoSection";
-import MenuCard from "./MenuCard";
+// import MenuCard from "./MenuCard";
 // project imports
 import MenuList from "./MenuList";
 // third-party
@@ -36,13 +36,13 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }: any) => {
           }}
         >
           <MenuList />
-          <MenuCard />
+          {/* <MenuCard /> */}
         </PerfectScrollbar>
       </BrowserView>
       <MobileView>
         <Box sx={{ px: 2 }}>
           <MenuList />
-          <MenuCard />
+          {/* <MenuCard /> */}
         </Box>
       </MobileView>
     </>

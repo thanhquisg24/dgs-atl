@@ -111,8 +111,8 @@ export default function LeagueIgnore() {
           <Grid container spacing={gridSpacing}>
             <Grid item md={4}>
               <IgnoreInputPeice
-                higherName="ignorePSOver"
-                lowerName="ignorePSUnder"
+                higherName="ignorePSHigher"
+                lowerName="ignorePSLower"
                 checkboxName="ignorePSTD"
                 lowerTitle="PS if Lower"
                 higherTitle="PS if Higher"
@@ -120,8 +120,8 @@ export default function LeagueIgnore() {
             </Grid>
             <Grid item md={4}>
               <IgnoreInputPeice
-                higherName="ignoreMLOver"
-                lowerName="ignoreMLUnder"
+                higherName="ignoreMLHigher"
+                lowerName="ignoreMLLower"
                 checkboxName="ignoreMLTD"
                 lowerTitle="ML if Lower"
                 higherTitle="ML if Higher"
@@ -129,8 +129,8 @@ export default function LeagueIgnore() {
             </Grid>
             <Grid item md={4}>
               <IgnoreInputPeice
-                higherName="ignoreTotalOver"
-                lowerName="ignoreTotalUnder"
+                higherName="ignoreTotalHigher"
+                lowerName="ignoreTotalLower"
                 checkboxName="ignoreTotalTD"
                 lowerTitle="TL if Lower"
                 higherTitle="TL if Higher"
@@ -150,8 +150,8 @@ export default function LeagueIgnore() {
             </Grid>
             <Grid item md={4}>
               <IgnoreInputPeiceBettween
-                higherName="ignoreMLRangeUnder"
-                lowerName="ignoreMLRangeOver"
+                higherName="ignoreMLRangeLower"
+                lowerName="ignoreMLRangeHigher"
                 checkboxName="ignoreMLRangeTD"
                 lowerTitle="Between"
                 higherTitle="and"
@@ -159,8 +159,8 @@ export default function LeagueIgnore() {
             </Grid>
             <Grid item md={4}>
               <IgnoreInputPeice
-                higherName="ignoreTotalJuiceOver"
-                lowerName="ignoreTotalJuiceUnder"
+                higherName="ignoreTotalJuiceHigher"
+                lowerName="ignoreTotalJuiceLower"
                 checkboxName="ignoreTotalJCTD"
                 lowerTitle="JC if Lower"
                 higherTitle="JC if Higher"

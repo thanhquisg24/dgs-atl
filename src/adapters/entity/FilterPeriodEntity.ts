@@ -13,15 +13,16 @@ export interface IFilterPeriodEntity {
   total: boolean;
 
   dbSportBookId: number;
-  ps_point: number;
-  ps_juice: number;
-  ml_point: number;
-  ml_juice: number;
-  total_point: number;
-  total_juice: number;
+  ps_point: number | null | string;
+  ps_juice: number | null | string;
+  ml_point: number | null | string;
+  ml_juice: number | null | string;
+  total_point: number | null | string;
+  total_juice: number | null | string;
 
   dbGameId: number;
   dbLeagueId: number;
+  dbSportId: number;
 }
 
 const defaultNHLPeriodItem: IFilterPeriodEntity = {
@@ -36,14 +37,15 @@ const defaultNHLPeriodItem: IFilterPeriodEntity = {
   ml: true,
   total: true,
   dbSportBookId: 0,
-  ps_point: 0,
-  ps_juice: 0,
-  ml_point: 0,
-  ml_juice: 0,
-  total_point: 0,
-  total_juice: 0,
+  ps_point: "",
+  ps_juice: "",
+  ml_point: "",
+  ml_juice: "",
+  total_point: "",
+  total_juice: "",
   dbGameId: 0,
   dbLeagueId: 0,
+  dbSportId: 0,
 };
 
 export const defaultNHLPeriods: IFilterPeriodEntity[] = [

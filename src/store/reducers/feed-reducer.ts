@@ -74,6 +74,7 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
       ...e,
       dgsLeagueId: action.payload.dgsLeagueId,
       dbLeagueId: action.payload.dbLeagueId,
+      dbSportId: action.payload.dbSportId,
     }));
     state.leagueLeftInfo[action.payload.dgsLeagueId].dgsGames = gamesWithLeague;
     state.isLoading = false;

@@ -16,20 +16,21 @@ import {
 } from "@store/selector";
 import { RootStateType } from "@store/types";
 import { checkExistsItemIntree } from "@utils/index";
-import { get, omit } from "lodash";
+import { get } from "lodash";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { shallowEqual } from "react-redux";
 import LeagueContainerLeft from "./league-container-left";
 import LeagueContainerRight from "./league-container-right";
 import LeagueFormLegend from "./misc/league-form-legend";
+import { buildPayloadLeagueTab } from "./misc/league-help";
 import LeagueIgnore from "./misc/league-ignore";
 // Loading
 
-interface IFromValue extends IFilterLineTypeEntity {
+export interface IFromLeagueValue extends IFilterLineTypeEntity {
   periodConfig: IFilterPeriodEntity[];
 }
-const defaultValues: IFromValue = {
+const defaultValues: IFromLeagueValue = {
   dgsLeagueId: -1,
   type: FilterTypeEnum.LEAGUE,
   lineTypeId: 0,
@@ -41,31 +42,27 @@ const defaultValues: IFromValue = {
   dbLeagueId: null,
   periodConfig: [],
   autoTimeChange: false,
-  ignoreMLOver: null,
-  ignorePSOver: null,
-  ignoreTotalOver: null,
-  ignoreMLUnder: null,
-  ignorePSUnder: null,
-  ignoreTotalUnder: null,
-  ignoreTotalJuiceOver: null,
-  ignoreTotalJuiceUnder: null,
-  ignorePSJuiceOver: null,
-  ignorePSJuiceUnder: null,
+  ignoreMLHigher: null,
+  ignorePSHigher: null,
+  ignoreTotalHigher: null,
+  ignoreMLLower: null,
+  ignorePSLower: null,
+  ignoreTotalLower: null,
+  ignoreTotalJuiceHigher: null,
+  ignoreTotalJuiceLower: null,
+  ignorePSJuiceHigher: null,
+  ignorePSJuiceLower: null,
   ignorePSTD: false,
   ignoreMLTD: false,
   ignoreTotalTD: false,
   ignorePSJCTD: false,
   ignoreTotalJCTD: false,
-  ignoreTeamTotalTD: false,
-  ignoreTeamTotalJCTD: false,
-  ignoreTeamTotalUnder: null,
-  ignoreTeamTotalOver: null,
-  ignoreTeamTotalJuiceOver: null,
-  ignoreTeamTotalJuiceUnder: null,
   ignoreMLRangeTD: false,
-  ignoreMLRangeOver: null,
-  ignoreMLRangeUnder: null,
+  ignoreMLRangeHigher: null,
+  ignoreMLRangeLower: null,
   useOddsBySports: false,
+  id: 0,
+  dbSportId: 0,
 };
 function LeagueformContent() {
   // eslint-disable-next-line operator-linebreak
@@ -129,14 +126,6 @@ function LeagueformContent() {
     if (watchBookId === undefined) {
       return;
     }
-    // console.log("🚀 ~ file: league-form.tsx ~ line 130 ~ React.useEffect ~ watchBookId", watchBookId);
-    // const keyLinePeriod = `${watchLineTypeId}`;
-    // const itemTmp = get(selectedLeagueData.mapFilterLineTypeConfig, keyLinePeriod);
-    // const item: IFilterLineTypeEntity | null = itemTmp || null;
-    // if (item !== null) {
-    //   const itemPeriods = get(selectedLeagueData.mapFilterPeriodConfig, item.lineTypeId);
-    //   hookForm.reset({ ...item, periodConfig: itemPeriods });
-    // } else {
     const periodsVal = hookForm.getValues("periodConfig");
     const arrImmutableVersion = periodsVal.map((e) => ({
       ...e,
@@ -147,25 +136,11 @@ function LeagueformContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchBookId]);
 
-  const onSubmit = (data: IFromValue) => {
-    const { dgsLeagueId } = data;
-    console.log("🚀 ~ file: league-form.tsx ~ line 159 ~ onSubmit ~ data", data);
-    const dbInfo = leagueInfoTree[dgsLeagueId];
-    const filterPeriodReq = data.periodConfig.map((e) => ({
-      ...e,
-      lineTypeId: data.lineTypeId,
-      dgsLeagueId,
-      dbLeagueId: dbInfo.donbestLeague.idLeague,
-    }));
-    const filterLineTypeReq = {
-      ...omit(data, ["periodConfig"]),
-      filterLineTypeId: { lineTypeId: data.lineTypeId, dgsLeagueId },
-    };
-    filterLineTypeReq.dbLeagueId = dbInfo.donbestLeague.idLeague;
-    filterLineTypeReq.dgsLeagueId = dgsLeagueId;
+  const onSubmit = (data: IFromLeagueValue) => {
+    const payload = buildPayloadLeagueTab(data, leagueInfoTree);
     emitStartLoading();
     diRepositorires.donbestFilter
-      .postSaveLeagueFilters({ filterLineTypeReq, filterPeriodReq })
+      .postSaveLeagueFilters(payload)
       .then(() => {
         emitStopLoading();
         dispatch(
@@ -183,19 +158,31 @@ function LeagueformContent() {
   };
 
   const onSyncLines = () => {
-    if (watchdgsLeagueId && watchdgsLeagueId !== -1) {
-      emitStartLoading();
-      diRepositorires.donbestFilter
-        .postSyncLines(watchdgsLeagueId)
-        .then(() => {
-          emitStopLoading();
-          notifyMessageSuccess("Sync Lines success!");
-        })
-        .catch(() => {
-          notifyMessageError("Sync Lines failure! please try again.");
-          emitStopLoading();
-        });
-    }
+    hookForm.trigger().then((result: boolean) => {
+      if (result) {
+        const data: IFromLeagueValue = hookForm.getValues();
+        const payload = buildPayloadLeagueTab(data, leagueInfoTree);
+        emitStartLoading();
+        diRepositorires.donbestFilter
+          .postSaveLeagueFilters(payload)
+          .then(() => {
+            diRepositorires.donbestFilter
+              .postSyncLines(data.dgsLeagueId)
+              .then(() => {
+                emitStopLoading();
+                notifyMessageSuccess("Sync Lines success!");
+              })
+              .catch(() => {
+                notifyMessageError("Sync Lines failure! please try again.");
+                emitStopLoading();
+              });
+          })
+          .catch(() => {
+            notifyMessageError("Sync failure! please try again.");
+            emitStopLoading();
+          });
+      }
+    });
   };
 
   const copyToLeague = (): void => {
@@ -213,8 +200,31 @@ function LeagueformContent() {
     alert("onSyncTimes");
   };
   const onSyncGames = (): void => {
-    // eslint-disable-next-line no-alert
-    alert("onSyncGames");
+    hookForm.trigger().then((result: boolean) => {
+      if (result) {
+        const data: IFromLeagueValue = hookForm.getValues();
+        const payload = buildPayloadLeagueTab(data, leagueInfoTree);
+        emitStartLoading();
+        diRepositorires.donbestFilter
+          .postSaveLeagueFilters(payload)
+          .then(() => {
+            diRepositorires.donbestFilter
+              .postSyncLeagueGame(data.dgsLeagueId)
+              .then(() => {
+                emitStopLoading();
+                notifyMessageSuccess("Sync Game success!");
+              })
+              .catch(() => {
+                notifyMessageError("Sync Game failure! please try again.");
+                emitStopLoading();
+              });
+          })
+          .catch(() => {
+            notifyMessageError("Sync failure! please try again.");
+            emitStopLoading();
+          });
+      }
+    });
   };
 
   const onDelete = (): void => {

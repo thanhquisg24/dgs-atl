@@ -4,6 +4,7 @@ import { Box, Checkbox, FormControlLabel, FormHelperText, Grid, MenuItem, Select
 import { selectLeagueIdRequest } from "@store/actions";
 import { ILeagueInfoModel, IMapFilterLineTypeConfig } from "@store/models/feed-model";
 import { checkExistsItemIntree } from "@utils/index";
+import React from "react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { LeagueOddsRow } from "./league-odds-row";
 
@@ -13,9 +14,20 @@ interface IProps {
   listSportBook: IDonbestSportBookEntity[];
   savedLineTypeConfig: IMapFilterLineTypeConfig | null;
 }
-function CustomTextInSelectBox(props: { text: string; tree: any; itemKey: string | number }) {
+function CustomTextInSelectBox(props: {
+  text: string;
+  tree: IMapFilterLineTypeConfig | null;
+  itemKey: string | number;
+}) {
   const { text, tree, itemKey } = props;
-  return checkExistsItemIntree(tree, itemKey) ? <b>{text}</b> : <>{text}</>;
+  const classColor = React.useMemo(() => {
+    const isExist = checkExistsItemIntree(tree, itemKey);
+    if (isExist && tree) {
+      return tree[itemKey].enabled ? "color-active" : "color-disabled";
+    }
+    return "color-default";
+  }, [itemKey, tree]);
+  return <span className={classColor}>{text}</span>;
 }
 function SportBookSelect(props: IProps) {
   const { leagueInfoList, listLineType, listSportBook, savedLineTypeConfig } = props;

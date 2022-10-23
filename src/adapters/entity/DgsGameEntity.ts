@@ -47,4 +47,5 @@ export interface IDgsGameEntity {
 export interface IDgsGameEntityWithLeague extends IDgsGameEntity {
   dgsLeagueId: number;
   dbLeagueId: number;
+  dbSportId: number;
 }

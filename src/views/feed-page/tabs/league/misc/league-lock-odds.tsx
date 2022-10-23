@@ -34,16 +34,16 @@ export default function LeagueLockOdds() {
             <Grid item md={4}></Grid>
             <Grid item md={4}>
               <TextField
-                {...register("lockTotalOverJuice")}
-                id="lockTotalOverJuice"
+                {...register("lockTotalHigherJuice")}
+                id="lockTotalHigherJuice"
                 InputLabelProps={{ shrink: true }}
                 size="small"
                 label="Away"
                 fullWidth
               />
               <TextField
-                {...register("lockTotalUnderJuice")}
-                id="lockTotalUnderJuice"
+                {...register("lockTotalLowerJuice")}
+                id="lockTotalLowerJuice"
                 InputLabelProps={{ shrink: true }}
                 size="small"
                 label="Home"
