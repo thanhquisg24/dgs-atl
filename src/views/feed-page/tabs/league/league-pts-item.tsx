@@ -46,6 +46,7 @@ export function LeaguePtsItem(props: IProps) {
                 <InputLabel id={`s_${ptsName}`}>pts</InputLabel>
                 <Select
                   {...field}
+                  value={field.value || ""}
                   MenuProps={{ PaperProps: { sx: { maxHeight: 200 } } }}
                   labelId={`s_${ptsName}`}
                   size="small"
@@ -77,7 +78,14 @@ export function LeaguePtsItem(props: IProps) {
           control={control}
           render={({ field }) => (
             <>
-              <TextField {...field} size="small" label="jc" variant="standard" type="number" />
+              <TextField
+                {...field}
+                value={field.value || ""}
+                size="small"
+                label="jc"
+                variant="standard"
+                type="number"
+              />
               {errors[jcName] && <FormHelperText error>{errors[jcName]?.message}</FormHelperText>}
             </>
           )}

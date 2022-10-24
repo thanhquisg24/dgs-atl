@@ -66,7 +66,7 @@ const ListSportMappingPage = () => {
         .catch((error: any) => notifyMessageError(error.message))
         .finally(() => emitStopLoading());
     };
-    confirm({ description: "Delete your selection" })
+    confirm({ description: "Delete your selection?" })
       .then(() => deleteFunc())
       .catch(() => console.log("Deletion cancelled."));
   };

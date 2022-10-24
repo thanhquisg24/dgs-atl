@@ -16,6 +16,7 @@ export interface ILeagueFetchDataPayload {
   dgsSportId: string | null;
   defaultSelectedLineType: string | null | number;
   filterCombine: IFilterCombine | null;
+  clearSelectedGame?: boolean;
 }
 export interface IInitConfigFeed {
   listDgsLeague: IDgsLeagueEntity[];
@@ -44,6 +45,7 @@ export const selectLeagueIdFailure = createAction<string>("feed/SELECT_LEAGUE_ID
 export const selectLeagueIdRefresh = createAction<{
   dgsLeagueId: number;
   defaultSelectedLineType: string | number | null;
+  clearSelectedGame?: boolean;
 }>("feed/SELECT_LEAGUE_ID_REFRESH");
 
 export const selectEventFilterdRequest = createAction<IDgsGameEntityWithLeague>("feed/SELECT_GAME_ID_REQUEST");

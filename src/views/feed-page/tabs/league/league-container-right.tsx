@@ -29,6 +29,16 @@ export default function LeagueContainerRight(props: {
         />
       </FormGroup>
       <Controller
+        name="autoScore"
+        control={control}
+        render={({ field }) => (
+          <FormControlLabel
+            control={<Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />}
+            label="Auto score"
+          />
+        )}
+      />
+      <Controller
         name="autoTimeChange"
         control={control}
         render={({ field }) => (

@@ -1,3 +1,4 @@
+import { IFilterDeleteItemPayload } from "@adapters/dto/FilterDeleteItemPayload";
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
 import { IFilterPeriodEntity } from "@adapters/entity";
 import { ISportMapping } from "@adapters/entity/SportMappingEntity";
@@ -26,11 +27,13 @@ interface IApiPostType {
   postSyncLines(dgsIdLeague: number): Promise<AxiosResponse>;
   postSyncLeagueGame(dgsIdLeague: number): Promise<AxiosResponse>;
   postSyncOdds(dgsIdGame: number): Promise<AxiosResponse>;
+  postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<AxiosResponse>;
 }
 interface IApiFetchType {
   fetchAvaiableDgsLineType(): Promise<AxiosResponse>;
   fetAvaiableDgsLeague(): Promise<AxiosResponse>;
   fetAvaiableDgsGames(idLeague: number): Promise<AxiosResponse>;
+  fetAllDonbestSportMapping(): Promise<AxiosResponse>;
   fetAvaiableDonbestLeague(): Promise<AxiosResponse>;
   fetAvaiableDonbestSportBook(): Promise<AxiosResponse>;
 
@@ -43,6 +46,14 @@ interface IApiFetchType {
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 
 class MainApi extends AuthApi implements IMainApi {
+  postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<AxiosResponse> {
+    return this.Axios.post("/db-filter/delete-filter", payload);
+  }
+
+  fetAllDonbestSportMapping(): Promise<AxiosResponse> {
+    return this.Axios.get("sport-mapping/all-mapping");
+  }
+
   postSyncLeagueGame(dgsIdLeague: number): Promise<AxiosResponse<any, any>> {
     const xFromData = queryString.stringify({
       dgsIdLeague,

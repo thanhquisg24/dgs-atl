@@ -45,7 +45,6 @@ export default function BasicTable(props: IProps) {
             <TableCell>DGS League</TableCell>
             <TableCell>Default Game Stat</TableCell>
             <TableCell>Default Game Type</TableCell>
-            <TableCell>Auto Score </TableCell>
             <TableCell>Auto Game Creation</TableCell>
             <TableCell>Active</TableCell>
             <TableCell></TableCell>
@@ -69,9 +68,7 @@ export default function BasicTable(props: IProps) {
               <TableCell>
                 {row.defaultIdGameType} - {row.defaultIdGameTypeName}
               </TableCell>
-              <TableCell>
-                <BooleanIcon status={row.autoScore} />
-              </TableCell>
+
               <TableCell>
                 <BooleanIcon status={row.autoGameCreation} />
               </TableCell>

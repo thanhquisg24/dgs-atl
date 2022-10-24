@@ -98,6 +98,7 @@ function* fetchSelectedDgsLeaguesRefreshSaga(action: ReturnType<typeof selectLea
         dgsSportId,
         filterCombine: lueagueCombineConfig,
         defaultSelectedLineType: action.payload.defaultSelectedLineType,
+        clearSelectedGame: action.payload.clearSelectedGame,
       }),
     );
   } catch (error) {

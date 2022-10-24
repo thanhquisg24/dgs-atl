@@ -6,17 +6,18 @@ import { Controller, useForm } from "react-hook-form";
 import MainCard from "@ui-component/cards/MainCard";
 import React from "react";
 
+import { diRepositorires } from "@adapters/di";
+import { IDonbestLeagueEntity } from "@adapters/entity";
 import { useDataProvider } from "@hooks/useDataProvider";
-import AsynCustomSelectV3 from "@ui-component/AsynCustomSelectV3";
+import AsynCustomSelectV2 from "@ui-component/AsynCustomSelectV2";
 import CustomAutoCompleteV2 from "@ui-component/CustomAutoCompleteV2";
+import { find } from "lodash";
 import { useParams } from "react-router-dom";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "../../emiter/AppEmitter";
 import { useRouteFunc } from "../../routes/useRouteFunc";
-import { diRepositorires } from "@adapters/di";
-import { find } from "lodash";
-import { GameStatListData } from "./game-stat-selectbox";
+import DgsSportMappingSelectbox from "./dgs-sport-mapping-selectbox";
 import FeedLeagueSelectbox from "./feed-league-selectbox";
-import AsynCustomSelectV2 from "@ui-component/AsynCustomSelectV2";
+import { GameStatListData } from "./game-stat-selectbox";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
@@ -34,11 +35,33 @@ const Title = () => (
   </Grid>
 );
 
-export interface IState {
-  donbestItem: any;
+interface IState {
+  donbestItem: IDonbestLeagueEntity;
 }
+const defaultStateItem: IDonbestLeagueEntity = {
+  id: 0,
+  idLeague: 0,
+  dbSport: {
+    idSport: 0,
+    name: "",
+  },
+  enabled: false,
+  name: "",
+  dgsIdLeague: 1,
+  dgsIdSport: "",
+  idSportsbook: 0,
+  idLeagueForOdds: 0,
+  dgsLeagueName: "",
+  defaultIdGameType: 0,
+  defaultGameStat: "",
+  autoGameCreation: false,
+  defaultGameStatName: "",
+  defaultIdGameTypeName: "",
+  idLeagueForOddsName: "",
+};
 
 interface IFromValue {
+  id: number;
   idLeagueForOdds: number | string;
   autoGameCreation: boolean;
   defaultGameStat: string;
@@ -47,10 +70,10 @@ interface IFromValue {
   dbLeagueId: number | null;
   dgsSportId: string | null;
   dgsLeagueId: number | null | string | any;
-  autoScore: boolean;
   enabled: boolean;
 }
 interface IRowLeagueMapping extends IFromValue {
+  id: number;
   dbSportId: number;
   dbSportName: string;
   dbLeagueId: number;
@@ -75,8 +98,8 @@ const defaultValues: IFromValue = {
   defaultIdGameType: "",
   dbSportId: null,
   dbLeagueId: null,
-  autoScore: false,
   enabled: false,
+  id: 0,
 };
 const EditLeagueMapping = () => {
   const { leagueId } = useParams<{ leagueId: string }>();
@@ -90,10 +113,9 @@ const EditLeagueMapping = () => {
     formState: { errors },
   } = useForm({ defaultValues });
   const watchDgsSport = watch("dgsSportId", "");
+  const watchDbSport = watch("dbSportId");
   // const watchDgsLeague = watch("dgsLeagueId", "");
-  const [state, setState] = React.useState<IState>({
-    donbestItem: null,
-  });
+  const [state, setState] = React.useState<IState>({ donbestItem: defaultStateItem });
 
   // control.getFieldState;
   const filterDgsSport = React.useMemo(() => {
@@ -126,6 +148,7 @@ const EditLeagueMapping = () => {
     emitStartLoading();
     // const multipleValues = getValues(["test", "test1"]);
     const gs = find(GameStatListData, { id: data.defaultGameStat });
+    console.log("🚀 ~ file: edit.tsx ~ line 145 ~ onSubmit ~ data.defaultIdGameType", data);
     const row: IRowLeagueMapping = {
       dbSportId: state.donbestItem?.dbSport.idSport,
       dbSportName: "",
@@ -134,16 +157,21 @@ const EditLeagueMapping = () => {
       dgsSportId: data.dgsSportId,
       dgsSportName: "",
       dgsLeagueId: data.dgsLeagueId.id,
-      dgsLeagueName: data.dgsLeagueId.label,
+      dgsLeagueName: data.dgsLeagueId.label ? data.dgsLeagueId.label : state.donbestItem.dgsLeagueName,
       idLeagueForOdds: data.idLeagueForOdds.id,
       autoGameCreation: data.autoGameCreation,
       defaultGameStat: data.defaultGameStat,
       defaultIdGameType: data.defaultIdGameType.id,
       enabled: data.enabled,
-      defaultIdGameTypeName: data.defaultIdGameType.label,
-      idLeagueForOddsName: data.idLeagueForOdds.label,
+      defaultIdGameTypeName: data.defaultIdGameType.label
+        ? data.defaultIdGameType.label
+        : state.donbestItem.defaultGameStatName,
+      idLeagueForOddsName: data.idLeagueForOdds.label
+        ? data.idLeagueForOdds.label
+        : state.donbestItem.idLeagueForOddsName,
       defaultGameStatName: gs ? gs.text : "",
       autoScore: data.autoScore,
+      id: data.id,
     };
     diRepositorires.donbestLeague
       .postSaveLeagueMapping(row)
@@ -169,7 +197,7 @@ const EditLeagueMapping = () => {
                 {state.donbestItem?.dbSport.idSport} - {state.donbestItem?.dbSport.name}
               </Typography>
               <Typography variant="h5" gutterBottom align="left" component="p">
-                League:
+                DonBest Leagues (Schedules):
               </Typography>
               <Typography variant="body1" gutterBottom align="left" component="p" sx={{ ml: 2 }}>
                 {state.donbestItem?.idLeague} - {state.donbestItem?.name}
@@ -183,7 +211,7 @@ const EditLeagueMapping = () => {
                   <FeedLeagueSelectbox
                     sx={{ mt: 2 }}
                     id="feed-league-select"
-                    label="DonBest Feed League"
+                    label="DonBest Leagues (Odds)"
                     size="small"
                     registerProp={field}
                     errorMsg={errors.idLeagueForOdds?.message}
@@ -202,21 +230,15 @@ const EditLeagueMapping = () => {
                   required: "This Field is Required",
                 }}
                 render={({ field }) => (
-                  <AsynCustomSelectV3
+                  <DgsSportMappingSelectbox
                     id="dgs-sport-select"
                     label="DGS Sport"
                     size="small"
                     registerProp={field}
                     errorMsg={errors.dgsSportId?.message}
-                    idField="idSport"
-                    textField="sportName"
-                    queryStr={JSON.stringify({
-                      resource: "dgs-sports",
-                      perPage: 50,
-                      sort: { field: "sportOrder", order: "ASC" },
-                    })}
                     displayIdAndText
-                  ></AsynCustomSelectV3>
+                    dbSportId={watchDbSport}
+                  ></DgsSportMappingSelectbox>
                 )}
               />
 
@@ -304,18 +326,7 @@ const EditLeagueMapping = () => {
                   />
                 )}
               />
-              <Controller
-                name="autoScore"
-                control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
-                    }
-                    label="Auto score"
-                  />
-                )}
-              />
+
               <Controller
                 name="enabled"
                 control={control}

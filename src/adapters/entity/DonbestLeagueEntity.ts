@@ -1,4 +1,5 @@
 export interface IDonbestLeagueEntity {
+  id: number;
   idLeague: number;
   dbSport: {
     idSport: number;
@@ -15,5 +16,7 @@ export interface IDonbestLeagueEntity {
   defaultIdGameType: number;
   defaultGameStat: string;
   autoGameCreation: boolean;
-  autoScore: boolean;
+  defaultGameStatName: string;
+  defaultIdGameTypeName: string;
+  idLeagueForOddsName: string;
 }

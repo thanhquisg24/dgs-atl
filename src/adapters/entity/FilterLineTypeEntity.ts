@@ -10,6 +10,7 @@ export interface IFilterLineTypeEntity {
   enabled: boolean;
   autoTimeChange: boolean;
   useOddsBySports: boolean;
+  autoScore: boolean;
   // useDGSLinkedLineTypes: boolean;
   preserveFavoriteJuice: boolean;
   // followParentExcept: boolean;

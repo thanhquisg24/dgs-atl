@@ -13,7 +13,7 @@ import React from "react";
 const columns: any = [
   {
     title: "ID",
-    field: "idLeague",
+    field: "id",
   },
   { title: "Donbest Sport", field: "dbSport", render: (rowData: any) => rowData.dbSport.name },
   { title: "DGS Sport", field: "dgsIdSport" },
@@ -23,9 +23,7 @@ const columns: any = [
 
   { title: "Game Type", field: "defaultIdGameTypeName" },
   { title: "Game Stat", field: "defaultGameStatName" },
-  { title: "Auto Score", field: "autoScore", type: "boolean" },
   { title: "Auto Game Creation", field: "autoGameCreation", type: "boolean" },
-
   { title: "Enabled", field: "enabled", type: "boolean" },
 ];
 const ListLeagueMapping = () => {
@@ -103,7 +101,7 @@ const ListLeagueMapping = () => {
               title: "Action",
               render: (rowData) => {
                 return (
-                  <Link to={`/league-page-edit/${rowData.idLeague}`} className="game__teamName">
+                  <Link to={`/league-page-edit/${rowData.id}`} className="game__teamName">
                     <IconButton color="inherit">
                       <Edit />
                     </IconButton>

@@ -1,10 +1,12 @@
 import { diRepositorires } from "@adapters/di";
+import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { FilterTypeEnum, IDgsGameEntityWithLeague, IDgsLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { Button, Grid, Typography } from "@mui/material";
 import { selectEventFilterdReFresh } from "@store/actions";
 import { gridSpacing } from "@store/constant";
+import { useConfirm } from "material-ui-confirm";
 import { IMapFilterPeriodConfig } from "@store/models/feed-model";
 import {
   getDefaultFilterPeriodSettingByEvent,
@@ -58,6 +60,7 @@ function GameFromBody(props: IProps) {
   const dispatch = useAppDispatch();
   const listSportBook = useAppSelector(getListSportBook);
   const defaultFilterPeriodSetting = useAppSelector(getDefaultFilterPeriodSettingByEvent);
+  const confirm = useConfirm();
   const hookForm = useForm({
     defaultValues,
   });
@@ -115,7 +118,7 @@ function GameFromBody(props: IProps) {
         dispatch(
           selectEventFilterdReFresh({
             gameWithLeague,
-            defaultSelectedLineType,
+            defaultSelectedLineType: data.lineTypeId,
           }),
         );
         notifyMessageSuccess("Save success!");
@@ -154,8 +157,38 @@ function GameFromBody(props: IProps) {
     }); //end trgger
   };
   const onDelete = (): void => {
-    // eslint-disable-next-line no-alert
-    alert("onDelete");
+    const data: IGameFromValue = hookForm.getValues();
+    const deleteFunc = () => {
+      emitStartLoading();
+      const { dgsLeagueId, idGame } = gameWithLeague;
+      const payload: IFilterDeleteItemPayload = {
+        dgsIdLeague: dgsLeagueId,
+        type: FilterTypeEnum.EVENT,
+        dgsGameId: idGame,
+        lineTypeId: data.lineTypeId,
+      };
+      diRepositorires.donbestFilter
+        .postDeleteFilterItem(payload)
+        .then(() => {
+          emitStopLoading();
+          dispatch(
+            selectEventFilterdReFresh({
+              gameWithLeague,
+              defaultSelectedLineType: 0,
+            }),
+          );
+          notifyMessageSuccess("Deleted success!");
+        })
+        .catch(() => {
+          notifyMessageError("Deleted failure! please try again.");
+          emitStopLoading();
+        });
+    };
+    if (data.lineTypeId > 0) {
+      confirm({ description: "Delete your selection?" })
+        .then(() => deleteFunc())
+        .catch(() => console.log("Deletion cancelled."));
+    }
   };
   return (
     <fieldset>

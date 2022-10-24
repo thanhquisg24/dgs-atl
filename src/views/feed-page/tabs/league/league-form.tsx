@@ -1,8 +1,10 @@
 import { diRepositorires } from "@adapters/di";
+import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { FilterTypeEnum, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { Grid } from "@mui/material";
+import { useConfirm } from "material-ui-confirm";
 import { selectLeagueIdRefresh } from "@store/actions";
 import { gridSpacing } from "@store/constant";
 import {
@@ -63,6 +65,7 @@ const defaultValues: IFromLeagueValue = {
   useOddsBySports: false,
   id: 0,
   dbSportId: 0,
+  autoScore: false,
 };
 function LeagueformContent() {
   // eslint-disable-next-line operator-linebreak
@@ -78,6 +81,7 @@ function LeagueformContent() {
       shallowEqual,
     );
   const selectedLeagueData = useAppSelector(getSelectedLeague, shallowEqual);
+  const confirm = useConfirm();
   const hookForm = useForm({ defaultValues });
 
   const watchdgsLeagueId = hookForm.watch("dgsLeagueId");
@@ -228,8 +232,38 @@ function LeagueformContent() {
   };
 
   const onDelete = (): void => {
-    // eslint-disable-next-line no-alert
-    alert("onDelete");
+    const data: IFromLeagueValue = hookForm.getValues();
+    const deleteFunc = () => {
+      emitStartLoading();
+      const payload: IFilterDeleteItemPayload = {
+        dgsIdLeague: data.dgsLeagueId,
+        type: FilterTypeEnum.LEAGUE,
+        dgsGameId: 0,
+        lineTypeId: data.lineTypeId,
+      };
+      diRepositorires.donbestFilter
+        .postDeleteFilterItem(payload)
+        .then(() => {
+          emitStopLoading();
+          dispatch(
+            selectLeagueIdRefresh({
+              dgsLeagueId: watchdgsLeagueId,
+              defaultSelectedLineType: 0,
+              clearSelectedGame: true,
+            }),
+          );
+          notifyMessageSuccess("Deleted success!");
+        })
+        .catch(() => {
+          notifyMessageError("Deleted failure! please try again.");
+          emitStopLoading();
+        });
+    };
+    if (data.dgsLeagueId > 0 && data.lineTypeId > 0) {
+      confirm({ description: "Delete your selection?" })
+        .then(() => deleteFunc())
+        .catch(() => console.log("Deletion cancelled."));
+    }
   };
   return (
     <fieldset>

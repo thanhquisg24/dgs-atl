@@ -15,13 +15,14 @@ import {
   buildMapFilterPeriod,
 } from "@store/utils/feed-utils";
 
+const defaultSelectedGame = {
+  mapFilterPeriodConfig: null,
+  gameWithLeague: null,
+  defaultSelectedLineType: 0,
+  eventLineTypes: [],
+};
 export const initialFeedState: IFeedModel = {
-  selectedGame: {
-    mapFilterPeriodConfig: null,
-    gameWithLeague: null,
-    defaultSelectedLineType: null,
-    eventLineTypes: [],
-  },
+  selectedGame: defaultSelectedGame,
   isLoading: false,
   currentTabType: CurrentTabType.LEAGUE,
   selectedDgsLeague: {
@@ -29,7 +30,7 @@ export const initialFeedState: IFeedModel = {
     dgsSportId: null,
     mapFilterLineTypeConfig: null,
     mapFilterPeriodConfig: null,
-    defaultSelectedLineType: null,
+    defaultSelectedLineType: 0,
   },
   leagueLeftInfo: {},
   defaultSetting: {
@@ -67,6 +68,9 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     };
     newState.isLoading = false;
     newState.currentTabType = CurrentTabType.LEAGUE;
+    if (action.payload.clearSelectedGame) {
+      newState.selectedGame = defaultSelectedGame;
+    }
     return newState;
   });
   builder.addCase(expandLeagueSuccess, (state, action) => {

@@ -1,4 +1,5 @@
 // eslint-disable-next-line import/named
+import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
 import {
   convertFilterCombineResult,
@@ -22,8 +23,24 @@ export interface IDonbestFilterRepository {
   postSyncLines(dgsIdLeague: number): Promise<boolean>;
   postSyncOdds(dgsIdGame: number): Promise<boolean>;
   postSyncLeagueGame(dgsIdLeague: number): Promise<boolean>;
+  postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<boolean>;
 }
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
+  postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .postDeleteFilterItem(payload)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   postSyncLeagueGame(dgsIdLeague: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
@@ -140,7 +157,7 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            const map: IFilterCombine = data;
+            const map: IFilterCombine = convertFilterCombineResult(data);
             resolve(map);
           } else {
             reject(new Error(`Error HTTP status code ${res.status}`));

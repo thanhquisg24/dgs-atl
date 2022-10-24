@@ -16,6 +16,7 @@ import { useRouteFunc } from "../../routes/useRouteFunc";
 import AsynCustomSelectV2 from "@ui-component/AsynCustomSelectV2";
 import { GameStatListData } from "./game-stat-selectbox";
 import FeedLeagueSelectbox from "./feed-league-selectbox";
+import DgsSportMappingSelectbox from "./dgs-sport-mapping-selectbox";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
@@ -34,6 +35,7 @@ const Title = () => (
 );
 
 interface IFromValues {
+  id: null;
   idLeagueForOdds: number | string;
   autoGameCreation: boolean;
   defaultGameStat: string;
@@ -42,10 +44,10 @@ interface IFromValues {
   dbLeagueId: number | null;
   dgsSportId: string | null;
   dgsLeagueId: number | null;
-  autoScore: boolean;
   enabled: boolean;
 }
 export interface IRowLeagueMapping extends IFromValues {
+  id: null;
   dbSportId: number;
   dbSportName: string;
   dbLeagueId: number;
@@ -81,7 +83,7 @@ const defaultValues: IFromValues = {
   defaultGameStat: "",
   defaultIdGameType: "",
   enabled: false,
-  autoScore: false,
+  id: null,
 };
 const AddLeagueMapping = () => {
   const { gotoPage } = useRouteFunc();
@@ -120,6 +122,7 @@ const AddLeagueMapping = () => {
     console.log("🚀 ~ file: add.tsx ~ line 121 ~ onSubmit ~ data", data);
     const gs = find(GameStatListData, { id: data.defaultGameStat });
     const row: IRowLeagueMapping = {
+      id: null,
       dbSportId: data.dbSportId,
       dbSportName: "",
       dbLeagueId: data.dbLeagueId.id,
@@ -136,7 +139,6 @@ const AddLeagueMapping = () => {
       defaultIdGameTypeName: data.defaultIdGameType.label,
       idLeagueForOddsName: data.idLeagueForOdds.label,
       defaultGameStatName: gs ? gs.text : "",
-      autoScore: data.autoScore,
     };
     if (checkAddItemMap(row, state.rows)) {
       setState({ rows: [...state.rows, row] });
@@ -167,7 +169,7 @@ const AddLeagueMapping = () => {
   }
 
   return (
-    <MainCard title="Add league  mapping">
+    <MainCard title="Add league mapping">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ width: "100%" }}>
           <Title></Title>
@@ -205,7 +207,7 @@ const AddLeagueMapping = () => {
                   <CustomAutoCompleteV2
                     sx={{ mt: 2 }}
                     id="donbest-league-select"
-                    label="DonBest League"
+                    label="DonBest Leagues (Schedules)"
                     size="small"
                     registerProp={field}
                     errorMsg={errors.dgsLeagueId?.message}
@@ -230,7 +232,7 @@ const AddLeagueMapping = () => {
                   <FeedLeagueSelectbox
                     sx={{ mt: 2 }}
                     id="feed-league-select"
-                    label="DonBest Feed League"
+                    label="DonBest Leagues (Odds)"
                     size="small"
                     registerProp={field}
                     errorMsg={errors.idLeagueForOdds?.message}
@@ -249,21 +251,15 @@ const AddLeagueMapping = () => {
                   required: "This Field is Required",
                 }}
                 render={({ field }) => (
-                  <AsynCustomSelectV3
+                  <DgsSportMappingSelectbox
                     id="dgs-sport-select"
                     label="DGS Sport"
                     size="small"
                     registerProp={field}
                     errorMsg={errors.dgsSportId?.message}
-                    idField="idSport"
-                    textField="sportName"
-                    queryStr={JSON.stringify({
-                      resource: "dgs-sports",
-                      perPage: 50,
-                      sort: { field: "sportOrder", order: "ASC" },
-                    })}
                     displayIdAndText
-                  ></AsynCustomSelectV3>
+                    dbSportId={watchDbSport}
+                  ></DgsSportMappingSelectbox>
                 )}
               />
 
@@ -349,18 +345,7 @@ const AddLeagueMapping = () => {
                   />
                 )}
               />
-              <Controller
-                name="autoScore"
-                control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
-                    }
-                    label="Auto score"
-                  />
-                )}
-              />
+
               <Controller
                 name="enabled"
                 control={control}
