@@ -1,20 +1,14 @@
 // eslint-disable-next-line import/named
 import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
-import {
-  convertFilterCombineResult,
-  FilterTypeEnum,
-  IDonbestLeagueEntity,
-  IDonbestSportBookEntity,
-  IFilterCombine,
-  IFilterPeriodEntity,
-} from "@adapters/entity";
+import { convertFilterCombineResult, FilterTypeEnum, IDonbestLeagueEntity, IDonbestSportBookEntity, IFilterCombine, IFilterPeriodEntity } from "@adapters/entity";
 import { IEventFilterEntity } from "@adapters/entity/EventFilterEntity";
 import { AxiosResponse } from "axios";
 import { BaseRepository } from "./base-repository";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDonbestFilterRepository {
+  postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean>;
   fetDefaultFilterCombine(): Promise<IFilterCombine>;
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
   postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<boolean>;
@@ -26,6 +20,21 @@ export interface IDonbestFilterRepository {
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<boolean>;
 }
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
+  postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .postCopyLeagueFilters(payload)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi

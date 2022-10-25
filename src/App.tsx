@@ -39,7 +39,11 @@ const App = () => {
         <ThemeProvider theme={themes(customization)}>
           <CssBaseline />
           <NavigationScroll>
-            <ConfirmProvider>
+            <ConfirmProvider
+              defaultOptions={{
+                confirmationButtonProps: { autoFocus: true },
+              }}
+            >
               <Routes />
             </ConfirmProvider>
           </NavigationScroll>

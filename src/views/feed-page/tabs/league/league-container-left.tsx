@@ -7,6 +7,7 @@ import { checkExistsItemIntree } from "@utils/index";
 import React from "react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import { LeagueOddsRow } from "./league-odds-row";
+import LinkedFrom from "./misc/linked-from";
 
 interface IProps {
   leagueInfoList: ILeagueInfoModel[];
@@ -14,11 +15,7 @@ interface IProps {
   listSportBook: IDonbestSportBookEntity[];
   savedLineTypeConfig: IMapFilterLineTypeConfig | null;
 }
-function CustomTextInSelectBox(props: {
-  text: string;
-  tree: IMapFilterLineTypeConfig | null;
-  itemKey: string | number;
-}) {
+function CustomTextInSelectBox(props: { text: string; tree: IMapFilterLineTypeConfig | null; itemKey: string | number }) {
   const { text, tree, itemKey } = props;
   const classColor = React.useMemo(() => {
     const isExist = checkExistsItemIntree(tree, itemKey);
@@ -55,12 +52,7 @@ function SportBookSelect(props: IProps) {
           }}
           render={({ field }) => (
             <>
-              <Select
-                {...field}
-                onChange={(e) => onChangeSelectLeague(e)}
-                inputProps={{ "aria-label": "Without label" }}
-                fullWidth
-              >
+              <Select {...field} onChange={(e) => onChangeSelectLeague(e)} inputProps={{ "aria-label": "Without label" }} fullWidth>
                 <MenuItem value={-1}>Select league...</MenuItem>
                 {leagueInfoList.map((item) => (
                   <MenuItem key={item.dgsLeague.idLeague} value={item.dgsLeague.idLeague}>
@@ -90,11 +82,7 @@ function SportBookSelect(props: IProps) {
                 <MenuItem value={0}>Select linetype...</MenuItem>
                 {listLineType.map((item) => (
                   <MenuItem key={item.idLineType} value={item.idLineType}>
-                    <CustomTextInSelectBox
-                      text={item.description}
-                      tree={savedLineTypeConfig}
-                      itemKey={item.idLineType}
-                    />
+                    <CustomTextInSelectBox text={item.description} tree={savedLineTypeConfig} itemKey={item.idLineType} />
                   </MenuItem>
                 ))}
               </Select>
@@ -123,24 +111,14 @@ function SportBookSelect(props: IProps) {
         />
       </Grid>
 
-      <Grid item md={5}>
-        <Typography variant="h6" color="secondary" sx={{ lineHeight: "3em" }}>
-          Linked From: None
-        </Typography>
+      <Grid item md={9}>
+        <LinkedFrom />
       </Grid>
-      <Grid item md={4}></Grid>
       <Grid item md={3}>
         <Controller
           name="enabled"
           control={control}
-          render={({ field }) => (
-            <FormControlLabel
-              control={
-                <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
-              }
-              label="Active"
-            />
-          )}
+          render={({ field }) => <FormControlLabel control={<Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />} label="Active" />}
         />
       </Grid>
     </Grid>
@@ -156,12 +134,7 @@ export default function LeagueContainerLeft(props: IProps) {
   });
   return (
     <Box sx={{ width: "100%" }}>
-      <SportBookSelect
-        leagueInfoList={leagueInfoList}
-        listLineType={listLineType}
-        listSportBook={listSportBook}
-        savedLineTypeConfig={savedLineTypeConfig}
-      />
+      <SportBookSelect leagueInfoList={leagueInfoList} listLineType={listLineType} listSportBook={listSportBook} savedLineTypeConfig={savedLineTypeConfig} />
       {/* <LeagueOddTitle /> */}
       {fields.map((item, index) => (
         <LeagueOddsRow

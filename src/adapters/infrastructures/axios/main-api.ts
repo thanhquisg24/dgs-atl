@@ -15,6 +15,7 @@ export interface IItemLeagueMapPost {
 }
 
 interface IApiPostType {
+  postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<AxiosResponse>;
   postDeleteSportMappingItems(items: number[]): Promise<AxiosResponse>;
   postAddSportMappings(payload: ISportMapping[]): Promise<AxiosResponse>;
   postUpdateSportMapping(payload: ISportMapping): Promise<AxiosResponse>;
@@ -41,11 +42,25 @@ interface IApiFetchType {
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<AxiosResponse>;
 
   fetFeedLeagues(): Promise<AxiosResponse>;
+  fetchLineTypeLinks(outIdLineType: number, dgsIdSport: string): Promise<AxiosResponse>;
 }
 
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 
 class MainApi extends AuthApi implements IMainApi {
+  fetchLineTypeLinks(outIdLineType: number, dgsIdSport: string): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("dgs-linetype/get-linetype-links", {
+      params: {
+        outIdLineType,
+        dgsIdSport,
+      },
+    });
+  }
+
+  postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<AxiosResponse> {
+    return this.Axios.post("/db-filter/copy-filter-league", payload);
+  }
+
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<AxiosResponse> {
     return this.Axios.post("/db-filter/delete-filter", payload);
   }

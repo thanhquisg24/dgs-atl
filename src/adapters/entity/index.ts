@@ -11,3 +11,4 @@ export * from "./FilterTypeEnum";
 export * from "./FilterCombine";
 export * from "./DgsGameEntity";
 export * from "./SportMappingEntity";
+export * from "./LineTypeLinkEntity";

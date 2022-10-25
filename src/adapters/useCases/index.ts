@@ -10,7 +10,7 @@ export interface IUseCases {
 
 const UseCases = (repositories: IRepositories): IUseCases => {
   return {
-    degaPlayer: new DegaPlayerUseCase(repositories.degaPlayer),
+    degaPlayer: new DegaPlayerUseCase(repositories.dgsLineTypeLink),
     auth: new AuthUseCase(repositories.auth),
   };
 };

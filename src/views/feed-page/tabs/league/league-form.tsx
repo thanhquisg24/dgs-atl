@@ -69,17 +69,19 @@ const defaultValues: IFromLeagueValue = {
 };
 function LeagueformContent() {
   // eslint-disable-next-line operator-linebreak
-  const [leagueInfoTree, listLineType, listSportBook, defaultFilterLineTypeSetting, defaultFilterPeriodSetting] =
-    useAppSelector(
-      (reduxState: RootStateType) => [
-        getLeagueLeftInfoTree(reduxState),
-        getListLineType(reduxState),
-        getListSportBook(reduxState),
-        getDefaultFilterLineTypeSetting(reduxState),
-        getDefaultFilterPeriodSetting(reduxState),
-      ],
-      shallowEqual,
-    );
+  const [leagueInfoTree, listLineType, listSportBook, defaultFilterLineTypeSetting, defaultFilterPeriodSetting] = useAppSelector(
+    (reduxState: RootStateType) => [
+      getLeagueLeftInfoTree(reduxState),
+      getListLineType(reduxState),
+      getListSportBook(reduxState),
+      getDefaultFilterLineTypeSetting(reduxState),
+      getDefaultFilterPeriodSetting(reduxState),
+    ],
+    shallowEqual,
+  );
+  const leagueInfoList = React.useMemo(() => {
+    return Object.values(leagueInfoTree);
+  }, [leagueInfoTree]);
   const selectedLeagueData = useAppSelector(getSelectedLeague, shallowEqual);
   const confirm = useConfirm();
   const hookForm = useForm({ defaultValues });
@@ -92,10 +94,7 @@ function LeagueformContent() {
 
   React.useEffect(() => {
     const dgsLeagueId = selectedLeagueData.dgsLeagueId ? selectedLeagueData.dgsLeagueId : -1;
-    // console.log("🚀 ~ file: league-form.tsx ~ line 108 ~ React.useEffect ~ dgsLeagueId", dgsLeagueId);
-    const itemTmp = selectedLeagueData.defaultSelectedLineType
-      ? get(selectedLeagueData.mapFilterLineTypeConfig, selectedLeagueData.defaultSelectedLineType)
-      : null;
+    const itemTmp = selectedLeagueData.defaultSelectedLineType ? get(selectedLeagueData.mapFilterLineTypeConfig, selectedLeagueData.defaultSelectedLineType) : null;
     let item: IFilterLineTypeEntity | null = itemTmp || null;
 
     if (item === null) {
@@ -189,11 +188,6 @@ function LeagueformContent() {
     });
   };
 
-  const copyToLeague = (): void => {
-    // eslint-disable-next-line no-alert
-    alert("copyToLeague");
-  };
-
   const onSyncTimes = (): void => {
     // eslint-disable-next-line no-alert
     alert("onSyncTimes");
@@ -277,7 +271,7 @@ function LeagueformContent() {
           <Grid spacing={gridSpacing} container>
             <Grid item md={10}>
               <LeagueContainerLeft
-                leagueInfoList={Object.values(leagueInfoTree)}
+                leagueInfoList={leagueInfoList}
                 listLineType={listLineType}
                 listSportBook={listSportBook}
                 savedLineTypeConfig={selectedLeagueData.mapFilterLineTypeConfig}
@@ -288,11 +282,11 @@ function LeagueformContent() {
               <LeagueContainerRight
                 isExistsItem={checkExistsItemIntree(selectedLeagueData.mapFilterLineTypeConfig, watchLineTypeId)}
                 onSyncLines={onSyncLines}
-                copyToLeague={copyToLeague}
                 onSyncTimes={onSyncTimes}
                 onSyncScores={onSyncScores}
                 onSyncGames={onSyncGames}
                 onDelete={onDelete}
+                leagueInfoList={leagueInfoList}
               />
             </Grid>
           </Grid>
@@ -304,7 +298,6 @@ function LeagueformContent() {
 
 export function Leagueform() {
   const leagueIdSelected: number | null = useAppSelector(getSelectedLeagueId);
-
   return leagueIdSelected !== null ? <LeagueformContent /> : <b>Please Select league!</b>;
 }
 

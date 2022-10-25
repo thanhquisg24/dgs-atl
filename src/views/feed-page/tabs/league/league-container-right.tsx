@@ -1,16 +1,18 @@
 import { Box, Button, Checkbox, FormControlLabel, FormGroup, Grid } from "@mui/material";
+import { ILeagueInfoModel } from "@store/models/feed-model";
 import { Controller, useFormContext } from "react-hook-form";
+import LeagueCopyToBtn from "./misc/league-copy-to-btn";
 
 export default function LeagueContainerRight(props: {
   isExistsItem: boolean;
+  leagueInfoList: ILeagueInfoModel[];
   onSyncLines: () => void;
-  copyToLeague: () => void;
   onSyncTimes: () => void;
   onSyncScores: () => void;
   onSyncGames: () => void;
   onDelete: () => void;
 }) {
-  const { onSyncLines, copyToLeague, onSyncTimes, onSyncScores, onSyncGames, onDelete, isExistsItem } = props;
+  const { onSyncLines, onSyncTimes, onSyncScores, onSyncGames, onDelete, isExistsItem, leagueInfoList } = props;
   const { control } = useFormContext();
   return (
     <Box sx={{ width: "100%" }}>
@@ -19,33 +21,20 @@ export default function LeagueContainerRight(props: {
           name="useOddsBySports"
           control={control}
           render={({ field }) => (
-            <FormControlLabel
-              control={
-                <Checkbox size="small" onChange={(e) => field.onChange(e.target.checked)} checked={field.value} />
-              }
-              label="Use Odds By Sport"
-            />
+            <FormControlLabel control={<Checkbox size="small" onChange={(e) => field.onChange(e.target.checked)} checked={field.value} />} label="Use Odds By Sport" />
           )}
         />
       </FormGroup>
       <Controller
         name="autoScore"
         control={control}
-        render={({ field }) => (
-          <FormControlLabel
-            control={<Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />}
-            label="Auto score"
-          />
-        )}
+        render={({ field }) => <FormControlLabel control={<Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />} label="Auto score" />}
       />
       <Controller
         name="autoTimeChange"
         control={control}
         render={({ field }) => (
-          <FormControlLabel
-            control={<Checkbox size="small" onChange={(e) => field.onChange(e.target.checked)} checked={field.value} />}
-            label="Auto Time Change"
-          />
+          <FormControlLabel control={<Checkbox size="small" onChange={(e) => field.onChange(e.target.checked)} checked={field.value} />} label="Auto Time Change" />
         )}
       />
 
@@ -100,10 +89,7 @@ export default function LeagueContainerRight(props: {
         <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncTimes()}>
           Sync Times
         </Button>
-
-        <Button variant="contained" sx={{ flex: 1, mt: 2 }} fullWidth onClick={() => copyToLeague()}>
-          Copy to Leagues
-        </Button>
+        <LeagueCopyToBtn leagueInfoList={leagueInfoList} />
         {isExistsItem && (
           <Button variant="contained" sx={{ flex: 1, mt: 2 }} fullWidth color="error" onClick={() => onDelete()}>
             Delete

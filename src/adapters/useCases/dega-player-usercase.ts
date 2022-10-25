@@ -1,4 +1,4 @@
-import { IDegaPlayerRepository } from "../repositories/dega-player-repository";
+import { IDgsLineTypeRepository } from "../repositories/dgs-linetype-repository";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDegaPlayerUseCase {
@@ -7,9 +7,9 @@ export interface IDegaPlayerUseCase {
   // fetchLeaderBoardAll(): Promise<ILeaderBoardAllEntity>;
 }
 export class DegaPlayerUseCase implements IDegaPlayerUseCase {
-  readonly repository: IDegaPlayerRepository;
+  readonly repository: IDgsLineTypeRepository;
 
-  constructor(sessionRepositories: IDegaPlayerRepository) {
+  constructor(sessionRepositories: IDgsLineTypeRepository) {
     this.repository = sessionRepositories;
   }
 

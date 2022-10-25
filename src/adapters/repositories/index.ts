@@ -1,6 +1,6 @@
 import { IInfrastructures } from "../infrastructures";
 import { AuthRepository, IAuthRepository } from "./auth-repository";
-import { DegaPlayerRepository, IDegaPlayerRepository } from "./dega-player-repository";
+import { DgsLineTypeRepository, IDgsLineTypeRepository } from "./dgs-linetype-repository";
 import { DGSGameRepository, IDGSGameRepository } from "./dgs-game-repository";
 import { DGSLeagueRepository, IDGSLeagueRepository } from "./dgs-league-repository";
 import { DonbestFilterRepository, IDonbestFilterRepository } from "./donbest-filter-repository";
@@ -8,7 +8,7 @@ import { DonbestLeagueRepository, IDonbestLeagueRepository } from "./donbest-lea
 import { ISportMappingRepository, SportMappingRepository } from "./sport-mapping-repository";
 
 export interface IRepositories {
-  degaPlayer: IDegaPlayerRepository;
+  dgsLineTypeLink: IDgsLineTypeRepository;
   auth: IAuthRepository;
   donbestLeague: IDonbestLeagueRepository;
   dgsLeague: IDGSLeagueRepository;
@@ -19,7 +19,7 @@ export interface IRepositories {
 
 export default (infrastructure: IInfrastructures): IRepositories => {
   return {
-    degaPlayer: new DegaPlayerRepository(infrastructure),
+    dgsLineTypeLink: new DgsLineTypeRepository(infrastructure),
     auth: new AuthRepository(infrastructure),
     donbestLeague: new DonbestLeagueRepository(infrastructure),
     dgsLeague: new DGSLeagueRepository(infrastructure),
