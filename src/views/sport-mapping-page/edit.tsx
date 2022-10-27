@@ -66,7 +66,6 @@ const EditSportMapping = () => {
     if (id) {
       dataProvider.getOne("sport-mapping", { id }).then((result: any) => {
         reset({ ...result });
-        console.log("🚀 ~ file: edit.tsx ~ line 103 ~ dataProvider.getOne ~ result", result);
       });
     }
   }, [dataProvider, id, reset]);

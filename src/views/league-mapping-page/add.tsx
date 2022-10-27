@@ -119,7 +119,6 @@ const AddLeagueMapping = () => {
   }, [setValue, watchDgsSport]);
 
   const onSubmit = (data: any) => {
-    console.log("🚀 ~ file: add.tsx ~ line 121 ~ onSubmit ~ data", data);
     const gs = find(GameStatListData, { id: data.defaultGameStat });
     const row: IRowLeagueMapping = {
       id: null,
@@ -336,27 +335,13 @@ const AddLeagueMapping = () => {
               <Controller
                 name="autoGameCreation"
                 control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
-                    }
-                    label="Auto Game Creation"
-                  />
-                )}
+                render={({ field }) => <FormControlLabel control={<Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />} label="Auto Game Creation" />}
               />
 
               <Controller
                 name="enabled"
                 control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
-                    }
-                    label="Active"
-                  />
-                )}
+                render={({ field }) => <FormControlLabel control={<Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />} label="Active" />}
               />
             </Grid>
             <Grid item md={12}>
@@ -375,12 +360,7 @@ const AddLeagueMapping = () => {
           </Grid>
 
           <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" sx={{ mt: 3.5 }}>
-            <Button
-              variant="contained"
-              color="success"
-              sx={{ flex: 1, ml: 1, maxWidth: "110px" }}
-              onClick={() => onSave()}
-            >
+            <Button variant="contained" color="success" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onSave()}>
               Save
             </Button>
           </Grid>

@@ -17,7 +17,9 @@ export function LeaguePtsItem(props: IProps) {
   const arrStepPts = React.useMemo(() => {
     const arr = [];
     for (let index = -4; index <= 4; index += stepPts) {
-      arr.push(index);
+      if (index !== 0) {
+        arr.push(index);
+      }
     }
     return arr;
   }, [stepPts]);
@@ -78,14 +80,7 @@ export function LeaguePtsItem(props: IProps) {
           control={control}
           render={({ field }) => (
             <>
-              <TextField
-                {...field}
-                value={field.value || ""}
-                size="small"
-                label="jc"
-                variant="standard"
-                type="number"
-              />
+              <TextField {...field} value={field.value || ""} size="small" label="jc" variant="standard" type="number" />
               {errors[jcName] && <FormHelperText error>{errors[jcName]?.message}</FormHelperText>}
             </>
           )}

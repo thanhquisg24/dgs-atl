@@ -14,15 +14,17 @@ interface IProps {
   textField: string;
   queryStr: string;
   dependencyField?: string;
+  defaultOption?: { id: any; label: string }[];
 }
 export default function CustomAutoCompleteV2(props: IProps) {
-  const { label, size, errorMsg, sx, idField, textField, queryStr, registerProp, dependencyField } = props;
+  const { label, size, errorMsg, sx, idField, textField, queryStr, registerProp, dependencyField, defaultOption } = props;
 
   const { options, onSearch } = useSelect({
     queryStr,
     debounce: 1200,
     optionValue: idField,
     optionLabel: textField,
+    defaultOption,
     dependencyField,
   });
   const loading = options.isFetching;

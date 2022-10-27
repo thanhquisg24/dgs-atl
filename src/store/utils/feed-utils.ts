@@ -2,14 +2,8 @@ import { IDgsLeagueEntity, IDonbestLeagueEntity, IFilterLineTypeEntity, IFilterP
 import { ILeagueInfoModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
 import { get } from "lodash";
 
-export function buildDgsLeaguesTree(
-  dgs: IDgsLeagueEntity[],
-  donbest: IDonbestLeagueEntity[],
-): { [dgsLeagueId: number]: ILeagueInfoModel } {
-  const reduceObj: { [dgsLeagueId: number]: ILeagueInfoModel } = dgs.reduce(
-    (obj, cur) => ({ ...obj, [cur.idLeague]: { dgsLeague: cur, donbestLeague: null, dgsGames: [] } }),
-    {},
-  );
+export function buildDgsLeaguesTree(dgs: IDgsLeagueEntity[], donbest: IDonbestLeagueEntity[]): { [dgsLeagueId: number]: ILeagueInfoModel } {
+  const reduceObj: { [dgsLeagueId: number]: ILeagueInfoModel } = dgs.reduce((obj, cur) => ({ ...obj, [cur.idLeague]: { dgsLeague: cur, donbestLeague: null, dgsGames: [], countGameFail: -1 } }), {});
   for (let index = 0; index < donbest.length; index++) {
     const don = donbest[index];
     reduceObj[don.dgsIdLeague].donbestLeague = don;

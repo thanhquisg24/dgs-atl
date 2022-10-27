@@ -1,19 +1,9 @@
 import { IDgsGameEntityWithLeague } from "@adapters/entity";
 import { createReducer } from "@reduxjs/toolkit";
-import {
-  expandLeagueSuccess,
-  fetchLeagueInfoTreeSuccess,
-  selectEventFilterSuccess,
-  selectLeagueIdSuccess,
-  switchTabAction,
-} from "@store/actions/feed-action";
+import { expandLeagueSuccess, fetchLeagueInfoTreeSuccess, selectEventFilterSuccess, selectLeagueIdSuccess, switchTabAction } from "@store/actions/feed-action";
 import { CurrentTabType, IFeedModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
-import {
-  buildDgsLeaguesTree,
-  buildKeyLineType,
-  buildMapFilterLineType,
-  buildMapFilterPeriod,
-} from "@store/utils/feed-utils";
+import { buildDgsLeaguesTree, buildKeyLineType, buildMapFilterLineType, buildMapFilterPeriod } from "@store/utils/feed-utils";
+import { has } from "lodash";
 
 const defaultSelectedGame = {
   mapFilterPeriodConfig: null,
@@ -37,6 +27,7 @@ export const initialFeedState: IFeedModel = {
     lineTypeSetting: null,
     periodSetting: null,
   },
+  dbIdGameMap: {},
   listDgsLineType: [],
   listDonbestSportBook: [],
   defaultFilterCombine: null,
@@ -47,24 +38,16 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     const newState = { ...state };
     const listLineTypeConfig = action.payload.filterCombine?.listFilterLineType;
     const mapFilterLineTypeConfig: IMapFilterLineTypeConfig | null = buildMapFilterLineType(listLineTypeConfig);
-    const mapFilterPeriodConfig: IMapFilterPeriodConfig | null = buildMapFilterPeriod(
-      action.payload.filterCombine?.listFilterPeriod,
-    );
+    const mapFilterPeriodConfig: IMapFilterPeriodConfig | null = buildMapFilterPeriod(action.payload.filterCombine?.listFilterPeriod);
     // eslint-disable-next-line no-nested-ternary
-    const defaultSelectedLineTypeInlist = listLineTypeConfig
-      ? listLineTypeConfig.length > 0
-        ? buildKeyLineType(listLineTypeConfig[0].lineTypeId)
-        : null
-      : null;
+    const defaultSelectedLineTypeInlist = listLineTypeConfig ? (listLineTypeConfig.length > 0 ? buildKeyLineType(listLineTypeConfig[0].lineTypeId) : null) : null;
     newState.selectedDgsLeague = {
       dgsSportId: action.payload.dgsSportId,
       dgsLeagueId: action.payload.id,
       mapFilterLineTypeConfig,
       mapFilterPeriodConfig,
       // eslint-disable-next-line no-nested-ternary
-      defaultSelectedLineType: action.payload.defaultSelectedLineType
-        ? action.payload.defaultSelectedLineType
-        : defaultSelectedLineTypeInlist,
+      defaultSelectedLineType: action.payload.defaultSelectedLineType ? action.payload.defaultSelectedLineType : defaultSelectedLineTypeInlist,
     };
     newState.isLoading = false;
     newState.currentTabType = CurrentTabType.LEAGUE;
@@ -74,22 +57,30 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     return newState;
   });
   builder.addCase(expandLeagueSuccess, (state, action) => {
-    const gamesWithLeague: IDgsGameEntityWithLeague[] = action.payload.list.map((e) => ({
-      ...e,
-      dgsLeagueId: action.payload.dgsLeagueId,
-      dbLeagueId: action.payload.dbLeagueId,
-      dbSportId: action.payload.dbSportId,
-    }));
+    const { dbIdGameMap } = state;
+    let countGameFail = 0;
+    const gamesWithLeague: IDgsGameEntityWithLeague[] = action.payload.list.map((e) => {
+      const isStatus = has(dbIdGameMap, e.gameProviderIdGame);
+      if (isStatus === false) {
+        countGameFail += 1;
+      }
+      return {
+        ...e,
+        dgsLeagueId: action.payload.dgsLeagueId,
+        dbLeagueId: action.payload.dbLeagueId,
+        dbSportId: action.payload.dbSportId,
+        nodeStatus: isStatus,
+      };
+    });
     state.leagueLeftInfo[action.payload.dgsLeagueId].dgsGames = gamesWithLeague;
+    state.leagueLeftInfo[action.payload.dgsLeagueId].countGameFail = countGameFail;
     state.isLoading = false;
     return state;
   });
 
   builder.addCase(selectEventFilterSuccess, (state, action) => {
     state.currentTabType = CurrentTabType.GAME;
-    const mapFilterPeriodConfig: IMapFilterPeriodConfig | null = buildMapFilterPeriod(
-      action.payload.eventFilterPeriodConfig,
-    );
+    const mapFilterPeriodConfig: IMapFilterPeriodConfig | null = buildMapFilterPeriod(action.payload.eventFilterPeriodConfig);
     state.selectedGame = {
       mapFilterPeriodConfig,
       gameWithLeague: action.payload.gameWithLeague,
@@ -107,6 +98,7 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
     newState.listDgsLineType = action.payload.listDgsLineType;
     newState.listDonbestSportBook = action.payload.listDonbestSportBook;
     newState.defaultFilterCombine = action.payload.defaultFilterCombine;
+    newState.dbIdGameMap = action.payload.dbIdGames.reduce((obj, cur) => ({ ...obj, [cur]: cur }), {});
     newState.isLoading = false;
     return newState;
   });

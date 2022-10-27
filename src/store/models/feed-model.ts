@@ -32,6 +32,7 @@ export interface ILeagueInfoModel {
   dgsLeague: IDgsLeagueEntity;
   donbestLeague: IDonbestLeagueEntity;
   dgsGames: IDgsGameEntityWithLeague[];
+  countGameFail: number;
 }
 
 interface IFeedBaseDataFetched {
@@ -42,6 +43,7 @@ interface IFeedBaseDataFetched {
   listDgsLineType: IDgsLineTypeEntity[];
   listDonbestSportBook: IDonbestSportBookEntity[];
   leagueLeftInfo: { [dgsLeagueId: number]: ILeagueInfoModel };
+  dbIdGameMap: { [idGame: number]: number };
   defaultFilterCombine: IFilterCombine | null;
 }
 export interface ISelectedGame {

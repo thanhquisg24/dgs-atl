@@ -1,12 +1,6 @@
-import { put, takeLatest } from "redux-saga/effects";
-import { IDegaSportEntity, presenter } from "@adapters/index";
 import { notifyMessageError } from "@emiter/AppEmitter";
-import {
-  initSportPage,
-  loadDegaSportsFailAction,
-  loadDegaSportsRequestAction,
-  loadDegaSportsSuccesstAction,
-} from "../actions/dega-sport-action";
+import { put, takeLatest } from "redux-saga/effects";
+import { initSportPage, loadDegaSportsFailAction, loadDegaSportsRequestAction } from "../actions/dega-sport-action";
 
 function* initSportPageSaga(action: ReturnType<typeof initSportPage>): Generator | any {
   // while (true) {
@@ -19,7 +13,6 @@ function* fetchSportSaga(action: ReturnType<typeof loadDegaSportsRequestAction>)
     // const sportData: IDegaSportEntity[] = yield presenter.degaSport.fetchSports();
     // yield put(loadDegaSportsSuccesstAction(sportData));
   } catch (error) {
-    console.log("🚀 ~ file: dega-sport-saga.ts ~ line 24 ~ function*fetchSportSaga ~ error", error);
     yield put(loadDegaSportsFailAction("Fetch Sports fail!"));
     notifyMessageError("Fetch Sports fail!");
   }

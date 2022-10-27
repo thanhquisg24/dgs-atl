@@ -1,15 +1,12 @@
-import { IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
-import { FormControl, FormHelperText, Grid, MenuItem, Select } from "@mui/material";
+import { IDgsGameEntityWithLeague, IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
+import { FormControl, FormHelperText, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { IMapFilterPeriodConfig } from "@store/models/feed-model";
+import { formatToLLLDateStr } from "@utils/date-format";
 import { checkExistsItemIntree } from "@utils/index";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
-function CustomTextInSelectBoxGame(props: {
-  text: string;
-  tree: IMapFilterPeriodConfig | null;
-  itemKey: string | number;
-}) {
+function CustomTextInSelectBoxGame(props: { text: string; tree: IMapFilterPeriodConfig | null; itemKey: string | number }) {
   const { text, tree, itemKey } = props;
   const classColor = React.useMemo(() => {
     const isExist = checkExistsItemIntree(tree, itemKey);
@@ -21,11 +18,12 @@ function CustomTextInSelectBoxGame(props: {
   return <span className={classColor}>{text}</span>;
 }
 export default function GameSportbookSelect(props: {
+  gameWithLeague: IDgsGameEntityWithLeague;
   listLineType: IDgsLineTypeEntity[];
   listSportBook: IDonbestSportBookEntity[];
   mapFilterPeriodConfig: IMapFilterPeriodConfig | null;
 }) {
-  const { listLineType, listSportBook, mapFilterPeriodConfig } = props;
+  const { listLineType, listSportBook, mapFilterPeriodConfig, gameWithLeague } = props;
   const {
     control,
     formState: { errors },
@@ -33,7 +31,9 @@ export default function GameSportbookSelect(props: {
 
   return (
     <Grid container spacing={1}>
-      <Grid item md={4}></Grid>
+      <Grid item md={4}>
+        <Typography variant="h6">{formatToLLLDateStr(gameWithLeague.gameDateTime)}</Typography>
+      </Grid>
       <Grid item md={5}>
         <FormControl size="small" fullWidth>
           <Controller
@@ -52,11 +52,7 @@ export default function GameSportbookSelect(props: {
                   <MenuItem value={0}>Select linetype...</MenuItem>
                   {listLineType.map((item) => (
                     <MenuItem key={item.idLineType} value={item.idLineType}>
-                      <CustomTextInSelectBoxGame
-                        text={item.description}
-                        tree={mapFilterPeriodConfig}
-                        itemKey={item.idLineType}
-                      />
+                      <CustomTextInSelectBoxGame text={item.description} tree={mapFilterPeriodConfig} itemKey={item.idLineType} />
                     </MenuItem>
                   ))}
                 </Select>

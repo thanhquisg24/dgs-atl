@@ -9,15 +9,11 @@ import Collapse from "@mui/material/Collapse";
 import { animated, useSpring } from "@react-spring/web";
 import { TransitionProps } from "@mui/material/transitions";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
-import {
-  expandLeagueRequest,
-  fetchLeagueInfoTreeRequest,
-  selectLeagueIdRequest,
-  selectEventFilterdRequest,
-} from "@store/actions";
+import { expandLeagueRequest, fetchLeagueInfoTreeRequest, selectLeagueIdRequest, selectEventFilterdRequest } from "@store/actions";
 import { getLeagueLeftInfoList } from "@store/selector";
 import { ILeagueInfoModel } from "@store/models/feed-model";
 import { IDgsGameEntityWithLeague } from "@adapters/entity";
+import { formatGameDateTimeTree } from "@utils/date-format";
 
 function MinusSquare(props: SvgIconProps) {
   return (
@@ -65,9 +61,7 @@ function TransitionComponent(props: TransitionProps) {
   );
 }
 
-const StyledTreeItem = styled((props: TreeItemProps) => (
-  <TreeItem {...props} TransitionComponent={TransitionComponent} />
-))(({ theme }) => ({
+const StyledTreeItem = styled((props: TreeItemProps) => <TreeItem {...props} TransitionComponent={TransitionComponent} />)(({ theme }) => ({
   [`& .${treeItemClasses.iconContainer}`]: {
     "& .close": {
       opacity: 0.3,
@@ -135,16 +129,29 @@ interface IPropsTreeItem {
   dgsGame: IDgsGameEntityWithLeague | null;
   children?: any;
 }
-
+function formatTextGame(game: IDgsGameEntityWithLeague): string {
+  const dateStr = formatGameDateTimeTree(game.gameDateTime);
+  return `${dateStr} : ${game.idGame} : ${game.gameProviderIdGame} : ${game.homeTeam}`;
+}
 function TreeItemNode(props: IPropsTreeItem) {
   const { nodeId, label, status, countGameFail, children, type, id, dgsLeagueId, dgsGame } = props;
   const dispatch = useAppDispatch();
   const o = React.useMemo(() => {
+    let color = "black";
+    if (type === "LEAGUE") {
+      if (countGameFail > 0) {
+        color = "#fd2025";
+      } else if (countGameFail === 0) {
+        color = "#5c8e32";
+      }
+    } else if (type === "GAME") {
+      color = status === false ? "#fd2025" : "#5c8e32";
+    }
     return {
-      color: status === false ? "#fd2025" : "#5c8e32",
+      color,
       newLabel: countGameFail > 0 ? `${label}(${countGameFail})` : label,
     };
-  }, [countGameFail, label, status]);
+  }, [countGameFail, label, status, type]);
 
   const stopClick = (event: any) => {
     event.stopPropagation();
@@ -184,13 +191,7 @@ export default function CustomizedTreeView() {
     }
   };
   return (
-    <TreeView
-      aria-label="customized"
-      defaultCollapseIcon={<MinusSquare />}
-      defaultExpandIcon={<PlusSquare />}
-      sx={{ minHeight: 380, flexGrow: 1, maxWidth: 400, overflowY: "auto" }}
-      onNodeToggle={handleToggle}
-    >
+    <TreeView aria-label="customized" defaultCollapseIcon={<MinusSquare />} defaultExpandIcon={<PlusSquare />} sx={{ minHeight: 380, flexGrow: 1, overflowY: "auto" }} onNodeToggle={handleToggle}>
       <>
         {dgsLeagueList.map((item) => (
           <TreeItemNode
@@ -198,7 +199,7 @@ export default function CustomizedTreeView() {
             nodeId={item.dgsLeague.idLeague.toString()}
             label={item.dgsLeague.description}
             status
-            countGameFail={0}
+            countGameFail={item.countGameFail}
             type="LEAGUE"
             id={item.dgsLeague.idLeague}
             dgsLeagueId={item.dgsLeague.idLeague}
@@ -209,8 +210,8 @@ export default function CustomizedTreeView() {
                 <TreeItemNode
                   key={g.idGame}
                   nodeId={g.idGame.toString()}
-                  label={g.homeTeam}
-                  status
+                  label={formatTextGame(g)}
+                  status={g.nodeStatus}
                   countGameFail={0}
                   type="GAME"
                   id={g.idGame}

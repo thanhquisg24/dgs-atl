@@ -8,6 +8,7 @@ import { BaseRepository } from "./base-repository";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDonbestFilterRepository {
+  fetDonbestIdGames(): Promise<number[]>;
   postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean>;
   fetDefaultFilterCombine(): Promise<IFilterCombine>;
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
@@ -20,6 +21,23 @@ export interface IDonbestFilterRepository {
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<boolean>;
 }
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
+  fetDonbestIdGames(): Promise<number[]> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .fetDonbestIdGames()
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            const { data } = res;
+            const map: number[] = data;
+            resolve(map);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi

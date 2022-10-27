@@ -1,19 +1,7 @@
 // third party
 import * as Yup from "yup";
 
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  FormHelperText,
-  Grid,
-  IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Divider, FormControl, FormHelperText, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // project imports
@@ -60,7 +48,6 @@ const FirebaseLogin = ({ ...others }) => {
   const handleSubmit = async (values: any, { setErrors, setStatus, setSubmitting }: any) => {
     try {
       if (scriptedRef.current) {
-        console.log("🚀 ~ file: AuthLogin.tsx ~ line 55 ~ handleSubmit ~ current");
         const payload: ILoginPayload = {
           username: values.username,
           password: values.password,
@@ -115,22 +102,9 @@ const FirebaseLogin = ({ ...others }) => {
       >
         {({ errors, handleBlur, handleChange, handleSubmit, touched, values }) => (
           <form noValidate onSubmit={handleSubmit} {...others}>
-            <FormControl
-              fullWidth
-              error={Boolean(touched.username && errors.username)}
-              sx={{ ...theme.typography.customInput }}
-            >
+            <FormControl fullWidth error={Boolean(touched.username && errors.username)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-username-login">Username</InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-username-login"
-                type="text"
-                value={values.username}
-                name="username"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                label="Username"
-                inputProps={{}}
-              />
+              <OutlinedInput id="outlined-adornment-username-login" type="text" value={values.username} name="username" onBlur={handleBlur} onChange={handleChange} label="Username" inputProps={{}} />
               {touched.username && errors.username && (
                 <FormHelperText error id="standard-weight-helper-text-username-login">
                   {errors.username}
@@ -138,11 +112,7 @@ const FirebaseLogin = ({ ...others }) => {
               )}
             </FormControl>
 
-            <FormControl
-              fullWidth
-              error={Boolean(touched.password && errors.password)}
-              sx={{ ...theme.typography.customInput }}
-            >
+            <FormControl fullWidth error={Boolean(touched.password && errors.password)} sx={{ ...theme.typography.customInput }}>
               <InputLabel htmlFor="outlined-adornment-password-login">Password</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password-login"
@@ -153,13 +123,7 @@ const FirebaseLogin = ({ ...others }) => {
                 onChange={handleChange}
                 endAdornment={
                   <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      size="large"
-                    >
+                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} onMouseDown={handleMouseDownPassword} edge="end" size="large">
                       {showPassword ? <Visibility /> : <VisibilityOff />}
                     </IconButton>
                   </InputAdornment>
@@ -182,15 +146,7 @@ const FirebaseLogin = ({ ...others }) => {
 
             <Box sx={{ mt: 2 }}>
               <AnimateButton>
-                <Button
-                  disableElevation
-                  disabled={isLoading}
-                  fullWidth
-                  size="large"
-                  type="submit"
-                  variant="contained"
-                  color="secondary"
-                >
+                <Button disableElevation disabled={isLoading} fullWidth size="large" type="submit" variant="contained" color="secondary">
                   Sign in
                 </Button>
               </AnimateButton>

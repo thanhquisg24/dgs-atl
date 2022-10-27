@@ -1,5 +1,5 @@
 import { all, put, select, takeLatest } from "redux-saga/effects";
-import { notifyMessageError } from "@emiter/AppEmitter";
+import { emitStartLoading, emitStopLoading, notifyMessageError } from "@emiter/AppEmitter";
 import {
   expandLeagueFailure,
   expandLeagueRequest,
@@ -25,12 +25,14 @@ import { IEventFilterEntity } from "@adapters/entity/EventFilterEntity";
 
 function* fetchDgsLeaguesSaga(): Generator | any {
   try {
-    const [listDgs, listDonbest, lineTypes, sportBooks, defaultCombine] = yield all([
+    emitStartLoading();
+    const [listDgs, listDonbest, lineTypes, sportBooks, defaultCombine, dbIdGames] = yield all([
       diRepositorires.dgsLeague.fetAvaiableDgsLeague(),
       diRepositorires.donbestLeague.fetAvaiableDonbestLeague(),
       diRepositorires.dgsLeague.fetchAvaiableDgsLineType(),
       diRepositorires.donbestLeague.fetAvaiableDonbestSportBook(),
       diRepositorires.donbestFilter.fetDefaultFilterCombine(),
+      diRepositorires.donbestFilter.fetDonbestIdGames(),
     ]);
 
     yield put(
@@ -40,11 +42,14 @@ function* fetchDgsLeaguesSaga(): Generator | any {
         listDgsLineType: lineTypes,
         listDonbestSportBook: sportBooks,
         defaultFilterCombine: defaultCombine,
+        dbIdGames,
       }),
     );
+    emitStopLoading();
   } catch (error) {
     yield put(fetchLeagueInfoTreeFailure("Fetch DgsLeagues fail!"));
     notifyMessageError("Fetch DgsLeagues fail!");
+    emitStopLoading();
   }
 }
 
@@ -55,11 +60,7 @@ function* fetchSelectedDgsLeaguesSaga(action: ReturnType<typeof selectLeagueIdRe
   try {
     const prevSelect = yield select(getSelectedLeagueId);
     if (prevSelect !== action.payload) {
-      const lueagueCombineConfig = yield diRepositorires.donbestFilter.fetFilterCombine(
-        FilterTypeEnum.LEAGUE,
-        action.payload.dgsLeagueId,
-        0,
-      );
+      const lueagueCombineConfig = yield diRepositorires.donbestFilter.fetFilterCombine(FilterTypeEnum.LEAGUE, action.payload.dgsLeagueId, 0);
       const leagueTree: { [dgsLeagueId: number]: ILeagueInfoModel } = yield select(getLeagueLeftInfoTree);
       const dgsSportId = leagueTree[action.payload.dgsLeagueId].dgsLeague.idSport;
       yield put(
@@ -85,11 +86,7 @@ function* fetchSelectedDgsLeaguesSagaWatcher() {
 
 function* fetchSelectedDgsLeaguesRefreshSaga(action: ReturnType<typeof selectLeagueIdRefresh>): Generator | any {
   try {
-    const lueagueCombineConfig = yield diRepositorires.donbestFilter.fetFilterCombine(
-      FilterTypeEnum.LEAGUE,
-      action.payload.dgsLeagueId,
-      0,
-    );
+    const lueagueCombineConfig = yield diRepositorires.donbestFilter.fetFilterCombine(FilterTypeEnum.LEAGUE, action.payload.dgsLeagueId, 0);
     const leagueTree: { [dgsLeagueId: number]: ILeagueInfoModel } = yield select(getLeagueLeftInfoTree);
     const dgsSportId = leagueTree[action.payload.dgsLeagueId].dgsLeague.idSport;
     yield put(
@@ -129,13 +126,9 @@ function* fetchExpandLeagueSagaWatcher() {
 function* fetchFilterEventSaga(action: ReturnType<typeof selectEventFilterdRequest>): Generator | any {
   try {
     const { dgsLeagueId, idGame } = action.payload;
-    const eventPeriodFilters: IEventFilterEntity = yield diRepositorires.donbestFilter.fetEventFilter(
-      dgsLeagueId,
-      idGame,
-    );
+    const eventPeriodFilters: IEventFilterEntity = yield diRepositorires.donbestFilter.fetEventFilter(dgsLeagueId, idGame);
     // eslint-disable-next-line operator-linebreak
-    const defaultSelectedLineType =
-      eventPeriodFilters.eventFilterPeriod.length > 0 ? eventPeriodFilters.eventFilterPeriod[0].lineTypeId : 0;
+    const defaultSelectedLineType = eventPeriodFilters.eventFilterPeriod.length > 0 ? eventPeriodFilters.eventFilterPeriod[0].lineTypeId : 0;
     const data = {
       eventFilterPeriodConfig: eventPeriodFilters.eventFilterPeriod,
       eventLineTypes: eventPeriodFilters.eventLineTypes,

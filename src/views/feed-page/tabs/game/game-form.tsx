@@ -8,12 +8,7 @@ import { selectEventFilterdReFresh } from "@store/actions";
 import { gridSpacing } from "@store/constant";
 import { useConfirm } from "material-ui-confirm";
 import { IMapFilterPeriodConfig } from "@store/models/feed-model";
-import {
-  getDefaultFilterPeriodSettingByEvent,
-  getFeedLoading,
-  getListSportBook,
-  getSelectedGame,
-} from "@store/selector";
+import { getDefaultFilterPeriodSettingByEvent, getFeedLoading, getListSportBook, getSelectedGame } from "@store/selector";
 import { checkExistsItemIntree } from "@utils/index";
 import { get } from "lodash";
 import React from "react";
@@ -199,11 +194,7 @@ function GameFromBody(props: IProps) {
         <form onSubmit={hookForm.handleSubmit(onSubmit)}>
           <Grid spacing={gridSpacing} container>
             <Grid item md={9}>
-              <GameSportbookSelect
-                listLineType={eventLineTypes}
-                listSportBook={listSportBook}
-                mapFilterPeriodConfig={mapFilterPeriodConfig}
-              />
+              <GameSportbookSelect gameWithLeague={gameWithLeague} listLineType={eventLineTypes} listSportBook={listSportBook} mapFilterPeriodConfig={mapFilterPeriodConfig} />
               <GameOddsRows listSportBook={listSportBook} />
               <Typography variant="h6" color="secondary" sx={{ mt: 3.5 }}>
                 This event uses the league setting
@@ -212,13 +203,7 @@ function GameFromBody(props: IProps) {
           </Grid> */}
             </Grid>
             <Grid item md={3}>
-              <Grid
-                container
-                direction="column"
-                justifyContent="flex-start"
-                alignItems="baseline"
-                sx={{ maxWidth: "200px" }}
-              >
+              <Grid container direction="column" justifyContent="flex-start" alignItems="baseline" sx={{ maxWidth: "200px" }}>
                 <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="success">
                   {isExistsItem ? "Update" : "Save"}
                 </Button>
@@ -226,13 +211,7 @@ function GameFromBody(props: IProps) {
                   Sync Odds
                 </Button>
                 {isExistsItem && (
-                  <Button
-                    variant="contained"
-                    sx={{ flex: 1, mt: 2 }}
-                    fullWidth
-                    color="error"
-                    onClick={() => onDelete()}
-                  >
+                  <Button variant="contained" sx={{ flex: 1, mt: 2 }} fullWidth color="error" onClick={() => onDelete()}>
                     Delete
                   </Button>
                 )}
@@ -254,12 +233,7 @@ export function GameForm() {
   const gameSelected = useAppSelector(getSelectedGame);
   const { gameWithLeague, mapFilterPeriodConfig, defaultSelectedLineType, eventLineTypes } = gameSelected;
   return gameWithLeague !== null ? (
-    <GameFormWithLoading
-      gameWithLeague={gameWithLeague}
-      mapFilterPeriodConfig={mapFilterPeriodConfig}
-      defaultSelectedLineType={defaultSelectedLineType}
-      eventLineTypes={eventLineTypes}
-    />
+    <GameFormWithLoading gameWithLeague={gameWithLeague} mapFilterPeriodConfig={mapFilterPeriodConfig} defaultSelectedLineType={defaultSelectedLineType} eventLineTypes={eventLineTypes} />
   ) : (
     <b>Please Select game!</b>
   );

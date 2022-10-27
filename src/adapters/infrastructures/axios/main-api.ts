@@ -31,6 +31,7 @@ interface IApiPostType {
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<AxiosResponse>;
 }
 interface IApiFetchType {
+  fetDonbestIdGames(): Promise<AxiosResponse>;
   fetchAvaiableDgsLineType(): Promise<AxiosResponse>;
   fetAvaiableDgsLeague(): Promise<AxiosResponse>;
   fetAvaiableDgsGames(idLeague: number): Promise<AxiosResponse>;
@@ -48,6 +49,10 @@ interface IApiFetchType {
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
 
 class MainApi extends AuthApi implements IMainApi {
+  fetDonbestIdGames(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("db-filter/get-db-id-games");
+  }
+
   fetchLineTypeLinks(outIdLineType: number, dgsIdSport: string): Promise<AxiosResponse<any, any>> {
     return this.Axios.get("dgs-linetype/get-linetype-links", {
       params: {

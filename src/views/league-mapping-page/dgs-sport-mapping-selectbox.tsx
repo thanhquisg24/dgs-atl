@@ -12,45 +12,58 @@ interface IProps {
   registerProp?: any;
   dbSportId: number | string | null;
   displayIdAndText?: boolean;
+  initSport?: ISportMapping;
 }
 
 export default function DgsSportMappingSelectbox(props: IProps) {
-  const { id, label, size, errorMsg, sx, registerProp, displayIdAndText, dbSportId } = props;
+  const { id, label, size, errorMsg, sx, registerProp, displayIdAndText, dbSportId, initSport } = props;
   const [state, setState] = React.useState<{
     list: ISportMapping[];
+    listFiltered: ISportMapping[];
     isFetching: boolean;
+    count: number;
   }>({
     list: [],
-    isFetching: false,
+    listFiltered: initSport ? [initSport] : [],
+    isFetching: true,
+    count: 0,
   });
-  const [listFiltered, setListFiltered] = React.useState<ISportMapping[]>([]);
 
   React.useEffect(() => {
-    setState({ list: [], isFetching: true });
+    setState({ list: [], isFetching: true, listFiltered: [], count: 0 });
     diRepositorires.sportMapping
       .fetAllDonbestSportMapping()
-      .then((result: ISportMapping[]) => setState({ list: result, isFetching: false }))
-      .catch(() => setState({ list: [], isFetching: false }));
+      .then((result: ISportMapping[]) => setState({ list: result, listFiltered: result, isFetching: false, count: 0 }))
+      .catch(() => setState({ list: [], isFetching: false, listFiltered: [], count: 0 }));
   }, []);
 
   React.useEffect(() => {
-    const arr = state.list.filter((x) => x.dbSportId === Number(dbSportId));
-    registerProp.onChange("");
-    setListFiltered(arr);
+    if (dbSportId) {
+      const arr = state.list.filter((x) => x.dbSportId === Number(dbSportId));
+      // registerProp.onChange("");
+      if (arr) {
+        if (state.count > 1) {
+          registerProp.onChange("");
+        }
+        setState({ ...state, listFiltered: arr, count: state.count + 1 });
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.list, dbSportId]);
 
   return (
     <FormControl fullWidth sx={sx}>
       <InputLabel id={id}>{label}</InputLabel>
-      <Select label={label} labelId={id} size={size} {...registerProp} InputLabelProps={{ shrink: true }}>
-        <MenuItem value=""></MenuItem>
-        {listFiltered.map((item) => (
-          <MenuItem value={item.dgsSportId} key={item.id}>
-            {displayIdAndText ? `${item.dgsSportId} - ${item.dgsSportName}` : item.dgsSportName}
-          </MenuItem>
-        ))}
-      </Select>
+      {state.isFetching === false && (
+        <Select label={label} labelId={id} size={size} {...registerProp} InputLabelProps={{ shrink: true }}>
+          <MenuItem value=""></MenuItem>
+          {state.listFiltered.map((item) => (
+            <MenuItem value={item.dgsSportId} key={item.id}>
+              {displayIdAndText ? `${item.dgsSportId} - ${item.dgsSportName}` : item.dgsSportName}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
       {errorMsg && <FormHelperText error>{errorMsg}</FormHelperText>}
     </FormControl>
   );

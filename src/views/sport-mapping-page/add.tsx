@@ -84,7 +84,6 @@ const AddSportMapping = () => {
   });
 
   const onSubmit = (data: IRowSportMapping) => {
-    console.log("🚀 ~ file: add.tsx ~ line 88 ~ onSubmit ~ data", data);
     let row = data;
     if (checkAddItemMap(row, state.rows)) {
       const db = find(listDataDB.data, (item: any) => {

@@ -3,10 +3,9 @@ import { diRepositorires } from "@adapters/di";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useDataProvider } from "@hooks/useDataProvider";
 import { Edit } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
 
 // project imports
-import MainCard from "@ui-component/cards/MainCard";
 import tableIcons from "@ui-component/marterial-table/tableIcons";
 import MaterialTable from "material-table";
 import { useConfirm } from "material-ui-confirm";
@@ -71,42 +70,44 @@ const ListSportMappingPage = () => {
       .catch(() => console.log("Deletion cancelled."));
   };
   return (
-    <>
-      <MainCard title="Sport Mapping"></MainCard>
-      <MaterialTable
-        tableRef={tableRef}
-        icons={tableIcons}
-        columns={[
-          ...columns,
-          {
-            title: "Action",
-            render: (rowData: any) => {
-              return (
-                <Link to={`/sport-page-edit/${rowData.id}`}>
-                  <IconButton color="inherit">
-                    <Edit />
-                  </IconButton>
-                </Link>
-              );
-            },
+    <MaterialTable
+      title={
+        <Typography variant="h2" color="primary">
+          Sport Mapping
+        </Typography>
+      }
+      tableRef={tableRef}
+      icons={tableIcons}
+      columns={[
+        ...columns,
+        {
+          title: "Action",
+          render: (rowData: any) => {
+            return (
+              <Link to={`/sport-page-edit/${rowData.id}`}>
+                <IconButton color="inherit">
+                  <Edit />
+                </IconButton>
+              </Link>
+            );
           },
-        ]}
-        data={getData}
-        options={{
-          showTitle: false,
-          search: false,
-          selection: true,
-          pageSize: 20,
-        }}
-        actions={[
-          {
-            tooltip: "Delete",
-            icon: tableIcons.Delete,
-            onClick: onDelete,
-          },
-        ]}
-      />
-    </>
+        },
+      ]}
+      data={getData}
+      options={{
+        showTitle: true,
+        search: false,
+        selection: true,
+        pageSize: 20,
+      }}
+      actions={[
+        {
+          tooltip: "Delete",
+          icon: tableIcons.Delete,
+          onClick: onDelete,
+        },
+      ]}
+    />
   );
 };
 

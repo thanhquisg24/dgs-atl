@@ -1,5 +1,5 @@
 export interface ISportMapping {
-  id: null;
+  id: null | number;
   dbSportId: number;
   dbSportName: string;
   dgsSportId: string;
