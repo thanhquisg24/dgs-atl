@@ -22,12 +22,12 @@ import { GameStatListData } from "./game-stat-selectbox";
 // ==============================|| SAMPLE PAGE ||============================== //
 const Title = () => (
   <Grid container spacing={gridSpacing}>
-    <Grid item md={4}>
+    <Grid item md={2}>
       <Typography variant="h3" gutterBottom align="center" component="span">
         DonBest
       </Typography>
     </Grid>
-    <Grid item md={4}>
+    <Grid item md={2}>
       <Typography variant="h3" gutterBottom align="center" component="span">
         DGS
       </Typography>
@@ -135,6 +135,7 @@ const EditLeagueMapping = () => {
         setState({ donbestItem: result });
         reset({
           ...result,
+          dbSportId: result.dbSport.idSport,
           dgsSportId: result.dgsIdSport,
           dgsLeagueId: { id: result.dgsIdLeague },
           defaultIdGameType: { id: result.defaultIdGameType },
@@ -148,7 +149,6 @@ const EditLeagueMapping = () => {
     emitStartLoading();
     // const multipleValues = getValues(["test", "test1"]);
     const gs = find(GameStatListData, { id: data.defaultGameStat });
-    console.log("🚀 ~ file: edit.tsx ~ line 145 ~ onSubmit ~ data.defaultIdGameType", data);
     const row: IRowLeagueMapping = {
       dbSportId: state.donbestItem?.dbSport.idSport,
       dbSportName: "",
@@ -163,12 +163,8 @@ const EditLeagueMapping = () => {
       defaultGameStat: data.defaultGameStat,
       defaultIdGameType: data.defaultIdGameType.id,
       enabled: data.enabled,
-      defaultIdGameTypeName: data.defaultIdGameType.label
-        ? data.defaultIdGameType.label
-        : state.donbestItem.defaultGameStatName,
-      idLeagueForOddsName: data.idLeagueForOdds.label
-        ? data.idLeagueForOdds.label
-        : state.donbestItem.idLeagueForOddsName,
+      defaultIdGameTypeName: data.defaultIdGameType.label ? data.defaultIdGameType.label : state.donbestItem.defaultGameStatName,
+      idLeagueForOddsName: data.idLeagueForOdds.label ? data.idLeagueForOdds.label : state.donbestItem.idLeagueForOddsName,
       defaultGameStatName: gs ? gs.text : "",
       autoScore: data.autoScore,
       id: data.id,
@@ -238,6 +234,13 @@ const EditLeagueMapping = () => {
                     errorMsg={errors.dgsSportId?.message}
                     displayIdAndText
                     dbSportId={watchDbSport}
+                    initSport={{
+                      id: 0,
+                      dbSportId: state.donbestItem.dbSport.idSport,
+                      dbSportName: state.donbestItem.dbSport.name,
+                      dgsSportId: state.donbestItem.dgsIdSport,
+                      dgsSportName: state.donbestItem.dgsIdSport,
+                    }}
                   ></DgsSportMappingSelectbox>
                 )}
               />
@@ -259,6 +262,12 @@ const EditLeagueMapping = () => {
                       idField="idLeague"
                       textField="description"
                       dependencyField="idSport"
+                      defaultOption={[
+                        {
+                          id: state.donbestItem.dgsIdLeague,
+                          label: state.donbestItem.dgsLeagueName,
+                        },
+                      ]}
                       queryStr={JSON.stringify({
                         resource: "dgs-league",
                         perPage: 50,
@@ -317,27 +326,13 @@ const EditLeagueMapping = () => {
               <Controller
                 name="autoGameCreation"
                 control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
-                    }
-                    label="Auto Game Creation"
-                  />
-                )}
+                render={({ field }) => <FormControlLabel control={<Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />} label="Auto Game Creation" />}
               />
 
               <Controller
                 name="enabled"
                 control={control}
-                render={({ field }) => (
-                  <FormControlLabel
-                    control={
-                      <Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />
-                    }
-                    label="Active"
-                  />
-                )}
+                render={({ field }) => <FormControlLabel control={<Checkbox onChange={(e) => field.onChange(e.target.checked)} checked={field.value} size="small" />} label="Active" />}
               />
             </Grid>
           </Grid>

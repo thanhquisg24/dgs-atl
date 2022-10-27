@@ -28,7 +28,6 @@ export class AuthUseCase implements IAuthUseCase {
       this.repository
         .postCheckToken(store.refreshToken)
         .then((res: AxiosResponse) => {
-          console.log("🚀 ~ file: auth-usecase.ts ~ line 30 ~ AuthUseCase ~ .then ~ res", res);
           if (res.status === 200) {
             // const { data } = res;
             const user: IUserEntity = {
@@ -36,7 +35,6 @@ export class AuthUseCase implements IAuthUseCase {
               ...store,
               type: "Bearer ",
             };
-            console.log("🚀 ~ file: auth-usecase.ts ~ line 34 ~ AuthUseCase ~ .then ~ user", user);
             resolve(user);
           }
           reject(new Error(`CheckToken Error HTTP status code ${res.status}`));
