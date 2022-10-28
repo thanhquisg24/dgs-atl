@@ -199,7 +199,7 @@ const AddSportMapping = () => {
             </Grid>
           </Grid>
 
-          <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end" sx={{ mt: 3.5 }}>
+          <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" sx={{ mt: 3.5 }}>
             <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} onClick={() => onSave()}>
               Save
             </Button>
