@@ -21,7 +21,7 @@ export default function CustomAutoCompleteV2(props: IProps) {
 
   const { options, onSearch } = useSelect({
     queryStr,
-    debounce: 1200,
+    debounce: 500,
     optionValue: idField,
     optionLabel: textField,
     defaultOption,

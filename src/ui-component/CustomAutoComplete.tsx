@@ -73,7 +73,7 @@ const query = JSON.stringify({
 export default function CustomAutoComplete() {
   const { options, onSearch } = useSelect({
     queryStr: query,
-    debounce: 1200,
+    debounce: 500,
     optionLabel: "description",
     optionValue: "idLeague",
   });
