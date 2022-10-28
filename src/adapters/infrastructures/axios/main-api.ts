@@ -27,6 +27,8 @@ interface IApiPostType {
   postSaveEventFilters(payload: IFilterPeriodEntity[]): Promise<AxiosResponse>;
   postSyncLines(dgsIdLeague: number): Promise<AxiosResponse>;
   postSyncLeagueGame(dgsIdLeague: number): Promise<AxiosResponse>;
+  postSyncScores(dgsIdLeague: number): Promise<AxiosResponse>;
+  postSyncTimes(dgsIdLeague: number): Promise<AxiosResponse>;
   postSyncOdds(dgsIdGame: number): Promise<AxiosResponse>;
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<AxiosResponse>;
 }
@@ -109,6 +111,20 @@ class MainApi extends AuthApi implements IMainApi {
       dgsIdGame,
     });
     return this.Axios.post("/db-filter/sync-game", xFromData);
+  }
+
+  postSyncScores(dgsIdLeague: number): Promise<AxiosResponse<any, any>> {
+    const xFromData = queryString.stringify({
+      dgsIdLeague,
+    });
+    return this.Axios.post("/db-filter/sync-scores", xFromData);
+  }
+
+  postSyncTimes(dgsIdLeague: number): Promise<AxiosResponse<any, any>> {
+    const xFromData = queryString.stringify({
+      dgsIdLeague,
+    });
+    return this.Axios.post("/db-filter/sync-times", xFromData);
   }
 
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<AxiosResponse<any, any>> {

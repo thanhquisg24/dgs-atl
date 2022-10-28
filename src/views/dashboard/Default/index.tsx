@@ -11,8 +11,20 @@ import { Grid } from "@mui/material";
 // import TotalIncomeLightCard from "./TotalIncomeLightCard";
 // import TotalGrowthBarChart from "./TotalGrowthBarChart";
 import { gridSpacing } from "@store/constant";
+// import SyncProgressBars from "../../feed-page/tree-view/process-bar";
+// import TaskList from "./task-list";
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
+
+const Dashboard = () => {
+  return (
+    <Grid container spacing={gridSpacing}>
+      <Grid item xs={12}>
+        <h1>Hello</h1>
+      </Grid>
+    </Grid>
+  );
+};
 
 // const Dashboard = () => {
 //   const [isLoading, setLoading] = useState(true);
@@ -55,14 +67,25 @@ import { gridSpacing } from "@store/constant";
 //     </Grid>
 //   );
 // };
-const Dashboard = () => {
-  return (
-    <Grid container spacing={gridSpacing}>
-      <Grid item xs={12}>
-        <h1>Hello</h1>
-      </Grid>
-    </Grid>
-  );
-};
+// const Dashboard = () => {
+//   const dispatch = useAppDispatch();
+//   const onTaskdemo = () => {
+//     const payloada = {
+//       taskObject: `demo ${Math.random()}`,
+//     };
+//     dispatch(taskChannelRequestAction(payloada));
+//   };
+//   return (
+//     <Grid container spacing={gridSpacing}>
+//       <Grid item xs={3}>
+//         <button type="button" onClick={() => onTaskdemo()}>
+//           demo
+//         </button>
+//         <SyncProgressBars />
+//         <TaskList />
+//       </Grid>
+//     </Grid>
+//   );
+// };
 
 export default Dashboard;

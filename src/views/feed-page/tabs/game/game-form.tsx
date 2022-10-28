@@ -1,16 +1,15 @@
-import { diRepositorires } from "@adapters/di";
 import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { FilterTypeEnum, IDgsGameEntityWithLeague, IDgsLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
-import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { Button, Grid, Typography } from "@mui/material";
-import { selectEventFilterdReFresh } from "@store/actions";
+import { taskChannelRequestAction } from "@store/actions";
 import { gridSpacing } from "@store/constant";
-import { useConfirm } from "material-ui-confirm";
+import { Delete_game_Task_Type, Save_Game_Task_Type, Sync_Odds_Task_Type, TASK_TYPE } from "@store/feed-task-queue/FeedTaskQueueModel";
 import { IMapFilterPeriodConfig } from "@store/models/feed-model";
 import { getDefaultFilterPeriodSettingByEvent, getFeedLoading, getListSportBook, getSelectedGame } from "@store/selector";
 import { checkExistsItemIntree } from "@utils/index";
 import { get } from "lodash";
+import { useConfirm } from "material-ui-confirm";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { GameOddsRows } from "./game-odds-rows";
@@ -105,23 +104,29 @@ function GameFromBody(props: IProps) {
 
   const onSubmit = (data: IGameFromValue) => {
     const payload = buildEventPeriodPayload(data, gameWithLeague);
-    emitStartLoading();
-    diRepositorires.donbestFilter
-      .postSaveEventFilters(payload)
-      .then(() => {
-        emitStopLoading();
-        dispatch(
-          selectEventFilterdReFresh({
-            gameWithLeague,
-            defaultSelectedLineType: data.lineTypeId,
-          }),
-        );
-        notifyMessageSuccess("Save success!");
-      })
-      .catch(() => {
-        notifyMessageError("Save failure! please try again.");
-        emitStopLoading();
-      });
+    const channelPayload: Save_Game_Task_Type = {
+      taskObject: `Save ${gameWithLeague.homeTeam} vs ${gameWithLeague.visitorTeam}`,
+      taskType: TASK_TYPE.SAVE_GAME,
+      payload,
+    };
+    dispatch(taskChannelRequestAction(channelPayload));
+    // emitStartLoading();
+    // diRepositorires.donbestFilter
+    //   .postSaveEventFilters(payload)
+    //   .then(() => {
+    //     emitStopLoading();
+    //     dispatch(
+    //       selectEventFilterdReFresh({
+    //         gameWithLeague,
+    //         defaultSelectedLineType: data.lineTypeId,
+    //       }),
+    //     );
+    //     notifyMessageSuccess("Save success!");
+    //   })
+    //   .catch(() => {
+    //     notifyMessageError("Save failure! please try again.");
+    //     emitStopLoading();
+    //   });
   };
 
   const onSyncOdds = () => {
@@ -129,32 +134,43 @@ function GameFromBody(props: IProps) {
       if (result) {
         const data: IGameFromValue = hookForm.getValues();
         const payload = buildEventPeriodPayload(data, gameWithLeague);
-        emitStartLoading();
-        diRepositorires.donbestFilter
-          .postSaveEventFilters(payload)
-          .then(() => {
-            diRepositorires.donbestFilter
-              .postSyncOdds(gameWithLeague.idGame)
-              .then(() => {
-                emitStopLoading();
-                notifyMessageSuccess("Sync Odds success!");
-              })
-              .catch(() => {
-                notifyMessageError("Sync Odds failure! please try again.");
-                emitStopLoading();
-              }); //end sync
-          })
-          .catch(() => {
-            notifyMessageError("Sync Odds failure! please try again.");
-            emitStopLoading();
-          }); //end save
+        const channelPayload: Save_Game_Task_Type = {
+          taskObject: `Save ${gameWithLeague.homeTeam} vs ${gameWithLeague.visitorTeam}`,
+          taskType: TASK_TYPE.SAVE_GAME,
+          payload,
+        };
+        dispatch(taskChannelRequestAction(channelPayload));
+        const channelPayloadSyncLines: Sync_Odds_Task_Type = {
+          taskObject: `Sync ${gameWithLeague.homeTeam} vs ${gameWithLeague.visitorTeam}`,
+          taskType: TASK_TYPE.SYNC_ODDS,
+          payload: { dgsIdGame: gameWithLeague.dgsLeagueId },
+        };
+        dispatch(taskChannelRequestAction(channelPayloadSyncLines));
+        // emitStartLoading();
+        // diRepositorires.donbestFilter
+        //   .postSaveEventFilters(payload)
+        //   .then(() => {
+        //     diRepositorires.donbestFilter
+        //       .postSyncOdds(gameWithLeague.idGame)
+        //       .then(() => {
+        //         emitStopLoading();
+        //         notifyMessageSuccess("Sync Odds success!");
+        //       })
+        //       .catch(() => {
+        //         notifyMessageError("Sync Odds failure! please try again.");
+        //         emitStopLoading();
+        //       }); //end sync
+        //   })
+        //   .catch(() => {
+        //     notifyMessageError("Sync Odds failure! please try again.");
+        //     emitStopLoading();
+        //   }); //end save
       }
     }); //end trgger
   };
   const onDelete = (): void => {
     const data: IGameFromValue = hookForm.getValues();
     const deleteFunc = () => {
-      emitStartLoading();
       const { dgsLeagueId, idGame } = gameWithLeague;
       const payload: IFilterDeleteItemPayload = {
         dgsIdLeague: dgsLeagueId,
@@ -162,22 +178,38 @@ function GameFromBody(props: IProps) {
         dgsGameId: idGame,
         lineTypeId: data.lineTypeId,
       };
-      diRepositorires.donbestFilter
-        .postDeleteFilterItem(payload)
-        .then(() => {
-          emitStopLoading();
-          dispatch(
-            selectEventFilterdReFresh({
-              gameWithLeague,
-              defaultSelectedLineType: 0,
-            }),
-          );
-          notifyMessageSuccess("Deleted success!");
-        })
-        .catch(() => {
-          notifyMessageError("Deleted failure! please try again.");
-          emitStopLoading();
-        });
+
+      const channelPayloadDeleteGame: Delete_game_Task_Type = {
+        taskObject: `Delete ${gameWithLeague.homeTeam} vs ${gameWithLeague.visitorTeam}`,
+        taskType: TASK_TYPE.DELETE_GAME,
+        payload,
+      };
+      dispatch(taskChannelRequestAction(channelPayloadDeleteGame));
+
+      // emitStartLoading();
+      // const { dgsLeagueId, idGame } = gameWithLeague;
+      // const payload: IFilterDeleteItemPayload = {
+      //   dgsIdLeague: dgsLeagueId,
+      //   type: FilterTypeEnum.EVENT,
+      //   dgsGameId: idGame,
+      //   lineTypeId: data.lineTypeId,
+      // };
+      // diRepositorires.donbestFilter
+      //   .postDeleteFilterItem(payload)
+      //   .then(() => {
+      //     emitStopLoading();
+      //     dispatch(
+      //       selectEventFilterdReFresh({
+      //         gameWithLeague,
+      //         defaultSelectedLineType: 0,
+      //       }),
+      //     );
+      //     notifyMessageSuccess("Deleted success!");
+      //   })
+      //   .catch(() => {
+      //     notifyMessageError("Deleted failure! please try again.");
+      //     emitStopLoading();
+      //   });
     };
     if (data.lineTypeId > 0) {
       confirm({ description: "Delete your selection?" })

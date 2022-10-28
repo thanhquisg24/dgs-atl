@@ -1,8 +1,7 @@
-import { diRepositorires } from "@adapters/di";
-import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useAppDispatch } from "@hooks/useReduxToolKit";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Box, FormControlLabel, FormGroup, FormHelperText, Checkbox } from "@mui/material";
-import { selectLeagueIdRefresh } from "@store/actions";
+import { Box, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, FormControlLabel, FormGroup, FormHelperText } from "@mui/material";
+import { taskChannelRequestAction } from "@store/actions";
+import { Copy_to_league_Task_Type, TASK_TYPE } from "@store/feed-task-queue/FeedTaskQueueModel";
 
 import { ILeagueInfoModel } from "@store/models/feed-model";
 import { has, isEmpty, omit } from "lodash";
@@ -32,24 +31,31 @@ export default function LeagueCopyToBtn(props: { leagueInfoList: ILeagueInfoMode
       const data = hookForm.getValues();
       //@ts-ignore
       const payload = buildPayloadCopyToLeague(data, state.selection);
-      emitStartLoading();
-      diRepositorires.donbestFilter
-        .postCopyLeagueFilters(payload)
-        .then(() => {
-          emitStopLoading();
-          dispatch(
-            selectLeagueIdRefresh({
-              dgsLeagueId: data.dgsLeagueId,
-              defaultSelectedLineType: `${data.lineTypeId}`,
-            }),
-          );
-          setOpen(false);
-          notifyMessageSuccess("Copy to leagues success!");
-        })
-        .catch(() => {
-          notifyMessageError("Copy failure! please try again.");
-          emitStopLoading();
-        });
+
+      const channelPayload: Copy_to_league_Task_Type = {
+        taskObject: "Copy to leagues",
+        taskType: TASK_TYPE.COPY_TO_LEAGUE,
+        payload,
+      };
+      dispatch(taskChannelRequestAction(channelPayload));
+      // emitStartLoading();
+      // diRepositorires.donbestFilter
+      //   .postCopyLeagueFilters(payload)
+      //   .then(() => {
+      //     emitStopLoading();
+      //     dispatch(
+      //       selectLeagueIdRefresh({
+      //         dgsLeagueId: data.dgsLeagueId,
+      //         defaultSelectedLineType: `${data.lineTypeId}`,
+      //       }),
+      //     );
+      //     setOpen(false);
+      //     notifyMessageSuccess("Copy to leagues success!");
+      //   })
+      //   .catch(() => {
+      //     notifyMessageError("Copy failure! please try again.");
+      //     emitStopLoading();
+      //   });
     }
     // setOpen(false);
   };

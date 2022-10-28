@@ -3,19 +3,21 @@ import React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import LinearProgress, { linearProgressClasses } from "@mui/material/LinearProgress";
-import { Typography } from "@mui/material";
+import { CircularProgress, Stack, Typography } from "@mui/material";
+import { useAppSelector } from "@hooks/useReduxToolKit";
+import { getNotifyCurrentTaskSelector } from "@store/selector";
 
-const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  height: 10,
-  borderRadius: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#308fe8",
-  },
-}));
+// const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
+//   height: 10,
+//   borderRadius: 5,
+//   [`&.${linearProgressClasses.colorPrimary}`]: {
+//     backgroundColor: theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
+//   },
+//   [`& .${linearProgressClasses.bar}`]: {
+//     borderRadius: 5,
+//     backgroundColor: theme.palette.mode === "light" ? "#1a90ff" : "#308fe8",
+//   },
+// }));
 
 // Inspired by the former Facebook spinners.
 // function FacebookCircularProgress(props: CircularProgressProps) {
@@ -52,12 +54,24 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 // }
 
 export default function SyncProgressBars() {
+  const currentTask = useAppSelector(getNotifyCurrentTaskSelector);
   return (
-    <Box sx={{ flexGrow: 1, backgroundColor: "#fafafa", padding: "10px" }}>
-      <Typography variant="h6" color="secondary">
-        Finished 1 / 1 updates
-      </Typography>
-      <BorderLinearProgress variant="determinate" value={50} />
+    <Box sx={{ flexGrow: 1, backgroundColor: "#fafafa", padding: "20px 20px 20px 25px" }}>
+      {currentTask !== null ? (
+        <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={1}>
+          <CircularProgress color="secondary" size={20} />
+          <Typography variant="h4" color="secondary">
+            {currentTask}
+          </Typography>
+        </Stack>
+      ) : (
+        <Stack direction="row" justifyContent="flex-start" alignItems="center" spacing={1}>
+          <Typography variant="h4" color="success">
+            No task running
+          </Typography>
+        </Stack>
+      )}
+      {/* <BorderLinearProgress variant="determinate" value={50} /> */}
     </Box>
   );
 }

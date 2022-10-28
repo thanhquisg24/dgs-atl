@@ -1,24 +1,23 @@
-import { diRepositorires } from "@adapters/di";
 import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { FilterTypeEnum, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
-import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
 import { Grid } from "@mui/material";
-import { useConfirm } from "material-ui-confirm";
-import { selectLeagueIdRefresh } from "@store/actions";
+import { taskChannelRequestAction } from "@store/actions";
 import { gridSpacing } from "@store/constant";
 import {
-  getDefaultFilterLineTypeSetting,
-  getDefaultFilterPeriodSetting,
-  getLeagueLeftInfoTree,
-  getListLineType,
-  getListSportBook,
-  getSelectedLeague,
-  getSelectedLeagueId,
-} from "@store/selector";
+  Delete_league_Task_Type,
+  Save_League_Task_Type,
+  Sync_Game_Task_Type,
+  Sync_Line_Task_Type,
+  Sync_Scores_Task_Type,
+  Sync_Times_Task_Type,
+  TASK_TYPE,
+} from "@store/feed-task-queue/FeedTaskQueueModel";
+import { getDefaultFilterLineTypeSetting, getDefaultFilterPeriodSetting, getLeagueLeftInfoTree, getListLineType, getListSportBook, getSelectedLeague, getSelectedLeagueId } from "@store/selector";
 import { RootStateType } from "@store/types";
 import { checkExistsItemIntree } from "@utils/index";
 import { get } from "lodash";
+import { useConfirm } from "material-ui-confirm";
 import React from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { shallowEqual } from "react-redux";
@@ -141,23 +140,30 @@ function LeagueformContent() {
 
   const onSubmit = (data: IFromLeagueValue) => {
     const payload = buildPayloadLeagueTab(data, leagueInfoTree);
-    emitStartLoading();
-    diRepositorires.donbestFilter
-      .postSaveLeagueFilters(payload)
-      .then(() => {
-        emitStopLoading();
-        dispatch(
-          selectLeagueIdRefresh({
-            dgsLeagueId: watchdgsLeagueId,
-            defaultSelectedLineType: `${data.lineTypeId}`,
-          }),
-        );
-        notifyMessageSuccess("Save success!");
-      })
-      .catch(() => {
-        notifyMessageError("Save failure! please try again.");
-        emitStopLoading();
-      });
+    const channelPayload: Save_League_Task_Type = {
+      taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+      taskType: TASK_TYPE.SAVE_LEAGUE,
+      payload,
+    };
+    dispatch(taskChannelRequestAction(channelPayload));
+
+    // emitStartLoading();
+    // diRepositorires.donbestFilter
+    //   .postSaveLeagueFilters(payload)
+    //   .then(() => {
+    //     emitStopLoading();
+    //     dispatch(
+    //       selectLeagueIdRefresh({
+    //         dgsLeagueId: watchdgsLeagueId,
+    //         defaultSelectedLineType: `${data.lineTypeId}`,
+    //       }),
+    //     );
+    //     notifyMessageSuccess("Save success!");
+    //   })
+    //   .catch(() => {
+    //     notifyMessageError("Save failure! please try again.");
+    //     emitStopLoading();
+    //   });
   };
 
   const onSyncLines = () => {
@@ -165,62 +171,118 @@ function LeagueformContent() {
       if (result) {
         const data: IFromLeagueValue = hookForm.getValues();
         const payload = buildPayloadLeagueTab(data, leagueInfoTree);
-        emitStartLoading();
-        diRepositorires.donbestFilter
-          .postSaveLeagueFilters(payload)
-          .then(() => {
-            diRepositorires.donbestFilter
-              .postSyncLines(data.dgsLeagueId)
-              .then(() => {
-                emitStopLoading();
-                notifyMessageSuccess("Sync Lines success!");
-              })
-              .catch(() => {
-                notifyMessageError("Sync Lines failure! please try again.");
-                emitStopLoading();
-              });
-          })
-          .catch(() => {
-            notifyMessageError("Sync failure! please try again.");
-            emitStopLoading();
-          });
+        const channelPayload: Save_League_Task_Type = {
+          taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+          taskType: TASK_TYPE.SAVE_LEAGUE,
+          payload,
+        };
+        dispatch(taskChannelRequestAction(channelPayload));
+        const channelPayloadSyncLines: Sync_Line_Task_Type = {
+          taskObject: `Sync ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+          taskType: TASK_TYPE.SYNC_LINE,
+          payload: { dgsLeagueId: data.dgsLeagueId },
+        };
+        dispatch(taskChannelRequestAction(channelPayloadSyncLines));
+        // emitStartLoading();
+        // diRepositorires.donbestFilter
+        //   .postSaveLeagueFilters(payload)
+        //   .then(() => {
+        //     diRepositorires.donbestFilter
+        //       .postSyncLines(data.dgsLeagueId)
+        //       .then(() => {
+        //         emitStopLoading();
+        //         notifyMessageSuccess("Sync Lines success!");
+        //       })
+        //       .catch(() => {
+        //         notifyMessageError("Sync Lines failure! please try again.");
+        //         emitStopLoading();
+        //       });
+        //   })
+        //   .catch(() => {
+        //     notifyMessageError("Sync failure! please try again.");
+        //     emitStopLoading();
+        //   });
       }
     });
   };
 
   const onSyncTimes = (): void => {
-    // eslint-disable-next-line no-alert
-    alert("onSyncTimes");
+    hookForm.trigger().then((result: boolean) => {
+      if (result) {
+        const data: IFromLeagueValue = hookForm.getValues();
+        const payload = buildPayloadLeagueTab(data, leagueInfoTree);
+        const channelPayload: Save_League_Task_Type = {
+          taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+          taskType: TASK_TYPE.SAVE_LEAGUE,
+          payload,
+        };
+        dispatch(taskChannelRequestAction(channelPayload));
+        const channelPayloadSyncLines: Sync_Times_Task_Type = {
+          taskObject: `Sync Times of ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+          taskType: TASK_TYPE.SYNC_TIMES,
+          payload: { dgsLeagueId: data.dgsLeagueId },
+        };
+        dispatch(taskChannelRequestAction(channelPayloadSyncLines));
+      }
+    });
   };
 
   const onSyncScores = (): void => {
-    // eslint-disable-next-line no-alert
-    alert("onSyncTimes");
+    hookForm.trigger().then((result: boolean) => {
+      if (result) {
+        const data: IFromLeagueValue = hookForm.getValues();
+        const payload = buildPayloadLeagueTab(data, leagueInfoTree);
+        const channelPayload: Save_League_Task_Type = {
+          taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+          taskType: TASK_TYPE.SAVE_LEAGUE,
+          payload,
+        };
+        dispatch(taskChannelRequestAction(channelPayload));
+        const channelPayloadSyncLines: Sync_Scores_Task_Type = {
+          taskObject: `Sync Scores of ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+          taskType: TASK_TYPE.SYNC_SCORE,
+          payload: { dgsLeagueId: data.dgsLeagueId },
+        };
+        dispatch(taskChannelRequestAction(channelPayloadSyncLines));
+      }
+    });
   };
   const onSyncGames = (): void => {
     hookForm.trigger().then((result: boolean) => {
       if (result) {
         const data: IFromLeagueValue = hookForm.getValues();
         const payload = buildPayloadLeagueTab(data, leagueInfoTree);
-        emitStartLoading();
-        diRepositorires.donbestFilter
-          .postSaveLeagueFilters(payload)
-          .then(() => {
-            diRepositorires.donbestFilter
-              .postSyncLeagueGame(data.dgsLeagueId)
-              .then(() => {
-                emitStopLoading();
-                notifyMessageSuccess("Sync Game success!");
-              })
-              .catch(() => {
-                notifyMessageError("Sync Game failure! please try again.");
-                emitStopLoading();
-              });
-          })
-          .catch(() => {
-            notifyMessageError("Sync failure! please try again.");
-            emitStopLoading();
-          });
+        const channelPayload: Save_League_Task_Type = {
+          taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+          taskType: TASK_TYPE.SAVE_LEAGUE,
+          payload,
+        };
+        dispatch(taskChannelRequestAction(channelPayload));
+        const channelPayloadSyncGames: Sync_Game_Task_Type = {
+          taskObject: `Sync Games of ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+          taskType: TASK_TYPE.SYNC_GAME,
+          payload: { dgsLeagueId: data.dgsLeagueId },
+        };
+        dispatch(taskChannelRequestAction(channelPayloadSyncGames));
+        // emitStartLoading();
+        // diRepositorires.donbestFilter
+        //   .postSaveLeagueFilters(payload)
+        //   .then(() => {
+        //     diRepositorires.donbestFilter
+        //       .postSyncLeagueGame(data.dgsLeagueId)
+        //       .then(() => {
+        //         emitStopLoading();
+        //         notifyMessageSuccess("Sync Game success!");
+        //       })
+        //       .catch(() => {
+        //         notifyMessageError("Sync Game failure! please try again.");
+        //         emitStopLoading();
+        //       });
+        //   })
+        //   .catch(() => {
+        //     notifyMessageError("Sync failure! please try again.");
+        //     emitStopLoading();
+        //   });
       }
     });
   };
@@ -228,30 +290,36 @@ function LeagueformContent() {
   const onDelete = (): void => {
     const data: IFromLeagueValue = hookForm.getValues();
     const deleteFunc = () => {
-      emitStartLoading();
+      // emitStartLoading();
       const payload: IFilterDeleteItemPayload = {
         dgsIdLeague: data.dgsLeagueId,
         type: FilterTypeEnum.LEAGUE,
         dgsGameId: 0,
         lineTypeId: data.lineTypeId,
       };
-      diRepositorires.donbestFilter
-        .postDeleteFilterItem(payload)
-        .then(() => {
-          emitStopLoading();
-          dispatch(
-            selectLeagueIdRefresh({
-              dgsLeagueId: watchdgsLeagueId,
-              defaultSelectedLineType: 0,
-              clearSelectedGame: true,
-            }),
-          );
-          notifyMessageSuccess("Deleted success!");
-        })
-        .catch(() => {
-          notifyMessageError("Deleted failure! please try again.");
-          emitStopLoading();
-        });
+      const channelPayloadDeleteLeague: Delete_league_Task_Type = {
+        taskObject: `Delete ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
+        taskType: TASK_TYPE.DELETE_LEAGUE,
+        payload,
+      };
+      dispatch(taskChannelRequestAction(channelPayloadDeleteLeague));
+      // diRepositorires.donbestFilter
+      //   .postDeleteFilterItem(payload)
+      //   .then(() => {
+      //     emitStopLoading();
+      //     dispatch(
+      //       selectLeagueIdRefresh({
+      //         dgsLeagueId: watchdgsLeagueId,
+      //         defaultSelectedLineType: 0,
+      //         clearSelectedGame: true,
+      //       }),
+      //     );
+      //     notifyMessageSuccess("Deleted success!");
+      //   })
+      //   .catch(() => {
+      //     notifyMessageError("Deleted failure! please try again.");
+      //     emitStopLoading();
+      //   });
     };
     if (data.dgsLeagueId > 0 && data.lineTypeId > 0) {
       confirm({ description: "Delete your selection?" })
@@ -270,12 +338,7 @@ function LeagueformContent() {
         <form onSubmit={hookForm.handleSubmit(onSubmit)}>
           <Grid spacing={gridSpacing} container>
             <Grid item md={10}>
-              <LeagueContainerLeft
-                leagueInfoList={leagueInfoList}
-                listLineType={listLineType}
-                listSportBook={listSportBook}
-                savedLineTypeConfig={selectedLeagueData.mapFilterLineTypeConfig}
-              />
+              <LeagueContainerLeft leagueInfoList={leagueInfoList} listLineType={listLineType} listSportBook={listSportBook} savedLineTypeConfig={selectedLeagueData.mapFilterLineTypeConfig} />
               <LeagueIgnore />
             </Grid>
             <Grid item md={2}>

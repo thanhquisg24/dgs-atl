@@ -3,6 +3,7 @@ import authReducer, { initialAuthState } from "./auth-reducer";
 import themesReducer, { initialStateThemes } from "./customizationReducer";
 import sportReducer, { initialStateSport } from "./dega-sport-reducer";
 import feedReducer, { initialFeedState } from "./feed-reducer";
+import notifyTaskReducer, { initialNotifyTask } from "./notify-task-reducer";
 import spinnerReducer, { initialSpinnerState } from "./spinner-reducer";
 
 const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   themes: themesReducer,
   auth: authReducer,
   feed: feedReducer,
+  notifyTask: notifyTaskReducer,
 });
 
 export default rootReducer;
@@ -20,4 +22,5 @@ export const initialState: ReturnType<typeof rootReducer> = {
   themes: initialStateThemes,
   auth: initialAuthState,
   feed: initialFeedState,
+  notifyTask: initialNotifyTask,
 };

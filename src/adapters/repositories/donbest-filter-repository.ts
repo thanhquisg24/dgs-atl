@@ -17,10 +17,42 @@ export interface IDonbestFilterRepository {
   fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IEventFilterEntity>;
   postSyncLines(dgsIdLeague: number): Promise<boolean>;
   postSyncOdds(dgsIdGame: number): Promise<boolean>;
+  postSyncScores(dgsIdLeague: number): Promise<boolean>;
+  postSyncTimes(dgsIdLeague: number): Promise<boolean>;
   postSyncLeagueGame(dgsIdLeague: number): Promise<boolean>;
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<boolean>;
 }
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
+  postSyncScores(dgsIdLeague: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .postSyncScores(dgsIdLeague)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
+  postSyncTimes(dgsIdLeague: number): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .postSyncTimes(dgsIdLeague)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   fetDonbestIdGames(): Promise<number[]> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi

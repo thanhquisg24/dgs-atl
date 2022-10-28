@@ -9,3 +9,8 @@ export function formatToLLLDateStr(dateISO: string): string {
   const m = moment(dateISO);
   return m.format("lll");
 }
+
+export function getDateLLL(): string {
+  const m = moment();
+  return m.format("lll");
+}
