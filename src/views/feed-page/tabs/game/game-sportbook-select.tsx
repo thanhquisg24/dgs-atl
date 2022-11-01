@@ -1,7 +1,7 @@
 import { IDgsGameEntityWithLeague, IDgsLineTypeEntity, IDonbestSportBookEntity } from "@adapters/entity";
 import { FormControl, FormHelperText, Grid, MenuItem, Select, Typography } from "@mui/material";
 import { IMapFilterPeriodConfig } from "@store/models/feed-model";
-import { formatToLLLDateStr } from "@utils/date-format";
+import { formatToUsDateStr } from "@utils/date-format";
 import { checkExistsItemIntree } from "@utils/index";
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -32,7 +32,7 @@ export default function GameSportbookSelect(props: {
   return (
     <Grid container spacing={1}>
       <Grid item md={4}>
-        <Typography variant="h6">{formatToLLLDateStr(gameWithLeague.gameDateTime)}</Typography>
+        <Typography variant="h6">{formatToUsDateStr(gameWithLeague.gameDateTime)}</Typography>
       </Grid>
       <Grid item md={5}>
         <FormControl size="small" fullWidth>

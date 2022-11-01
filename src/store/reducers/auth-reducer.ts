@@ -8,6 +8,7 @@ import {
   // checkAuthRequest,
   checkAuthFailure,
   doLogoutSuccess,
+  doRefreshTokenSuccess,
 } from "../actions/auth-action";
 
 export const initialAuthState: IAuthModel = {
@@ -15,6 +16,7 @@ export const initialAuthState: IAuthModel = {
   loggedIn: false,
   currentUser: null,
   isLoading: false,
+  jwt: null,
 };
 
 const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {
@@ -26,11 +28,15 @@ const authReducer = createReducer(initialAuthState as IAuthModel, (builder) => {
     newState.loggedIn = true;
     newState.authChecked = true;
     newState.isLoading = false;
-    newState.currentUser = action.payload;
+    newState.currentUser = action.payload.username;
+    newState.jwt = action.payload;
     return newState;
   });
+  builder.addCase(doRefreshTokenSuccess, (state, action) => {
+    return { ...state, jwt: action.payload };
+  });
   builder.addCase(doLoginFailure, (state) => {
-    return { ...state, loggedIn: false, authChecked: false, isLoading: false, currentUser: null };
+    return { ...state, loggedIn: false, authChecked: false, isLoading: false, currentUser: null, jwt: null };
   });
   builder.addCase(checkAuthSuccess, (state) => {
     return { ...state, loggedIn: true, authChecked: true, isLoading: false };

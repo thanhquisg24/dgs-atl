@@ -21,7 +21,7 @@ export class AuthUseCase implements IAuthUseCase {
   checkInitLocalStorageLogin(): Promise<IUserEntity> {
     const store = diInfrastructures.webStorage.getToken();
     if (store === null) {
-      return Promise.reject(new Error("Not found token in store "));
+      return Promise.reject(new Error("Not found token in store!"));
     }
     setAxiosHeaderAuth(store.token);
     return new Promise((resolve, reject) => {
@@ -30,11 +30,7 @@ export class AuthUseCase implements IAuthUseCase {
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             // const { data } = res;
-            const user: IUserEntity = {
-              // ...data,
-              ...store,
-              type: "Bearer ",
-            };
+            const user: IUserEntity = store;
             resolve(user);
           }
           reject(new Error(`CheckToken Error HTTP status code ${res.status}`));
@@ -92,6 +88,7 @@ export class AuthUseCase implements IAuthUseCase {
           if (res.status === 200) {
             const { data } = res;
             diInfrastructures.webStorage.setToken(data.accessToken, data.refreshToken);
+            setAxiosHeaderAuth(data.accessToken);
             resolve(res.data);
           }
           reject(new Error(`RefreshToken Error HTTP status code ${res.status}`));

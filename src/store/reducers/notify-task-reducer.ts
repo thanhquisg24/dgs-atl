@@ -1,7 +1,7 @@
 import { createReducer } from "@reduxjs/toolkit";
 import { taskFailAction, taskStartAction, taskSuccessAction } from "@store/actions/notify-task-action";
 import { INotifyTaskModel, TaskStatus } from "@store/models/notify-task-model";
-import { getDateLLL } from "@utils/date-format";
+import { getDate } from "@utils/date-format";
 
 export const initialNotifyTask: INotifyTaskModel = {
   messages: [],
@@ -13,7 +13,7 @@ const notifyTaskReducer = createReducer(initialNotifyTask as INotifyTaskModel, (
     const msgItem = {
       text: action.payload,
       status: TaskStatus.START,
-      time: getDateLLL(),
+      time: getDate(),
     };
     state.messages.unshift(msgItem);
     state.currentTaskRunning = action.payload;
@@ -23,7 +23,7 @@ const notifyTaskReducer = createReducer(initialNotifyTask as INotifyTaskModel, (
     const msgItem = {
       text: action.payload,
       status: TaskStatus.SUCCESS,
-      time: getDateLLL(),
+      time: getDate(),
     };
     state.messages.unshift(msgItem);
     state.currentTaskRunning = null;
@@ -33,7 +33,7 @@ const notifyTaskReducer = createReducer(initialNotifyTask as INotifyTaskModel, (
     const msgItem = {
       text: action.payload,
       status: TaskStatus.FAIL,
-      time: getDateLLL(),
+      time: getDate(),
     };
     state.messages.unshift(msgItem);
     state.currentTaskRunning = null;

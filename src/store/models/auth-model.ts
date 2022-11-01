@@ -1,8 +1,9 @@
-import { IUserEntity } from "@adapters/entity";
+import { IJwtEntity } from "@adapters/entity";
 
 export interface IAuthModel {
   authChecked: boolean;
   loggedIn: boolean;
-  currentUser: IUserEntity | null;
+  currentUser: string | null;
+  jwt: IJwtEntity | null;
   isLoading: boolean;
 }

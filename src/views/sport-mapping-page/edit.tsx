@@ -38,6 +38,7 @@ const defaultValues = {
   dgsSportId: "",
   dgsSportName: "",
 };
+
 const EditSportMapping = () => {
   const { id } = useParams<{ id: string }>();
   const dataProvider = useDataProvider();

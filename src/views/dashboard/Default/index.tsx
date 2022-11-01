@@ -4,15 +4,12 @@
 import { Grid } from "@mui/material";
 
 // project imports
-// import EarningCard from "./EarningCard";
-// import PopularCard from "./PopularCard";
-// import TotalOrderLineChartCard from "./TotalOrderLineChartCard";
-// import TotalIncomeDarkCard from "./TotalIncomeDarkCard";
-// import TotalIncomeLightCard from "./TotalIncomeLightCard";
-// import TotalGrowthBarChart from "./TotalGrowthBarChart";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { gridSpacing } from "@store/constant";
-// import SyncProgressBars from "../../feed-page/tree-view/process-bar";
-// import TaskList from "./task-list";
+import RecentCard from "./RecentCard";
+import WigetStatus from "./WigetStatus";
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
@@ -20,7 +17,27 @@ const Dashboard = () => {
   return (
     <Grid container spacing={gridSpacing}>
       <Grid item xs={12}>
-        <h1>Hello</h1>
+        <Grid container spacing={gridSpacing}>
+          <Grid item lg={2} md={6} sm={6} xs={6}>
+            <Grid container spacing={gridSpacing}>
+              <Grid item sm={6} xs={12} md={6} lg={12}>
+                <WigetStatus isLoading={false} title="hello, CLIFF" subTitle="Admin" icon={<AccountCircleIcon fontSize="inherit" />} status="DEFAULT" />
+              </Grid>
+              <Grid item sm={6} xs={12} md={6} lg={12}>
+                <WigetStatus isLoading={false} title="Socket Conntection Status" subTitle="Not connected" icon={<ErrorOutlineIcon fontSize="inherit" />} status="ERROR" />
+              </Grid>
+              <Grid item sm={6} xs={12} md={6} lg={12}>
+                <WigetStatus isLoading={false} title="Donbest Token Status" subTitle="Connected" icon={<CheckCircleOutlineIcon fontSize="inherit" />} status="SUCCESS" />
+              </Grid>
+              <Grid item sm={6} xs={12} md={6} lg={12}>
+                <WigetStatus isLoading={false} title="Donbest Stream Status" subTitle="Connected" icon={<CheckCircleOutlineIcon fontSize="inherit" />} status="SUCCESS" />
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item lg={2} md={6} sm={6} xs={6}>
+            <RecentCard isLoading={false} />
+          </Grid>
+        </Grid>
       </Grid>
     </Grid>
   );
@@ -35,22 +52,22 @@ const Dashboard = () => {
 //   return (
 //     <Grid container spacing={gridSpacing}>
 //       <Grid item xs={12}>
-//         <Grid container spacing={gridSpacing}>
-//           <Grid item lg={4} md={6} sm={6} xs={12}>
-//             <EarningCard isLoading={isLoading} />
-//           </Grid>
-//           <Grid item lg={4} md={6} sm={6} xs={12}>
-//             <TotalOrderLineChartCard isLoading={isLoading} />
-//           </Grid>
-//           <Grid item lg={4} md={12} sm={12} xs={12}>
-//             <Grid container spacing={gridSpacing}>
-//               <Grid item sm={6} xs={12} md={6} lg={12}>
-//                 <TotalIncomeDarkCard isLoading={isLoading} />
-//               </Grid>
-//               <Grid item sm={6} xs={12} md={6} lg={12}>
-//                 <TotalIncomeLightCard isLoading={isLoading} />
-//               </Grid>
-//             </Grid>
+// <Grid container spacing={gridSpacing}>
+//   <Grid item lg={4} md={6} sm={6} xs={12}>
+//     <EarningCard isLoading={isLoading} />
+//   </Grid>
+//   <Grid item lg={4} md={6} sm={6} xs={12}>
+//     <TotalOrderLineChartCard isLoading={isLoading} />
+//   </Grid>
+//   <Grid item lg={4} md={12} sm={12} xs={12}>
+//     <Grid container spacing={gridSpacing}>
+//       <Grid item sm={6} xs={12} md={6} lg={12}>
+//         <TotalIncomeDarkCard isLoading={isLoading} />
+//       </Grid>
+//       <Grid item sm={6} xs={12} md={6} lg={12}>
+//         <TotalIncomeLightCard isLoading={isLoading} />
+//       </Grid>
+//     </Grid>
 //           </Grid>
 //         </Grid>
 //       </Grid>

@@ -1,4 +1,4 @@
-import { IUserEntity } from "@adapters/entity";
+import { IJwtEntity, IUserEntity } from "@adapters/entity";
 import { createAction } from "@reduxjs/toolkit";
 
 export interface ILoginPayload {
@@ -8,11 +8,8 @@ export interface ILoginPayload {
 export interface ICheckAuthPayload {
   token: string;
 }
-export interface IRefreshTokenSuccessPayload {
-  accessToken: string;
-  refreshToken: string;
-  tokenType: string;
-}
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface IRefreshTokenSuccessPayload extends IJwtEntity {}
 export const doLoginSpinner = "user/LOGIN";
 export const doLoginRequest = createAction<ILoginPayload>("user/LOGIN_REQUEST");
 export const doLoginSuccess = createAction<IUserEntity>("user/LOGIN_SUCCESS");
@@ -32,6 +29,8 @@ export const checkAuthSpinner = "user/CHECK_AUTH";
 export const checkAuthRequest = createAction<ICheckAuthPayload>("user/CHECK_AUTH_REQUEST");
 export const checkAuthSuccess = createAction<undefined>("user/CHECK_AUTH_SUCCESS");
 export const checkAuthFailure = createAction<string>("user/CHECK_AUTH_FAILURE");
+export const fireExpiredToken = createAction<undefined>("user/TOKEN_EXPIRED");
+export const fireClearToken = createAction<undefined>("user/TOKEN_CLEAR");
 
 export type CombineAuthActionTypes =
   | ReturnType<typeof doRefreshTokenRequest>
@@ -45,4 +44,6 @@ export type CombineAuthActionTypes =
   | ReturnType<typeof doLoginFailure>
   | ReturnType<typeof checkAuthRequest>
   | ReturnType<typeof checkAuthSuccess>
-  | ReturnType<typeof checkAuthFailure>;
+  | ReturnType<typeof checkAuthFailure>
+  | ReturnType<typeof fireExpiredToken>
+  | ReturnType<typeof fireClearToken>;

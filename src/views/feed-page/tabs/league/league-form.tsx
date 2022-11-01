@@ -138,7 +138,8 @@ function LeagueformContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watchBookId]);
 
-  const onSubmit = (data: IFromLeagueValue) => {
+  const saveTask = (_data?: IFromLeagueValue) => {
+    const data: IFromLeagueValue = _data || hookForm.getValues();
     const payload = buildPayloadLeagueTab(data, leagueInfoTree);
     const channelPayload: Save_League_Task_Type = {
       taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
@@ -146,6 +147,9 @@ function LeagueformContent() {
       payload,
     };
     dispatch(taskChannelRequestAction(channelPayload));
+  };
+  const onSubmit = (data: IFromLeagueValue) => {
+    saveTask(data);
 
     // emitStartLoading();
     // diRepositorires.donbestFilter
@@ -170,13 +174,7 @@ function LeagueformContent() {
     hookForm.trigger().then((result: boolean) => {
       if (result) {
         const data: IFromLeagueValue = hookForm.getValues();
-        const payload = buildPayloadLeagueTab(data, leagueInfoTree);
-        const channelPayload: Save_League_Task_Type = {
-          taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
-          taskType: TASK_TYPE.SAVE_LEAGUE,
-          payload,
-        };
-        dispatch(taskChannelRequestAction(channelPayload));
+        saveTask(data);
         const channelPayloadSyncLines: Sync_Line_Task_Type = {
           taskObject: `Sync ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
           taskType: TASK_TYPE.SYNC_LINE,
@@ -210,13 +208,7 @@ function LeagueformContent() {
     hookForm.trigger().then((result: boolean) => {
       if (result) {
         const data: IFromLeagueValue = hookForm.getValues();
-        const payload = buildPayloadLeagueTab(data, leagueInfoTree);
-        const channelPayload: Save_League_Task_Type = {
-          taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
-          taskType: TASK_TYPE.SAVE_LEAGUE,
-          payload,
-        };
-        dispatch(taskChannelRequestAction(channelPayload));
+        saveTask(data);
         const channelPayloadSyncLines: Sync_Times_Task_Type = {
           taskObject: `Sync Times of ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
           taskType: TASK_TYPE.SYNC_TIMES,
@@ -231,13 +223,7 @@ function LeagueformContent() {
     hookForm.trigger().then((result: boolean) => {
       if (result) {
         const data: IFromLeagueValue = hookForm.getValues();
-        const payload = buildPayloadLeagueTab(data, leagueInfoTree);
-        const channelPayload: Save_League_Task_Type = {
-          taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
-          taskType: TASK_TYPE.SAVE_LEAGUE,
-          payload,
-        };
-        dispatch(taskChannelRequestAction(channelPayload));
+        saveTask(data);
         const channelPayloadSyncLines: Sync_Scores_Task_Type = {
           taskObject: `Sync Scores of ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
           taskType: TASK_TYPE.SYNC_SCORE,
@@ -251,13 +237,7 @@ function LeagueformContent() {
     hookForm.trigger().then((result: boolean) => {
       if (result) {
         const data: IFromLeagueValue = hookForm.getValues();
-        const payload = buildPayloadLeagueTab(data, leagueInfoTree);
-        const channelPayload: Save_League_Task_Type = {
-          taskObject: `Save ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
-          taskType: TASK_TYPE.SAVE_LEAGUE,
-          payload,
-        };
-        dispatch(taskChannelRequestAction(channelPayload));
+        saveTask(data);
         const channelPayloadSyncGames: Sync_Game_Task_Type = {
           taskObject: `Sync Games of ${leagueInfoTree[data.dgsLeagueId].dgsLeague.description}`,
           taskType: TASK_TYPE.SYNC_GAME,

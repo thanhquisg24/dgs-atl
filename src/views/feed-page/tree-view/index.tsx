@@ -131,7 +131,7 @@ interface IPropsTreeItem {
 }
 function formatTextGame(game: IDgsGameEntityWithLeague): string {
   const dateStr = formatGameDateTimeTree(game.gameDateTime);
-  return `${dateStr} : ${game.idGame} : ${game.gameProviderIdGame} : ${game.homeTeam}`;
+  return `${dateStr} : ${game.visitorNumber} : ${game.visitorTeam}`;
 }
 function TreeItemNode(props: IPropsTreeItem) {
   const { nodeId, label, status, countGameFail, children, type, id, dgsLeagueId, dgsGame } = props;

@@ -1,5 +1,6 @@
 import { IFilterDeleteItemPayload } from "@adapters/dto/FilterDeleteItemPayload";
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
+import { ISystemSettingPayload } from "@adapters/dto/SystemSettingPayload";
 import { IFilterPeriodEntity } from "@adapters/entity";
 import { ISportMapping } from "@adapters/entity/SportMappingEntity";
 import { AxiosResponse } from "axios";
@@ -47,10 +48,22 @@ interface IApiFetchType {
   fetFeedLeagues(): Promise<AxiosResponse>;
   fetchLineTypeLinks(outIdLineType: number, dgsIdSport: string): Promise<AxiosResponse>;
 }
+interface IApiSystemSetting {
+  fetAllSystemSettings(): Promise<AxiosResponse>;
+  postUpdateSystemSetting(setting: ISystemSettingPayload): Promise<AxiosResponse>;
+}
 
-export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi {}
+export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi, IApiSystemSetting {}
 
 class MainApi extends AuthApi implements IMainApi {
+  fetAllSystemSettings(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("system-setting/get-all-setting");
+  }
+
+  postUpdateSystemSetting(setting: ISystemSettingPayload): Promise<AxiosResponse<any, any>> {
+    return this.Axios.post("/system-setting/update-setting", setting);
+  }
+
   fetDonbestIdGames(): Promise<AxiosResponse<any, any>> {
     return this.Axios.get("db-filter/get-db-id-games");
   }

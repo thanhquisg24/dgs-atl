@@ -3,7 +3,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import { Button, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import tableIcons from "@ui-component/marterial-table/tableIcons";
-import { formatToLLLDateStr } from "@utils/date-format";
+import { formatToUsDateStr } from "@utils/date-format";
 import { Operation, parseFilterForRest } from "@utils/filter-parser";
 import { periodCodeText } from "@utils/period-code-text";
 import { get } from "lodash";
@@ -31,7 +31,7 @@ const columns: any = [
   {
     title: "Update On",
     field: "updatedOn",
-    render: (rowData: any) => formatToLLLDateStr(rowData.updatedOn),
+    render: (rowData: any) => formatToUsDateStr(rowData.updatedOn),
     filtering: false,
     customFilterObj: { operator: Operation.LIKEEND, fieldRest: "dgsIdSport" },
   },

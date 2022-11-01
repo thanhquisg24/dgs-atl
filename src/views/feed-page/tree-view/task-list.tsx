@@ -11,6 +11,7 @@ import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useAppSelector } from "@hooks/useReduxToolKit";
 import { getNotifyTaskMessagesSelector } from "@store/selector";
 import { ITaskMessageItem } from "@store/models/notify-task-model";
+import { timeFromNow } from "@utils/date-format";
 
 const StatusMap = {
   START: (
@@ -41,7 +42,7 @@ function TaskItem(props: { message: ITaskMessageItem; isDivider: boolean }) {
   return (
     <ListItem divider={isDivider}>
       {StatusMap[message.status]}
-      <ListItemText primary={message.text} secondary={message.time} />
+      <ListItemText primary={message.text} secondary={timeFromNow(message.time)} />
     </ListItem>
   );
 }

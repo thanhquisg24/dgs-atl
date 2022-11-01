@@ -1,15 +1,19 @@
+import { IUserEntity } from "@adapters/entity";
+import { JWT_TOKEN_EXPIREIN } from "./adapters.infrastructures.config";
+
+const TOKEN_STORAGE_NAME = "almJwtToken";
 export interface IWebStorage {
   getToken(): {
     token: string;
     refreshToken: string;
     username: string;
+    type: string;
+    expiresIn: number;
+    createdAt: number;
   } | null;
   addToken(token: string, refreshToken: string, username: string): void;
   setToken(token: string, refreshToken: string): void;
   removeToken(): void;
-  // removeUser(): void;
-  // setUser(user: string): void;
-  // getUser(): string | null;
 }
 
 class WebStorage implements IWebStorage {
@@ -19,58 +23,50 @@ class WebStorage implements IWebStorage {
     this.storage = window.localStorage;
   }
 
-  // removeUser(): void {
-  //   this.storage.removeItem("auth_user");
-  // }
-
-  // setUser(user: string): void {
-  //   this.storage.setItem("auth_user", user);
-  // }
-
-  // getUser(): string | null {
-  //   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  //   return this.storage.getItem("auth_user")!;
-  // }
-
   getToken(): {
     token: string;
     refreshToken: string;
     username: string;
+    type: string;
+    expiresIn: number;
+    createdAt: number;
   } | null {
-    const now = new Date(Date.now()).getTime();
-    const timeAllowed = 1000 * 60 * 30;
-    const lastLoginTime = this.storage.getItem("lastLoginTime") ? Number(this.storage.getItem("lastLoginTime")) : now;
-    const timeSinceLastLogin = now - lastLoginTime;
-    if (timeSinceLastLogin < timeAllowed) {
-      const token = this.storage.getItem("token");
-      const refreshToken = this.storage.getItem("refreshToken");
-      const username = this.storage.getItem("username");
-      if (token !== null && refreshToken !== null && username !== null) {
-        return { token, refreshToken, username };
-      }
-    }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return null;
+    const strt = this.storage.getItem(TOKEN_STORAGE_NAME);
+    const almJwtToken = strt ? JSON.parse(strt) : null;
+    return almJwtToken;
   }
 
   addToken(token: string, refreshToken: string, username: string): void {
-    this.storage.setItem("username", username);
-    this.storage.setItem("token", token);
-    this.storage.setItem("lastLoginTime", new Date(Date.now()).getTime().toString());
-    this.storage.setItem("refreshToken", refreshToken);
+    const currentTimestamp = Date.now();
+    const almJwtToken: IUserEntity = {
+      username,
+      token,
+      type: "Bearer ",
+      refreshToken,
+      expiresIn: JWT_TOKEN_EXPIREIN,
+      createdAt: currentTimestamp,
+    };
+    this.storage.setItem(TOKEN_STORAGE_NAME, JSON.stringify(almJwtToken));
   }
 
   setToken(token: string, refreshToken: string): void {
-    this.storage.setItem("token", token);
-    this.storage.setItem("lastLoginTime", new Date(Date.now()).getTime().toString());
-    this.storage.setItem("refreshToken", refreshToken);
+    const o = this.getToken();
+    if (o !== null) {
+      const currentTimestamp = Date.now();
+      const almJwtToken: IUserEntity = {
+        username: o.username,
+        token,
+        type: "Bearer ",
+        refreshToken,
+        expiresIn: JWT_TOKEN_EXPIREIN,
+        createdAt: currentTimestamp,
+      };
+      this.storage.setItem(TOKEN_STORAGE_NAME, JSON.stringify(almJwtToken));
+    }
   }
 
   removeToken(): void {
-    this.storage.removeItem("username");
-    this.storage.removeItem("token");
-    this.storage.removeItem("refreshToken");
-    this.storage.removeItem("lastLoginTime");
+    this.storage.removeItem(TOKEN_STORAGE_NAME);
   }
 }
 

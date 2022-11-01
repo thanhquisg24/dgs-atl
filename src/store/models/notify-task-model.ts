@@ -7,7 +7,7 @@ export enum TaskStatus {
 export interface ITaskMessageItem {
   text: string;
   status: TaskStatus;
-  time: string;
+  time: Date;
 }
 
 export interface INotifyTaskModel {
