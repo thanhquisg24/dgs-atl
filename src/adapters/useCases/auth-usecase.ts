@@ -39,8 +39,8 @@ export class AuthUseCase implements IAuthUseCase {
     });
   }
 
-  private storeAuth(token: string, refreshToken: string, username: string): void {
-    diInfrastructures.webStorage.addToken(token, refreshToken, username);
+  private storeAuth(token: string, refreshToken: string, username: string): any {
+    return diInfrastructures.webStorage.addToken(token, refreshToken, username);
   }
 
   private removeAuth(): void {
@@ -54,9 +54,9 @@ export class AuthUseCase implements IAuthUseCase {
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            this.storeAuth(data.token, data.refreshToken, data.username);
+            const newJwt = this.storeAuth(data.token, data.refreshToken, data.username);
             setAxiosHeaderAuth(data.token);
-            resolve(data);
+            resolve(newJwt);
           }
           reject(new Error(`Login Error HTTP status code ${res.status}`));
         })
@@ -87,9 +87,9 @@ export class AuthUseCase implements IAuthUseCase {
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
-            diInfrastructures.webStorage.setToken(data.accessToken, data.refreshToken);
+            const newJwt = diInfrastructures.webStorage.setToken(data.accessToken, data.refreshToken);
             setAxiosHeaderAuth(data.accessToken);
-            resolve(res.data);
+            resolve(newJwt);
           }
           reject(new Error(`RefreshToken Error HTTP status code ${res.status}`));
         })

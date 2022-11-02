@@ -1,39 +1,37 @@
-import * as React from "react";
+import { useAppSelector } from "@hooks/useReduxToolKit";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import { ListItemIcon } from "@mui/material";
+import { blue, green, orange, red } from "@mui/material/colors";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import { green, red, orange } from "@mui/material/colors";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import { useAppSelector } from "@hooks/useReduxToolKit";
-import { getNotifyTaskMessagesSelector } from "@store/selector";
 import { ITaskMessageItem } from "@store/models/notify-task-model";
+import { getNotifyTaskMessagesSelector } from "@store/selector";
 import { timeFromNow } from "@utils/date-format";
 
 const StatusMap = {
+  PENDING: (
+    <ListItemIcon sx={{ color: orange[500] }}>
+      <AccessTimeIcon />
+    </ListItemIcon>
+  ),
   START: (
-    <ListItemAvatar>
-      <Avatar sx={{ bgcolor: orange[500], color: "white" }}>
-        <AccessTimeIcon />
-      </Avatar>
-    </ListItemAvatar>
+    <ListItemIcon sx={{ color: blue[500] }}>
+      <PlayCircleOutlineIcon />
+    </ListItemIcon>
   ),
   SUCCESS: (
-    <ListItemAvatar>
-      <Avatar sx={{ bgcolor: green[500], color: "white" }}>
-        <CheckCircleOutlineIcon />
-      </Avatar>
-    </ListItemAvatar>
+    <ListItemIcon sx={{ color: green[500] }}>
+      <CheckCircleOutlineIcon />
+    </ListItemIcon>
   ),
   FAIL: (
-    <ListItemAvatar>
-      <Avatar sx={{ bgcolor: red[500], color: "white" }}>
-        <ErrorOutlineIcon />
-      </Avatar>
-    </ListItemAvatar>
+    <ListItemIcon sx={{ color: red[500] }}>
+      <ErrorOutlineIcon />
+    </ListItemIcon>
   ),
 };
 

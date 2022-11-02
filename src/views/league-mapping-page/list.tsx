@@ -70,38 +70,41 @@ const ListLeagueMapping = () => {
       .finally(() => emitStopLoading());
   };
 
-  const onResetFilter = () => {
+  const onResetFilter = React.useCallback(() => {
     if (tableRef.current) {
       // eslint-disable-next-line array-callback-return
       tableRef.current.dataManager.columns.map((item: any) => {
         tableRef.current.onFilterChange(item.tableData.id, "");
       });
     }
-  };
-  const getData = (query: any): any =>
-    new Promise((resolve) => {
-      let sortField = get(query, ["orderBy", "field"]);
-      let direction = get(query, ["orderDirection"]);
-      sortField = sortField || "dgsIdLeague";
-      direction = direction || "DESC";
-      const filterRest = getFilterForRest(query.filters);
-      dataProvider
-        .getList("db-league", {
-          pagination: {
-            page: query.page ? query.page + 1 : 1,
-            perPage: query.pageSize,
-          },
-          sort: { field: sortField, order: direction.toUpperCase() },
-          filter: filterRest,
-        })
-        .then((result) => {
-          resolve({
-            data: result.data,
-            page: query.page,
-            totalCount: result.total,
+  }, [tableRef]);
+  const getData = React.useCallback(
+    (query: any): any =>
+      new Promise((resolve) => {
+        let sortField = get(query, ["orderBy", "field"]);
+        let direction = get(query, ["orderDirection"]);
+        sortField = sortField || "dgsIdLeague";
+        direction = direction || "DESC";
+        const filterRest = getFilterForRest(query.filters);
+        dataProvider
+          .getList("db-league", {
+            pagination: {
+              page: query.page ? query.page + 1 : 1,
+              perPage: query.pageSize,
+            },
+            sort: { field: sortField, order: direction.toUpperCase() },
+            filter: filterRest,
+          })
+          .then((result) => {
+            resolve({
+              data: result.data,
+              page: query.page,
+              totalCount: result.total,
+            });
           });
-        });
-    });
+      }),
+    [dataProvider],
+  );
 
   // function reFesshTable(): void {
   //   const { current } = tableRef;

@@ -25,6 +25,7 @@ export const buildPayloadLeagueTab = (
   };
   filterLineTypeReq.dbLeagueId = dbInfo.donbestLeague.idLeague;
   filterLineTypeReq.dgsLeagueId = dgsLeagueId;
+  filterLineTypeReq.lineTypeId = data.lineTypeId;
   filterLineTypeReq.dbSportId = dbSportId;
   return { filterLineTypeReq, filterPeriodReq };
 };

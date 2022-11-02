@@ -50,8 +50,8 @@ function* loginSaga(action: ReturnType<typeof doLoginRequest>): Generator | any 
     // yield delay(1000 * 60 * 5); //interval refresh 25 minute
     // yield put(doRefreshTokenRequest(resData.refreshToken));
   } catch (error) {
-    yield put(doLoginFailure("Login fail!"));
-    notifyMessageError("Login fail!");
+    yield put(doLoginFailure(error.message));
+    notifyMessageError(error.message);
   }
 }
 
@@ -63,8 +63,8 @@ function* logoutSaga(): Generator | any {
     yield put(doLogoutSuccess());
     yield put(fireClearToken());
   } catch (error) {
-    yield put(doLogoutFailure("Logout fail!"));
-    notifyMessageError("Logout fail!");
+    yield put(doLogoutFailure(error.message));
+    notifyMessageError(error.message);
   }
 }
 
@@ -83,8 +83,8 @@ function* refreshTokenSaga(): Generator | any {
     }
     // yield put(doRefreshTokenRequest(refreshData.refreshToken));
   } catch (error) {
-    yield put(doRefreshTokenFailure("Refresh token fail!"));
-    notifyMessageError("Refresh token fail!");
+    yield put(doRefreshTokenFailure(error.message));
+    notifyMessageError(error.message);
   }
 }
 

@@ -139,7 +139,7 @@ const ProfileSection = () => {
                           {auth.currentUser}
                         </Typography>
                       </Stack>
-                      <Typography variant="subtitle2">Project Admin</Typography>
+                      <Typography variant="subtitle2">Admin</Typography>
                     </Stack>
                   </Box>
                   <PerfectScrollbar style={{ height: "100%", maxHeight: "calc(100vh - 250px)", overflowX: "hidden" }}>

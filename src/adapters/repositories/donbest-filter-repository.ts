@@ -1,9 +1,10 @@
 // eslint-disable-next-line import/named
 import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
-import { convertFilterCombineResult, FilterTypeEnum, IDonbestLeagueEntity, IDonbestSportBookEntity, IFilterCombine, IFilterPeriodEntity } from "@adapters/entity";
+import { convertFilterCombineResult, FilterTypeEnum, IDonbestLeagueEntity, IDonbestSportBookEntity, IFilterCombine, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
 import { IEventFilterEntity } from "@adapters/entity/EventFilterEntity";
 import { AxiosResponse } from "axios";
+import { differenceWith, isEmpty, isEqual, isNumber, isString, omit } from "lodash";
 import { BaseRepository } from "./base-repository";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -14,15 +15,77 @@ export interface IDonbestFilterRepository {
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
   postSaveLeagueFilters(payload: ILeagueFilterPayload): Promise<boolean>;
   postSaveEventFilters(payload: IFilterPeriodEntity[]): Promise<boolean>;
-  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IEventFilterEntity>;
+  fetEventFilter(dgsLeagueId: number, dgsGameId: number, lineTypeId?: number): Promise<IEventFilterEntity>;
   postSyncLines(dgsIdLeague: number): Promise<boolean>;
   postSyncOdds(dgsIdGame: number): Promise<boolean>;
   postSyncScores(dgsIdLeague: number): Promise<boolean>;
   postSyncTimes(dgsIdLeague: number): Promise<boolean>;
   postSyncLeagueGame(dgsIdLeague: number): Promise<boolean>;
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<boolean>;
+  compareTwoLeagueFilter(leagueToSave: ILeagueFilterPayload): Promise<boolean>;
+  compareTwoEventFilter(eventToSave: IFilterPeriodEntity[], dgsLeagueId: number, dgsGameId: number, lineTypeId: number): Promise<boolean>;
 }
+const setEmptyOrStr = (v: any) => {
+  if (isString(v) && isEmpty(v)) return null;
+  if (isNumber(v)) return `${v}`;
+  return v;
+};
+const convert = (data: any) => Object.entries(data).map(([key, value]) => ({ [key]: setEmptyOrStr(value) }));
+
+const transPeriods = (periods: IFilterPeriodEntity[]) => {
+  const newPeriods = [...periods];
+  for (let index = 0; index < newPeriods.length; index++) {
+    const element = newPeriods[index];
+    element.id = null;
+    element.ps_point = setEmptyOrStr(element.ps_point);
+    element.ps_juice = setEmptyOrStr(element.ps_juice);
+    element.ml_juice = setEmptyOrStr(element.ml_juice);
+    element.total_point = setEmptyOrStr(element.total_point);
+    element.total_juice = setEmptyOrStr(element.total_juice);
+  }
+  return newPeriods;
+};
+
 export class DonbestFilterRepository extends BaseRepository implements IDonbestFilterRepository {
+  async compareTwoEventFilter(eventToSave: IFilterPeriodEntity[], dgsLeagueId: number, dgsGameId: number, lineTypeId: number): Promise<boolean> {
+    const eventFetch = await this.fetEventFilter(dgsLeagueId, dgsGameId, lineTypeId);
+    if (eventFetch.eventFilterPeriod.length === 0) {
+      return false;
+    }
+    const leftTocompare = transPeriods(eventToSave);
+    const rightTocompare = transPeriods(eventFetch.eventFilterPeriod);
+    const changesPeriods = differenceWith(leftTocompare, rightTocompare, isEqual);
+    if (changesPeriods.length > 0) {
+      console.log("🚀 ~ file: donbest-filter-repository.ts ~ line 58 ~ DonbestFilterRepository ~ compareTwoEventFilter ~ changesPeriods", changesPeriods);
+      return false;
+    }
+    return true;
+  }
+
+  async compareTwoLeagueFilter(leagueToSave: ILeagueFilterPayload): Promise<boolean> {
+    const { dgsLeagueId, lineTypeId } = leagueToSave.filterLineTypeReq.filterLineTypeId;
+    const getCombineItem = await this.fetFilterCombine(FilterTypeEnum.LEAGUE, dgsLeagueId, lineTypeId);
+    if (getCombineItem.listFilterLineType.length === 0) {
+      return false;
+    }
+    //@ts-ignore
+    const leftLineType: IFilterLineTypeEntity = omit(leagueToSave.filterLineTypeReq, ["filterLineTypeId", "dbSportsBookId"]);
+    const leftLineTypePrepareCompare = convert(leftLineType);
+    const rightLineType: IFilterLineTypeEntity[] = getCombineItem.listFilterLineType;
+    const rightLineTypeToCompare = convert(rightLineType[0]);
+    const changesLineType = differenceWith(leftLineTypePrepareCompare, rightLineTypeToCompare, isEqual);
+    if (changesLineType.length > 0) {
+      return false;
+    }
+    const leftPeriods: IFilterPeriodEntity[] = leagueToSave.filterPeriodReq;
+    const rightPeriods: IFilterPeriodEntity[] = getCombineItem.listFilterPeriod;
+    const changesPeriods = differenceWith(transPeriods(leftPeriods), transPeriods(rightPeriods), isEqual);
+    if (changesPeriods.length > 0) {
+      return false;
+    }
+    return true;
+  }
+
   postSyncScores(dgsIdLeague: number): Promise<boolean> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
@@ -54,20 +117,21 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
   }
 
   fetDonbestIdGames(): Promise<number[]> {
-    return new Promise((resolve, reject) => {
-      this.infra.remote.mainApi
-        .fetDonbestIdGames()
-        .then((res: AxiosResponse) => {
-          if (res.status === 200) {
-            const { data } = res;
-            const map: number[] = data;
-            resolve(map);
-          } else {
-            reject(new Error(`Error HTTP status code ${res.status}`));
-          }
-        })
-        .catch((error) => reject(error));
-    });
+    // return new Promise((resolve, reject) => {
+    //   this.infra.remote.mainApi
+    //     .fetDonbestIdGames()
+    //     .then((res: AxiosResponse) => {
+    //       if (res.status === 200) {
+    //         const { data } = res;
+    //         const map: number[] = data;
+    //         resolve(map);
+    //       } else {
+    //         reject(new Error(`Error HTTP status code ${res.status}`));
+    //       }
+    //     })
+    //     .catch((error) => reject(error));
+    // });
+    return Promise.resolve([]);
   }
 
   postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean> {
@@ -145,10 +209,10 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
     });
   }
 
-  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<IEventFilterEntity> {
+  fetEventFilter(dgsLeagueId: number, dgsGameId: number, lineTypeId?: number): Promise<IEventFilterEntity> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
-        .fetEventFilter(dgsLeagueId, dgsGameId)
+        .fetEventFilter(dgsLeagueId, dgsGameId, lineTypeId)
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;

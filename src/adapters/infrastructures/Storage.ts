@@ -11,8 +11,8 @@ export interface IWebStorage {
     expiresIn: number;
     createdAt: number;
   } | null;
-  addToken(token: string, refreshToken: string, username: string): void;
-  setToken(token: string, refreshToken: string): void;
+  addToken(token: string, refreshToken: string, username: string): any;
+  setToken(token: string, refreshToken: string): any;
   removeToken(): void;
 }
 
@@ -36,7 +36,7 @@ class WebStorage implements IWebStorage {
     return almJwtToken;
   }
 
-  addToken(token: string, refreshToken: string, username: string): void {
+  addToken(token: string, refreshToken: string, username: string): any {
     const currentTimestamp = Date.now();
     const almJwtToken: IUserEntity = {
       username,
@@ -47,9 +47,11 @@ class WebStorage implements IWebStorage {
       createdAt: currentTimestamp,
     };
     this.storage.setItem(TOKEN_STORAGE_NAME, JSON.stringify(almJwtToken));
+    return almJwtToken;
   }
 
-  setToken(token: string, refreshToken: string): void {
+  // eslint-disable-next-line consistent-return
+  setToken(token: string, refreshToken: string): any {
     const o = this.getToken();
     if (o !== null) {
       const currentTimestamp = Date.now();
@@ -62,6 +64,7 @@ class WebStorage implements IWebStorage {
         createdAt: currentTimestamp,
       };
       this.storage.setItem(TOKEN_STORAGE_NAME, JSON.stringify(almJwtToken));
+      return almJwtToken;
     }
   }
 

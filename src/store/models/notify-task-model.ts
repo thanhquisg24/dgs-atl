@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-shadow
 export enum TaskStatus {
   START = "START",
+  PENDING = "PENDING",
   SUCCESS = "SUCCESS",
   FAIL = "FAIL",
 }

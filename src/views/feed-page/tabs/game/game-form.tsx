@@ -1,3 +1,4 @@
+import { diRepositorires } from "@adapters/di";
 import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { FilterTypeEnum, IDgsGameEntityWithLeague, IDgsLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
 import { useAppDispatch, useAppSelector } from "@hooks/useReduxToolKit";
@@ -102,7 +103,8 @@ function GameFromBody(props: IProps) {
     return checkExistsItemIntree(mapFilterPeriodConfig, watchLineTypeId);
   }, [mapFilterPeriodConfig, watchLineTypeId]);
 
-  const onSubmit = (data: IGameFromValue) => {
+  const saveTask = (_data?: IGameFromValue) => {
+    const data: IGameFromValue = _data || hookForm.getValues();
     const payload = buildEventPeriodPayload(data, gameWithLeague);
     const channelPayload: Save_Game_Task_Type = {
       taskObject: `Save ${gameWithLeague.homeTeam} vs ${gameWithLeague.visitorTeam}`,
@@ -110,42 +112,38 @@ function GameFromBody(props: IProps) {
       payload,
     };
     dispatch(taskChannelRequestAction(channelPayload));
-    // emitStartLoading();
-    // diRepositorires.donbestFilter
-    //   .postSaveEventFilters(payload)
-    //   .then(() => {
-    //     emitStopLoading();
-    //     dispatch(
-    //       selectEventFilterdReFresh({
-    //         gameWithLeague,
-    //         defaultSelectedLineType: data.lineTypeId,
-    //       }),
-    //     );
-    //     notifyMessageSuccess("Save success!");
-    //   })
-    //   .catch(() => {
-    //     notifyMessageError("Save failure! please try again.");
-    //     emitStopLoading();
-    //   });
+  };
+  const onComfirmSync = (data: IGameFromValue, funcCallback: () => void) => {
+    const payload = buildEventPeriodPayload(data, gameWithLeague);
+    const { dgsLeagueId, idGame } = gameWithLeague;
+    diRepositorires.donbestFilter.compareTwoEventFilter(payload, dgsLeagueId, idGame, data.lineTypeId).then((result) => {
+      console.log("🚀 ~ file: game-form.tsx ~ line 120 ~ diRepositorires.donbestFilter.compareTwoEventFilter ~ result", result);
+      if (result) {
+        funcCallback();
+      } else {
+        confirm({ description: "Setting have made changes, continue to sync?" })
+          .then(() => {
+            saveTask(data);
+            funcCallback();
+          })
+          .catch(() => console.log("Sync cancelled."));
+      }
+    });
+  };
+  const onSubmit = (data: IGameFromValue) => {
+    saveTask(data);
   };
 
   const onSyncOdds = () => {
     hookForm.trigger().then((result: boolean) => {
       if (result) {
         const data: IGameFromValue = hookForm.getValues();
-        const payload = buildEventPeriodPayload(data, gameWithLeague);
-        const channelPayload: Save_Game_Task_Type = {
-          taskObject: `Save ${gameWithLeague.homeTeam} vs ${gameWithLeague.visitorTeam}`,
-          taskType: TASK_TYPE.SAVE_GAME,
-          payload,
-        };
-        dispatch(taskChannelRequestAction(channelPayload));
         const channelPayloadSyncLines: Sync_Odds_Task_Type = {
           taskObject: `Sync ${gameWithLeague.homeTeam} vs ${gameWithLeague.visitorTeam}`,
           taskType: TASK_TYPE.SYNC_ODDS,
           payload: { dgsIdGame: gameWithLeague.dgsLeagueId },
         };
-        dispatch(taskChannelRequestAction(channelPayloadSyncLines));
+        onComfirmSync(data, () => dispatch(taskChannelRequestAction(channelPayloadSyncLines)));
         // emitStartLoading();
         // diRepositorires.donbestFilter
         //   .postSaveEventFilters(payload)

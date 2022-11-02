@@ -43,12 +43,13 @@ interface IApiFetchType {
   fetAvaiableDonbestSportBook(): Promise<AxiosResponse>;
 
   fetCombineFilter(type: string, dgsLeagueId: number, lineTypeId: number): Promise<AxiosResponse>;
-  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<AxiosResponse>;
+  fetEventFilter(dgsLeagueId: number, dgsGameId: number, lineTypeId?: number): Promise<AxiosResponse>;
 
   fetFeedLeagues(): Promise<AxiosResponse>;
   fetchLineTypeLinks(outIdLineType: number, dgsIdSport: string): Promise<AxiosResponse>;
 }
 interface IApiSystemSetting {
+  fetSystemStatus(): Promise<AxiosResponse>;
   fetAllSystemSettings(): Promise<AxiosResponse>;
   postUpdateSystemSetting(setting: ISystemSettingPayload): Promise<AxiosResponse>;
 }
@@ -56,6 +57,10 @@ interface IApiSystemSetting {
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi, IApiSystemSetting {}
 
 class MainApi extends AuthApi implements IMainApi {
+  fetSystemStatus(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("system-setting/get-system-status");
+  }
+
   fetAllSystemSettings(): Promise<AxiosResponse<any, any>> {
     return this.Axios.get("system-setting/get-all-setting");
   }
@@ -140,11 +145,12 @@ class MainApi extends AuthApi implements IMainApi {
     return this.Axios.post("/db-filter/sync-times", xFromData);
   }
 
-  fetEventFilter(dgsLeagueId: number, dgsGameId: number): Promise<AxiosResponse<any, any>> {
+  fetEventFilter(dgsLeagueId: number, dgsGameId: number, lineTypeId?: number): Promise<AxiosResponse<any, any>> {
     return this.Axios.get("db-filter/get-event-filter", {
       params: {
         dgsLeagueId,
         dgsGameId,
+        lineTypeId,
       },
     });
   }

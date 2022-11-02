@@ -1,5 +1,6 @@
 import { useDataProvider } from "@hooks/useDataProvider";
 import ClearIcon from "@mui/icons-material/Clear";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Typography } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import tableIcons from "@ui-component/marterial-table/tableIcons";
@@ -41,42 +42,55 @@ export default function HistoryTable() {
   const tableRef = React.createRef<any>();
   const dataProvider = useDataProvider();
 
-  const onResetFilter = () => {
+  const onResetFilter = React.useCallback(() => {
     if (tableRef.current) {
       // eslint-disable-next-line array-callback-return
       tableRef.current.dataManager.columns.map((item: any) => {
         tableRef.current.onFilterChange(item.tableData.id, "");
       });
-      // const currentQuery = tableRef.current.state.query;
-      // tableRef.current.onQueryChange({ ...currentQuery, filters: [] });
-      // console.log("🚀 ~ file: history-table.tsx ~ line 41 ~ onResetFilter ~ tableRef.current", tableRef.current);
     }
-  };
+  }, [tableRef]);
 
-  const getData = (query: any): any =>
-    new Promise((resolve) => {
-      let sortField = get(query, ["orderBy", "field"]);
-      let direction = get(query, ["orderDirection"]);
-      sortField = sortField || "id";
-      direction = direction || "DESC";
-      const filterRest = parseFilterForRest(query.filters);
-      dataProvider
-        .getList("alm-history", {
-          pagination: {
-            page: query.page ? query.page + 1 : 1,
-            perPage: query.pageSize,
-          },
-          sort: { field: sortField, order: direction.toUpperCase() },
-          filter: filterRest,
-        })
-        .then((result) => {
-          resolve({
-            data: result.data,
-            page: query.page,
-            totalCount: result.total,
+  const onRefresh = React.useCallback(() => {
+    if (tableRef.current) {
+      tableRef.current.onQueryChange();
+    }
+  }, [tableRef]);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      onRefresh();
+    }, 15000);
+    return () => clearInterval(timer);
+  }, [onRefresh]);
+
+  const getData = React.useCallback(
+    (query: any): any =>
+      new Promise((resolve) => {
+        let sortField = get(query, ["orderBy", "field"]);
+        let direction = get(query, ["orderDirection"]);
+        sortField = sortField || "id";
+        direction = direction || "DESC";
+        const filterRest = parseFilterForRest(query.filters);
+        dataProvider
+          .getList("alm-history", {
+            pagination: {
+              page: query.page ? query.page + 1 : 1,
+              perPage: query.pageSize,
+            },
+            sort: { field: sortField, order: direction.toUpperCase() },
+            filter: filterRest,
+          })
+          .then((result) => {
+            resolve({
+              data: result.data,
+              page: query.page,
+              totalCount: result.total,
+            });
           });
-        });
-    });
+      }),
+    [dataProvider],
+  );
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
       <MaterialTable
@@ -108,6 +122,18 @@ export default function HistoryTable() {
             isFreeAction: true,
             onClick: () => {
               onResetFilter(); // set new key causing remount
+            },
+          },
+          {
+            icon: () => (
+              <Button variant="outlined" color="primary" startIcon={<RefreshIcon />}>
+                Refresh
+              </Button>
+            ),
+            tooltip: "Refresh History",
+            isFreeAction: true,
+            onClick: () => {
+              onRefresh(); // set new key causing remount
             },
           },
         ]}
