@@ -7,7 +7,7 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import tableIcons from "@ui-component/marterial-table/tableIcons";
 import { getFilterForRest } from "@utils/index";
 import { get } from "lodash";
-import MaterialTable from "material-table";
+import MaterialTable from "@material-table/core";
 import React from "react";
 import { Link } from "react-router-dom";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -32,8 +32,11 @@ const columns: any = [
 const ListLeagueMapping = () => {
   const tableRef = React.createRef<any>();
   const dataProvider = useDataProvider();
-
-  const onActive = (evt: any, data: any) => {
+  // React.useEffect(() => {
+  //   // eslint-disable-next-line no-return-assign
+  //   return () => (tableRef.current. = null);
+  // }, []);
+  const onActive = React.useCallback((evt: any, data: any) => {
     emitStartLoading();
     const items: number[] = data.reduce((store: number[], item: any) => {
       // eslint-disable-next-line no-param-reassign
@@ -50,8 +53,9 @@ const ListLeagueMapping = () => {
       })
       .catch((error: any) => notifyMessageError(error.message))
       .finally(() => emitStopLoading());
-  };
-  const onDisabled = (evt: any, data: any) => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const onDisabled = React.useCallback((evt: any, data: any) => {
     emitStartLoading();
     const items: number[] = data.reduce((store: number[], item: any) => {
       // eslint-disable-next-line no-param-reassign
@@ -68,16 +72,20 @@ const ListLeagueMapping = () => {
       })
       .catch((error) => notifyMessageError(error.message))
       .finally(() => emitStopLoading());
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onResetFilter = React.useCallback(() => {
     if (tableRef.current) {
+      // console.log("🚀 ~ file: list.tsx ~ line 80 ~ onResetFilter ~ tableRef.current", tableRef.current);
       // eslint-disable-next-line array-callback-return
       tableRef.current.dataManager.columns.map((item: any) => {
         tableRef.current.onFilterChange(item.tableData.id, "");
       });
+      // tableRef.current.clearCriteria();
     }
-  }, [tableRef]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const getData = React.useCallback(
     (query: any): any =>
       new Promise((resolve) => {
@@ -106,17 +114,6 @@ const ListLeagueMapping = () => {
     [dataProvider],
   );
 
-  // function reFesshTable(): void {
-  //   const { current } = tableRef;
-  //   if (current) {
-  //     current.onQueryChange();
-  //   }
-  // }
-
-  // const printValue = debounce((value: string) => setState({ textSearch: value }), 1000);
-  // Event listener called on every change
-  // const onChange = ({ target }: any) => setState({ textSearch: target.value });
-
   return (
     <Box sx={{ width: "100%" }}>
       <MaterialTable
@@ -125,6 +122,25 @@ const ListLeagueMapping = () => {
             League Mapping
           </Typography>
         }
+        localization={{
+          //@ts-ignore
+          labelRowsSelect: undefined,
+          pagination: {
+            labelDisplayedRows: "{from}-{to} of {count}",
+          },
+          toolbar: {
+            nRowsSelected: "{0} row(s) selected",
+          },
+          header: {
+            actions: "Actions",
+          },
+          body: {
+            emptyDataSourceMessage: "No records to display",
+            filterRow: {
+              filterTooltip: "Filter",
+            },
+          },
+        }}
         tableRef={tableRef}
         icons={tableIcons}
         columns={[

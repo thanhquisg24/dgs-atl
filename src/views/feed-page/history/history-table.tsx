@@ -8,7 +8,7 @@ import { formatToUsDateStr } from "@utils/date-format";
 import { Operation, parseFilterForRest } from "@utils/filter-parser";
 import { periodCodeText } from "@utils/period-code-text";
 import { get } from "lodash";
-import MaterialTable from "material-table";
+import MaterialTable from "@material-table/core";
 import React from "react";
 
 const columns: any = [

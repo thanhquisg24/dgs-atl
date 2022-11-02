@@ -7,7 +7,7 @@ import { IconButton, Typography } from "@mui/material";
 
 // project imports
 import tableIcons from "@ui-component/marterial-table/tableIcons";
-import MaterialTable from "material-table";
+import MaterialTable from "@material-table/core";
 import { useConfirm } from "material-ui-confirm";
 import React from "react";
 import { Link } from "react-router-dom";
