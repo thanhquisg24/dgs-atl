@@ -11,8 +11,9 @@ export default function LeagueContainerRight(props: {
   onSyncScores: () => void;
   onSyncGames: () => void;
   onDelete: () => void;
+  onReset: () => void;
 }) {
-  const { onSyncLines, onSyncTimes, onSyncScores, onSyncGames, onDelete, isExistsItem, leagueInfoList } = props;
+  const { onSyncLines, onSyncTimes, onSyncScores, onSyncGames, onDelete, onReset, isExistsItem, leagueInfoList } = props;
   const { control } = useFormContext();
   return (
     <Box sx={{ width: "100%" }}>
@@ -20,9 +21,7 @@ export default function LeagueContainerRight(props: {
         <Controller
           name="useOddsBySports"
           control={control}
-          render={({ field }) => (
-            <FormControlLabel control={<Checkbox size="small" onChange={(e) => field.onChange(e.target.checked)} checked={field.value} />} label="Use Odds By Sport" />
-          )}
+          render={({ field }) => <FormControlLabel control={<Checkbox size="small" onChange={(e) => field.onChange(e.target.checked)} checked={field.value} />} label="Use Odds By Sport" />}
         />
       </FormGroup>
       <Controller
@@ -33,9 +32,7 @@ export default function LeagueContainerRight(props: {
       <Controller
         name="autoTimeChange"
         control={control}
-        render={({ field }) => (
-          <FormControlLabel control={<Checkbox size="small" onChange={(e) => field.onChange(e.target.checked)} checked={field.value} />} label="Auto Time Change" />
-        )}
+        render={({ field }) => <FormControlLabel control={<Checkbox size="small" onChange={(e) => field.onChange(e.target.checked)} checked={field.value} />} label="Auto Time Change" />}
       />
 
       {/* <Grid container sx={{ ml: 2.5 }} spacing={1}>
@@ -75,6 +72,9 @@ export default function LeagueContainerRight(props: {
       <Grid container direction="column" justifyContent="flex-start" alignItems="baseline" sx={{ maxWidth: "200px" }}>
         <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1, mb: 2 }} fullWidth color="success">
           {isExistsItem ? "Update" : "Save"}
+        </Button>
+        <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="primary" onClick={() => onReset()}>
+          Reset
         </Button>
         <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncLines()}>
           Sync Lines

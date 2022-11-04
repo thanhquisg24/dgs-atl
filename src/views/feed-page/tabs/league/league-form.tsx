@@ -92,7 +92,8 @@ function LeagueformContent() {
 
   const dispatch = useAppDispatch();
   const isExistsItem = React.useMemo(() => checkExistsItemIntree(selectedLeagueData.mapFilterLineTypeConfig, watchLineTypeId), [selectedLeagueData.mapFilterLineTypeConfig, watchLineTypeId]);
-  React.useEffect(() => {
+
+  const initForm = React.useCallback(() => {
     const dgsLeagueId = selectedLeagueData.dgsLeagueId ? selectedLeagueData.dgsLeagueId : -1;
     const itemTmp = selectedLeagueData.defaultSelectedLineType ? get(selectedLeagueData.mapFilterLineTypeConfig, selectedLeagueData.defaultSelectedLineType) : null;
     let item: IFilterLineTypeEntity | null = itemTmp || null;
@@ -107,6 +108,10 @@ function LeagueformContent() {
       const dbSportsBookId = itemPeriods.length > 0 ? itemPeriods[0].dbSportBookId : 0;
       hookForm.reset({ ...item, periodConfig: itemPeriods, dbSportsBookId });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedLeagueData.dgsLeagueId]);
+  React.useEffect(() => {
+    initForm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLeagueData.dgsLeagueId]);
 
@@ -149,6 +154,10 @@ function LeagueformContent() {
     };
     dispatch(taskChannelRequestAction(channelPayload));
   };
+  const onReset = (): void => {
+    initForm();
+  };
+
   const onSubmit = (data: IFromLeagueValue) => {
     // const payload = buildPayloadLeagueTab(data, leagueInfoTree);
     // diRepositorires.donbestFilter.compareTwoLeagueFilter(payload).then((result) => {
@@ -264,6 +273,7 @@ function LeagueformContent() {
                 onSyncScores={onSyncScores}
                 onSyncGames={onSyncGames}
                 onDelete={onDelete}
+                onReset={onReset}
                 leagueInfoList={leagueInfoList}
               />
             </Grid>

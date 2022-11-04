@@ -178,6 +178,19 @@ const EditLeagueMapping = () => {
       .catch((error) => notifyMessageError(error.message))
       .finally(() => emitStopLoading());
   };
+  const onDelete = () => {
+    emitStartLoading();
+    // const multipleValues = getValues(["test", "test1"]);
+    const data = [state.donbestItem.id];
+    diRepositorires.donbestLeague
+      .deleteItems(data)
+      .then(() => {
+        notifyMessageSuccess("Delete successfull!");
+        gotoPage("/league-page-list");
+      })
+      .catch((error) => notifyMessageError(error.message))
+      .finally(() => emitStopLoading());
+  };
 
   return (
     <MainCard title="Edit league  mapping">
@@ -340,6 +353,9 @@ const EditLeagueMapping = () => {
           <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start" sx={{ mt: 3.5 }}>
             <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} type="submit">
               Save
+            </Button>
+            <Button variant="contained" sx={{ flex: 1, ml: 1, maxWidth: "110px" }} type="button" color="error" onClick={() => onDelete()}>
+              Delete
             </Button>
           </Grid>
         </Box>

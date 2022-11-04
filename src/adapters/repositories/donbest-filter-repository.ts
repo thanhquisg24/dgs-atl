@@ -117,21 +117,21 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
   }
 
   fetDonbestIdGames(): Promise<number[]> {
-    return new Promise((resolve, reject) => {
-      this.infra.remote.mainApi
-        .fetDonbestIdGames()
-        .then((res: AxiosResponse) => {
-          if (res.status === 200) {
-            const { data } = res;
-            const map: number[] = data;
-            resolve(map);
-          } else {
-            reject(new Error(`Error HTTP status code ${res.status}`));
-          }
-        })
-        .catch((error) => reject(error));
-    });
-    // return Promise.resolve([]);
+    // return new Promise((resolve, reject) => {
+    //   this.infra.remote.mainApi
+    //     .fetDonbestIdGames()
+    //     .then((res: AxiosResponse) => {
+    //       if (res.status === 200) {
+    //         const { data } = res;
+    //         const map: number[] = data;
+    //         resolve([]);
+    //       } else {
+    //         reject(new Error(`Error HTTP status code ${res.status}`));
+    //       }
+    //     })
+    //     .catch((error) => reject(error));
+    // });
+    return Promise.resolve([]);
   }
 
   postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean> {

@@ -32,6 +32,7 @@ interface IApiPostType {
   postSyncTimes(dgsIdLeague: number): Promise<AxiosResponse>;
   postSyncOdds(dgsIdGame: number): Promise<AxiosResponse>;
   postDeleteFilterItem(payload: IFilterDeleteItemPayload): Promise<AxiosResponse>;
+  deleteItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
 }
 interface IApiFetchType {
   fetDonbestIdGames(): Promise<AxiosResponse>;
@@ -49,6 +50,7 @@ interface IApiFetchType {
   fetchLineTypeLinks(outIdLineType: number, dgsIdSport: string): Promise<AxiosResponse>;
 }
 interface IApiSystemSetting {
+  fetNewToken(): Promise<AxiosResponse>;
   fetSystemStatus(): Promise<AxiosResponse>;
   fetAllSystemSettings(): Promise<AxiosResponse>;
   postUpdateSystemSetting(setting: ISystemSettingPayload): Promise<AxiosResponse>;
@@ -57,6 +59,14 @@ interface IApiSystemSetting {
 export interface IMainApi extends IApiPostType, IApiFetchType, IAuthApi, IApiSystemSetting {}
 
 class MainApi extends AuthApi implements IMainApi {
+  deleteItemsLeagueMapping(payload: number[]): Promise<AxiosResponse<any, any>> {
+    return this.Axios.post("db-league/delete-items", payload);
+  }
+
+  fetNewToken(): Promise<AxiosResponse<any, any>> {
+    return this.Axios.get("system-setting/get-new-db-token");
+  }
+
   fetSystemStatus(): Promise<AxiosResponse<any, any>> {
     return this.Axios.get("system-setting/get-system-status");
   }

@@ -2,15 +2,15 @@
 import { diRepositorires } from "@adapters/di";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
 import { useDataProvider } from "@hooks/useDataProvider";
+import MaterialTable from "@material-table/core";
+import ClearIcon from "@mui/icons-material/Clear";
 import Edit from "@mui/icons-material/Edit";
 import { Box, Button, IconButton, Typography } from "@mui/material";
 import tableIcons from "@ui-component/marterial-table/tableIcons";
 import { getFilterForRest } from "@utils/index";
 import { get } from "lodash";
-import MaterialTable from "@material-table/core";
 import React from "react";
 import { Link } from "react-router-dom";
-import ClearIcon from "@mui/icons-material/Clear";
 
 const columns: any = [
   {
@@ -40,7 +40,7 @@ const ListLeagueMapping = () => {
     emitStartLoading();
     const items: number[] = data.reduce((store: number[], item: any) => {
       // eslint-disable-next-line no-param-reassign
-      store = [...store, item.idLeague];
+      store = [...store, item.id];
       return store;
     }, []);
     diRepositorires.donbestLeague
@@ -59,13 +59,32 @@ const ListLeagueMapping = () => {
     emitStartLoading();
     const items: number[] = data.reduce((store: number[], item: any) => {
       // eslint-disable-next-line no-param-reassign
-      store = [...store, item.idLeague];
+      store = [...store, item.id];
       return store;
     }, []);
     diRepositorires.donbestLeague
       .putDisabledItemsLeagueMapping(items)
       .then(() => {
         notifyMessageSuccess("Disabled items successfull!");
+        if (tableRef.current) {
+          tableRef.current.onQueryChange();
+        }
+      })
+      .catch((error) => notifyMessageError(error.message))
+      .finally(() => emitStopLoading());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const onDelete = React.useCallback((evt: any, data: any) => {
+    emitStartLoading();
+    const items: number[] = data.reduce((store: number[], item: any) => {
+      // eslint-disable-next-line no-param-reassign
+      store = [...store, item.id];
+      return store;
+    }, []);
+    diRepositorires.donbestLeague
+      .deleteItems(items)
+      .then(() => {
+        notifyMessageSuccess("Delete items successfull!");
         if (tableRef.current) {
           tableRef.current.onQueryChange();
         }
@@ -122,25 +141,25 @@ const ListLeagueMapping = () => {
             League Mapping
           </Typography>
         }
-        localization={{
-          //@ts-ignore
-          labelRowsSelect: undefined,
-          pagination: {
-            labelDisplayedRows: "{from}-{to} of {count}",
-          },
-          toolbar: {
-            nRowsSelected: "{0} row(s) selected",
-          },
-          header: {
-            actions: "Actions",
-          },
-          body: {
-            emptyDataSourceMessage: "No records to display",
-            filterRow: {
-              filterTooltip: "Filter",
-            },
-          },
-        }}
+        // localization={{
+        //   //@ts-ignore
+        //   labelRowsSelect: undefined,
+        //   pagination: {
+        //     labelDisplayedRows: "{from}-{to} of {count}",
+        //   },
+        //   toolbar: {
+        //     nRowsSelected: "{0} row(s) selected",
+        //   },
+        //   header: {
+        //     actions: "Actions",
+        //   },
+        //   body: {
+        //     emptyDataSourceMessage: "No records to display",
+        //     filterRow: {
+        //       filterTooltip: "Filter",
+        //     },
+        //   },
+        // }}
         tableRef={tableRef}
         icons={tableIcons}
         columns={[
@@ -173,12 +192,19 @@ const ListLeagueMapping = () => {
           {
             tooltip: "Active",
             icon: tableIcons.Check,
+            iconProps: { color: "success" },
             onClick: onActive,
           },
           {
             tooltip: "Disabled",
             icon: tableIcons.DoDisturb,
             onClick: onDisabled,
+          },
+          {
+            tooltip: "Delete",
+            icon: tableIcons.Delete,
+            iconProps: { color: "error" },
+            onClick: onDelete,
           },
           {
             icon: () => (

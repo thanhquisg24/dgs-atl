@@ -6,6 +6,7 @@ export interface IDonbestSetting {
 }
 export interface IALMSetting {
   almUser: string;
+  almIdUser: number;
 }
 
 export interface ISystemSettingPayload {

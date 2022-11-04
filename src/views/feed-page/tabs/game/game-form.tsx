@@ -62,8 +62,7 @@ function GameFromBody(props: IProps) {
 
   const watchLineTypeId = hookForm.watch("lineTypeId");
   const watchBookId = hookForm.watch("dbSportsBookId");
-
-  React.useEffect(() => {
+  const initForm = React.useCallback(() => {
     if (defaultSelectedLineType) {
       const itemPeriods = get(mapFilterPeriodConfig, defaultSelectedLineType);
       if (itemPeriods) {
@@ -72,7 +71,11 @@ function GameFromBody(props: IProps) {
     } else {
       hookForm.reset({ ...defaultValues, periodConfig: defaultFilterPeriodSetting });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mapFilterPeriodConfig, defaultSelectedLineType]);
 
+  React.useEffect(() => {
+    initForm();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mapFilterPeriodConfig, defaultSelectedLineType]);
 
@@ -129,6 +132,9 @@ function GameFromBody(props: IProps) {
           .catch(() => console.log("Sync cancelled."));
       }
     });
+  };
+  const onReset = (): void => {
+    initForm();
   };
   const onSubmit = (data: IGameFromValue) => {
     saveTask(data);
@@ -236,6 +242,9 @@ function GameFromBody(props: IProps) {
               <Grid container direction="column" justifyContent="flex-start" alignItems="baseline" sx={{ maxWidth: "200px" }}>
                 <Button type="submit" variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="success">
                   {isExistsItem ? "Update" : "Save"}
+                </Button>
+                <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="primary" onClick={() => onReset()}>
+                  Reset
                 </Button>
                 <Button variant="contained" sx={{ flex: 1, mt: 2 }} onClick={() => onSyncOdds()} fullWidth>
                   Sync Odds

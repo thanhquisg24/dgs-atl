@@ -7,6 +7,7 @@ import {
   fetchLeagueInfoTreeFailure,
   fetchLeagueInfoTreeRequest,
   fetchLeagueInfoTreeSuccess,
+  rereshDataAction,
   selectEventFilterdReFresh,
   selectEventFilterdRequest,
   selectEventFilterFailure,
@@ -19,8 +20,8 @@ import {
 } from "@store/actions/feed-action";
 import { diRepositorires } from "@adapters/di";
 import { FilterTypeEnum } from "@adapters/entity";
-import { getLeagueLeftInfoTree, getSelectedLeagueId } from "@store/selector";
-import { ILeagueInfoModel } from "@store/models/feed-model";
+import { getFeed, getLeagueLeftInfoTree, getSelectedLeagueId } from "@store/selector";
+import { CurrentTabType, IFeedModel, ILeagueInfoModel } from "@store/models/feed-model";
 import { IEventFilterEntity } from "@adapters/entity/EventFilterEntity";
 
 function* fetchDgsLeaguesSaga(): Generator | any {
@@ -166,6 +167,44 @@ function* fetchFilterEventRefreshSagaWatcher() {
   yield takeLatest(selectEventFilterdReFresh.type, fetchFilterEventRefreshSaga);
 }
 
+function* refreshDataSaga(): Generator | any {
+  try {
+    const feedState: IFeedModel = yield select(getFeed);
+    if (feedState.currentTabType === CurrentTabType.LEAGUE) {
+      const { dgsLeagueId, defaultSelectedLineType } = feedState.selectedDgsLeague;
+      if (dgsLeagueId !== null) {
+        const lueagueCombineConfig = yield diRepositorires.donbestFilter.fetFilterCombine(FilterTypeEnum.LEAGUE, dgsLeagueId, 0);
+        const leagueTree: { [dgsLeagueId: number]: ILeagueInfoModel } = yield select(getLeagueLeftInfoTree);
+        const dgsSportId = leagueTree[dgsLeagueId].dgsLeague.idSport;
+        yield put(
+          selectLeagueIdSuccess({
+            id: dgsLeagueId,
+            dgsSportId,
+            filterCombine: lueagueCombineConfig,
+            defaultSelectedLineType,
+            clearSelectedGame: true,
+          }),
+        );
+      }
+    } else {
+      const { gameWithLeague, defaultSelectedLineType } = feedState.selectedGame;
+      if (gameWithLeague) {
+        yield put(
+          selectEventFilterdReFresh({
+            gameWithLeague,
+            defaultSelectedLineType,
+          }),
+        );
+      }
+    }
+  } catch (error) {
+    notifyMessageError("Refresh data fail!");
+  }
+}
+function* refreshDataSagaWatcher() {
+  yield takeLatest(rereshDataAction.type, refreshDataSaga);
+}
+
 export const feedWatchers = [
   fetchDgsLeaguesWatcher(),
   fetchSelectedDgsLeaguesSagaWatcher(),
@@ -173,4 +212,5 @@ export const feedWatchers = [
   fetchExpandLeagueSagaWatcher(),
   fetchFilterEventSagaWatcher(),
   fetchFilterEventRefreshSagaWatcher(),
+  refreshDataSagaWatcher(),
 ];

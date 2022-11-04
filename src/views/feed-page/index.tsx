@@ -3,6 +3,7 @@ import { Grid } from "@mui/material";
 
 // project imports
 import { gridSpacing } from "@store/constant";
+import AlertRefresh from "./alert-refresh";
 import DgsScheduleCard from "./dgs-schedule-card";
 import RightSideCard from "./right-side-card";
 import LeagueGameTabs from "./tabs";
@@ -11,6 +12,7 @@ import LeagueGameTabs from "./tabs";
 const FeedPage = () => (
   <Grid container spacing={gridSpacing}>
     <Grid item xs={3}>
+      <AlertRefresh />
       <DgsScheduleCard />
     </Grid>
     <Grid item xs={9}>

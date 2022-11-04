@@ -4,11 +4,29 @@ import { AxiosResponse } from "axios";
 import { BaseRepository } from "./base-repository";
 
 export interface ISystemSettingRepository {
+  fetNewToken(): Promise<string>;
   fetSystemStatus(): Promise<ISystemStatusEntity>;
   fetAllSystemSettings(): Promise<ISystemSettingPayload>;
   postUpdateSystemSetting(setting: ISystemSettingPayload): Promise<boolean>;
 }
 export class SystemSettingRepository extends BaseRepository implements ISystemSettingRepository {
+  fetNewToken(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .fetNewToken()
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            const { data } = res;
+            const map: string = data.newToken;
+            resolve(map);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   fetSystemStatus(): Promise<ISystemStatusEntity> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi

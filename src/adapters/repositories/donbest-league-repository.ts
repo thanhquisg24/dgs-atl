@@ -14,8 +14,24 @@ export interface IDonbestLeagueRepository {
   fetAvaiableDonbestLeague(): Promise<IDonbestLeagueEntity[]>;
   fetAvaiableDonbestSportBook(): Promise<IDonbestSportBookEntity[]>;
   fetFeedLeagues(): Promise<IFeedLeagueEntity[]>;
+  deleteItems(ids: number[]): Promise<boolean>;
 }
 export class DonbestLeagueRepository extends BaseRepository implements IDonbestLeagueRepository {
+  deleteItems(ids: number[]): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .deleteItemsLeagueMapping(ids)
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            resolve(true);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   fetFeedLeagues(): Promise<IFeedLeagueEntity[]> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi

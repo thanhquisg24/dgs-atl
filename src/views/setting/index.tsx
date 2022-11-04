@@ -1,13 +1,15 @@
 import { diRepositorires } from "@adapters/di";
 import { IALMSetting, IDonbestSetting, ISystemSettingPayload } from "@adapters/dto";
 import { emitStartLoading, emitStopLoading, notifyMessageError, notifyMessageSuccess } from "@emiter/AppEmitter";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import { Button, Grid, TextField } from "@mui/material";
 import { gridSpacing } from "@store/constant";
-
 // project imports
 import MainCard from "@ui-component/cards/MainCard";
+import CustomAutoCompleteV2 from "@ui-component/CustomAutoCompleteV2";
+import BasicIconTooltip from "@ui-component/icon-base";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -18,27 +20,52 @@ const defaultValues: IFormValue = {
   streamPassword: "",
   streamBrokerUrl: "",
   almUser: "",
+  almIdUser: -1,
 };
 const basicRequireRule = { required: "This is required." };
 const SettingPage = () => {
   const {
+    control,
     reset,
     handleSubmit,
     register,
+    setValue,
     formState: { errors },
   } = useForm({ defaultValues });
-
+  const [state, setState] = React.useState<any>(null);
   React.useEffect(() => {
     diRepositorires.systemSettings.fetAllSystemSettings().then((result: ISystemSettingPayload) => {
-      reset({ ...result.almSetting, ...result.donbestSetting });
+      setState(result);
+      console.log("🚀 ~ file: index.tsx ~ line 37 ~ diRepositorires.systemSettings.fetAllSystemSettings ~ result", result);
     });
-  }, [reset]);
+    return () => setState(null);
+  }, []);
 
-  const onSubmit = (data: IFormValue) => {
+  React.useEffect(() => {
+    if (state !== null) {
+      reset({ ...state.almSetting, ...state.donbestSetting, almIdUser: { id: state.almSetting.almIdUser, label: state.almSetting.almUser } });
+    }
+  }, [reset, state]);
+
+  const onRefreshToken = () => {
+    emitStartLoading();
+
+    diRepositorires.systemSettings
+      .fetNewToken()
+      .then((result) => {
+        setValue("apiKey", result);
+      })
+      .catch((error) => notifyMessageError(error.message))
+      .finally(() => emitStopLoading());
+  };
+  const onSubmit = (data: IFormValue | any) => {
     emitStartLoading();
     const payload: ISystemSettingPayload = {
       donbestSetting: data,
-      almSetting: data,
+      almSetting: {
+        almUser: data.almIdUser.label,
+        almIdUser: data.almIdUser.id,
+      },
     };
     diRepositorires.systemSettings
       .postUpdateSystemSetting(payload)
@@ -55,15 +82,39 @@ const SettingPage = () => {
         <Grid spacing={gridSpacing} container>
           <Grid item md={4}>
             <Grid container direction="column" justifyContent="flex-start" alignItems="baseline">
-              <TextField
+              {/* <TextField
                 label="ALM User Name "
                 sx={{ flex: 1, mt: 1 }}
                 fullWidth
                 InputLabelProps={{ shrink: true }}
-                {...register("almUser", basicRequireRule)}
-                error={!!errors.almUser}
-                helperText={errors.almUser?.message}
+                {...register("almIdUser", basicRequireRule)}
+                error={!!errors.almIdUser}
+                helperText={errors.almIdUser?.message}
+              /> */}
+              <Controller
+                control={control}
+                name="almIdUser"
+                rules={{ required: "This field is required" }}
+                render={({ field }) => (
+                  <CustomAutoCompleteV2
+                    sx={{ mt: 2 }}
+                    id="id-alm-user-name"
+                    label="ALM User Name"
+                    size="small"
+                    registerProp={field}
+                    errorMsg={errors.almIdUser?.message}
+                    idField="idUser"
+                    textField="loginName"
+                    queryStr={JSON.stringify({
+                      resource: "dgs-user",
+                      perPage: 50,
+                      sort: { field: "loginName", order: "ASC" },
+                    })}
+                    defaultOption={[{ id: state?.almSetting.almIdUser, label: state?.almSetting.almUser }]}
+                  />
+                )}
               />
+
               <TextField
                 label="Donbest Api Key"
                 sx={{ flex: 1, mt: 2 }}
@@ -72,7 +123,9 @@ const SettingPage = () => {
                 {...register("apiKey", basicRequireRule)}
                 error={!!errors.apiKey}
                 helperText={errors.apiKey?.message}
+                InputProps={{ endAdornment: <BasicIconTooltip icon={<RefreshIcon onClick={() => onRefreshToken()} />} title="Refresh a new Token" /> }}
               />
+
               <TextField
                 label="Donbest Stream Username"
                 sx={{ flex: 1, mt: 2 }}
@@ -91,7 +144,8 @@ const SettingPage = () => {
                 error={!!errors.streamPassword}
                 helperText={errors.streamPassword?.message}
               />
-              <TextField
+              {/* <TextField
+                disabled
                 label="Donbest Stream Broker Url"
                 sx={{ flex: 1, mt: 2 }}
                 InputLabelProps={{ shrink: true }}
@@ -99,7 +153,7 @@ const SettingPage = () => {
                 fullWidth
                 error={!!errors.streamBrokerUrl}
                 helperText={errors.streamBrokerUrl?.message}
-              />
+              /> */}
               <Button type="submit" variant="contained" sx={{ flex: 1, mt: 2 }}>
                 Update
               </Button>

@@ -57,8 +57,10 @@ export const expandLeagueSuccess = createAction<IFetchDgsGameSuccessPayload>("fe
 export const expandLeagueFailure = createAction<string>("feed/EXPAND_LEAGUE_FAILURE");
 
 export const switchTabAction = createAction<CurrentTabType>("feed/SWITCH_TAB_ACTION");
+export const rereshDataAction = createAction<undefined>("feed/REFRESH_DATA_ACTION");
 
 export type CombineFeedActionTypes =
+  | ReturnType<typeof rereshDataAction>
   | ReturnType<typeof fetchLeagueInfoTreeRequest>
   | ReturnType<typeof fetchLeagueInfoTreeSuccess>
   | ReturnType<typeof fetchLeagueInfoTreeFailure>

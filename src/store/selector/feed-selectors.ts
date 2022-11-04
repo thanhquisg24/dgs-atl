@@ -1,6 +1,8 @@
 import { defaultNHLPeriods, FilterTypeEnum, IDgsLineTypeEntity, IDonbestSportBookEntity, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
-import { CurrentTabType, ILeagueInfoModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig, ISelectedGame } from "@store/models/feed-model";
+import { CurrentTabType, IFeedModel, ILeagueInfoModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig, ISelectedGame } from "@store/models/feed-model";
 import { RootStateType } from "../types";
+
+export const getFeed = (state: RootStateType): IFeedModel => state.feed;
 
 export const getFeedLoading = (state: RootStateType): boolean => state.feed.isLoading;
 export const getSelectedLeagueId = (state: RootStateType): number | null => state.feed.selectedDgsLeague.dgsLeagueId;
@@ -28,8 +30,7 @@ export const getListSportBook = (state: RootStateType): IDonbestSportBookEntity[
 export const getListLineType = (state: RootStateType): IDgsLineTypeEntity[] => state.feed.listDgsLineType;
 
 export const getDgsSportIdFromSelectedLeague = (state: RootStateType): string | null => state.feed.selectedDgsLeague.dgsSportId;
-export const getDefaultFilterLineTypeSetting = (state: RootStateType): IFilterLineTypeEntity | null =>
-  state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterLineType[0] : null;
+export const getDefaultFilterLineTypeSetting = (state: RootStateType): IFilterLineTypeEntity | null => (state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterLineType[0] : null);
 export const getDefaultFilterPeriodSetting = (state: RootStateType): IFilterPeriodEntity[] | null => {
   const { selectedDgsLeague } = state.feed;
   if (selectedDgsLeague.dgsSportId === "NHL") {
