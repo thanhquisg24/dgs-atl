@@ -122,7 +122,7 @@ interface IPropsTreeItem {
   nodeId: string;
   id: number;
   label: string;
-  status: boolean;
+  status: boolean | null;
   countGameFail: number;
   type: "GAME" | "LEAGUE";
   dgsLeagueId: number;
@@ -146,6 +146,9 @@ function TreeItemNode(props: IPropsTreeItem) {
       }
     } else if (type === "GAME") {
       color = status === false ? "#fd2025" : "#5c8e32";
+      if (status === null) {
+        color = "black";
+      }
     }
     return {
       color,

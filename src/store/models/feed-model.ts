@@ -8,6 +8,7 @@ import {
   IFilterLineTypeEntity,
   IFilterPeriodEntity,
 } from "@adapters/entity";
+import { IMapDonbestEventInfo } from "@adapters/entity/DonbestEventInfo";
 
 // eslint-disable-next-line no-shadow
 export enum CurrentTabType {
@@ -43,7 +44,7 @@ interface IFeedBaseDataFetched {
   listDgsLineType: IDgsLineTypeEntity[];
   listDonbestSportBook: IDonbestSportBookEntity[];
   leagueLeftInfo: { [dgsLeagueId: number]: ILeagueInfoModel };
-  dbIdGameMap: { [idGame: number]: number };
+  dbIdGameMap: IMapDonbestEventInfo;
   defaultFilterCombine: IFilterCombine | null;
 }
 export interface ISelectedGame {

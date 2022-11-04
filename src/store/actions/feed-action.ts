@@ -1,4 +1,5 @@
 import { IDgsGameEntity, IDgsGameEntityWithLeague, IDgsLeagueEntity, IDgsLineTypeEntity, IDonbestLeagueEntity, IDonbestSportBookEntity, IFilterCombine, IFilterPeriodEntity } from "@adapters/entity";
+import { IMapDonbestEventInfo } from "@adapters/entity/DonbestEventInfo";
 import { createAction } from "@reduxjs/toolkit";
 import { CurrentTabType } from "@store/models/feed-model";
 
@@ -14,7 +15,7 @@ export interface IInitConfigFeed {
   listDonbestLeague: IDonbestLeagueEntity[];
   listDgsLineType: IDgsLineTypeEntity[];
   listDonbestSportBook: IDonbestSportBookEntity[];
-  dbIdGames: number[];
+  dbIdGames: IMapDonbestEventInfo;
   defaultFilterCombine: IFilterCombine | null;
 }
 interface IFetchDgsGameSuccessPayload {

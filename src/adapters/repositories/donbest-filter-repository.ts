@@ -2,6 +2,7 @@
 import { IFilterDeleteItemPayload } from "@adapters/dto";
 import { ILeagueFilterPayload } from "@adapters/dto/LeagueFilterPayload";
 import { convertFilterCombineResult, FilterTypeEnum, IDonbestLeagueEntity, IDonbestSportBookEntity, IFilterCombine, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
+import { buildKey, IDonbestEventInfo, IMapDonbestEventInfo } from "@adapters/entity/DonbestEventInfo";
 import { IEventFilterEntity } from "@adapters/entity/EventFilterEntity";
 import { AxiosResponse } from "axios";
 import { differenceWith, isEmpty, isEqual, isNumber, isString, omit } from "lodash";
@@ -9,7 +10,7 @@ import { BaseRepository } from "./base-repository";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDonbestFilterRepository {
-  fetDonbestIdGames(): Promise<number[]>;
+  fetDonbestIdGames(): Promise<IMapDonbestEventInfo>;
   postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean>;
   fetDefaultFilterCombine(): Promise<IFilterCombine>;
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
@@ -116,22 +117,38 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
     });
   }
 
-  fetDonbestIdGames(): Promise<number[]> {
-    // return new Promise((resolve, reject) => {
-    //   this.infra.remote.mainApi
-    //     .fetDonbestIdGames()
-    //     .then((res: AxiosResponse) => {
-    //       if (res.status === 200) {
-    //         const { data } = res;
-    //         const map: number[] = data;
-    //         resolve([]);
-    //       } else {
-    //         reject(new Error(`Error HTTP status code ${res.status}`));
-    //       }
-    //     })
-    //     .catch((error) => reject(error));
-    // });
-    return Promise.resolve([]);
+  fetDonbestIdGames(): Promise<IMapDonbestEventInfo> {
+    return new Promise((resolve, reject) => {
+      this.infra.remote.mainApi
+        .fetDonbestIdGames()
+        .then((res: AxiosResponse) => {
+          if (res.status === 200) {
+            const { data } = res;
+            const list: IDonbestEventInfo[] = data;
+            const reduceObj: IMapDonbestEventInfo = list.reduce((obj: IMapDonbestEventInfo, cur) => {
+              const k = buildKey(cur);
+              if (obj[k]) {
+                // eslint-disable-next-line no-param-reassign
+                obj[k] = { ...obj[k], [cur.idGame]: cur };
+              } else {
+                // eslint-disable-next-line no-param-reassign
+                obj = {
+                  ...obj,
+                  [k]: {
+                    [cur.idGame]: cur,
+                  },
+                };
+              }
+              return obj;
+            }, {}); //end reduce
+            resolve(reduceObj);
+          } else {
+            reject(new Error(`Error HTTP status code ${res.status}`));
+          }
+        })
+        .catch((error) => reject(error));
+    });
+    // return Promise.resolve([]);
   }
 
   postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean> {

@@ -46,10 +46,9 @@ const Dashboard = () => {
         notifyMessageError(error.message);
       });
   }, []);
+
   React.useEffect(() => {
     loadStatus();
-  }, [loadStatus]);
-  React.useEffect(() => {
     const timer = setInterval(() => {
       loadStatus();
     }, 5000);
