@@ -4,16 +4,17 @@
 import { Grid } from "@mui/material";
 
 // project imports
-import { diInfrastructures } from "@adapters/di/index";
-import { ISystemStatusEntity } from "@adapters/entity";
-import { useAppSelector } from "@hooks/useReduxToolKit";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { gridSpacing } from "@store/constant";
-import { getAuthSelector } from "@store/selector";
-import React from "react";
 import RecentCard from "./RecentCard";
 import WigetStatus from "./WigetStatus";
+import { ISystemStatusEntity } from "@adapters/entity";
+import React from "react";
+import { diRepositorires } from "../../../adapters/di/index";
+import { notifyMessageError } from "../../../emiter/AppEmitter";
+import { useAppSelector } from "@hooks/useReduxToolKit";
+import { getAuthSelector } from "@store/selector";
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 // setState({
@@ -21,53 +22,37 @@ import WigetStatus from "./WigetStatus";
 //   systemStatus: result,
 // }),
 interface IState {
-  systemStatus: ISystemStatusEntity | null;
   isLoading: boolean;
+  systemStatus: ISystemStatusEntity | null;
 }
-const { socketIns } = diInfrastructures;
-
 const Dashboard = () => {
   const auth = useAppSelector(getAuthSelector);
-  const [wsConnect, setWsConnect] = React.useState<{ isConnect: boolean }>({ isConnect: false });
   const [state, setState] = React.useState<IState>({
+    isLoading: false,
     systemStatus: null,
-    isLoading: true,
   });
 
-  const conect = () => {
-    socketIns.connect().then(() => {
-      setWsConnect({ isConnect: true });
-    });
-  };
-  React.useEffect(() => {
-    const disconect = () => {
-      socketIns.disconnect();
-    };
-    conect();
-    return () => disconect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const setValToState = React.useCallback((msg: string) => {
-    console.log("🚀 ~ file: index.tsx ~ line 52 ~ setValToState ~ msg", msg);
-    setState({
-      systemStatus: JSON.parse(msg),
-      isLoading: false,
-    });
-  }, []);
-
-  React.useEffect(() => {
-    if (wsConnect.isConnect) {
-      socketIns.onMessage("/topic/system-status", (msg: string | null) => {
-        if (msg !== null) {
-          setValToState(msg);
-        }
+  const loadStatus = React.useCallback(() => {
+    diRepositorires.systemSettings
+      .fetSystemStatus()
+      .then((result) => {
+        setState({
+          isLoading: false,
+          systemStatus: result,
+        });
+      })
+      .catch((error) => {
+        notifyMessageError(error.message);
       });
-      socketIns.emit("", "/app/system-status");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wsConnect.isConnect]);
+  }, []);
 
+  React.useEffect(() => {
+    loadStatus();
+    const timer = setInterval(() => {
+      loadStatus();
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [loadStatus]);
   const statusObj: { donbestApi: "ERROR" | "SUCCESS"; donbestStream: "ERROR" | "SUCCESS" } = React.useMemo(() => {
     if (state.systemStatus !== null) {
       return { donbestApi: state.systemStatus.dbApiStatus > -1 ? "SUCCESS" : "ERROR", donbestStream: state.systemStatus.dbStreamStatus > -1 ? "SUCCESS" : "ERROR" };

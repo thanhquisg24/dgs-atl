@@ -73,7 +73,6 @@ function* refreshTokenSaga(): Generator | any {
   try {
     // yield delay(1000 * 60 * 5); //interval refresh 15 minute
     const tokenObject: IAuthModel = yield select(getAuthSelector);
-    console.log("🚀 ~ file: auth-saga.ts ~ line 76 ~ function*refreshTokenSaga ~ tokenObject", tokenObject);
     if (tokenObject.jwt) {
       const refreshTokenData = yield presenter.auth.postRefreshToken(tokenObject.jwt.refreshToken);
       yield put(doRefreshTokenSuccess(refreshTokenData));
