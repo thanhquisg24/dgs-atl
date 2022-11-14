@@ -7,7 +7,7 @@ import { Grid } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { gridSpacing } from "@store/constant";
-import RecentCard from "./RecentCard";
+import RecentCard from "../../../ui-component/activity-card/RecentCard";
 import WigetStatus from "./WigetStatus";
 import { ISystemStatusEntity } from "@adapters/entity";
 import React from "react";

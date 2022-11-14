@@ -3,6 +3,7 @@ import { Grid } from "@mui/material";
 
 // project imports
 import { gridSpacing } from "@store/constant";
+import { RecentCardWithSocket } from "@ui-component/activity-card/RecentCardWithSocket";
 import AlertRefresh from "./alert-refresh";
 import DgsScheduleCard from "./dgs-schedule-card";
 import RightSideCard from "./right-side-card";
@@ -14,6 +15,7 @@ const FeedPage = () => (
     <Grid item xs={3}>
       <AlertRefresh />
       <DgsScheduleCard />
+      <RecentCardWithSocket />
     </Grid>
     <Grid item xs={9}>
       <RightSideCard>

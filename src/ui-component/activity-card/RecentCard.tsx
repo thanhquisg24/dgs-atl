@@ -67,8 +67,8 @@ const ActivityRow = ({ theme, idGame, onHandleRemoveItem }: any) => {
 
 const REFRESH_INTERVAL = 1000 * 3;
 
-const RecentCard = (props: { isLoading: boolean; idGames: number[] }) => {
-  const { isLoading, idGames } = props;
+const RecentCard = (props: { isLoading: boolean; idGames: number[]; displayNoMsg?: boolean }) => {
+  const { isLoading, idGames, displayNoMsg = false } = props;
   const [state, setState] = React.useState<{ [idgame: number]: number }>({});
   const theme: any = useTheme();
   const q = React.useMemo(() => {
@@ -138,7 +138,7 @@ const RecentCard = (props: { isLoading: boolean; idGames: number[] }) => {
                 {Object.values(state).map((item) => (
                   <ActivityRow key={item} theme={theme} idGame={item} onHandleRemoveItem={onHandleRemoveItem} />
                 ))}
-                {isEmpty(state) && (
+                {isEmpty(state) && displayNoMsg && (
                   <Grid container direction="column">
                     <Grid item>
                       <Grid container alignItems="center" justifyContent="space-between">

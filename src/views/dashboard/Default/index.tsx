@@ -4,15 +4,14 @@
 import { Grid } from "@mui/material";
 
 // project imports
-import { diInfrastructures } from "@adapters/di/index";
-import { ISystemStatusEntity } from "@adapters/entity";
 import { useAppSelector } from "@hooks/useReduxToolKit";
+import { useSystemSettingSocket } from "@hooks/useSystemSettingSocket";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { gridSpacing } from "@store/constant";
 import { getAuthSelector } from "@store/selector";
 import React from "react";
-import RecentCard from "./RecentCard";
+import RecentCard from "../../../ui-component/activity-card/RecentCard";
 import WigetStatus from "./WigetStatus";
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
@@ -20,59 +19,17 @@ import WigetStatus from "./WigetStatus";
 //   isLoading: false,
 //   systemStatus: result,
 // }),
-interface IState {
-  systemStatus: ISystemStatusEntity | null;
-  isLoading: boolean;
-}
-const { socketIns } = diInfrastructures;
 
 const Dashboard = () => {
   const auth = useAppSelector(getAuthSelector);
-  const [wsConnect, setWsConnect] = React.useState<{ isConnect: boolean }>({ isConnect: false });
-  const [state, setState] = React.useState<IState>({
-    systemStatus: null,
-    isLoading: true,
-  });
-
-  const conect = () => {
-    socketIns.connect().then(() => {
-      setWsConnect({ isConnect: true });
-    });
-  };
-  React.useEffect(() => {
-    const disconect = () => {
-      socketIns.disconnect();
-    };
-    conect();
-    return () => disconect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const setValToState = React.useCallback((msg: string) => {
-    setState({
-      systemStatus: JSON.parse(msg),
-      isLoading: false,
-    });
-  }, []);
-
-  React.useEffect(() => {
-    if (wsConnect.isConnect) {
-      socketIns.onMessage("/topic/system-status", (msg: string | null) => {
-        if (msg !== null) {
-          setValToState(msg);
-        }
-      });
-      socketIns.emit("", "/app/system-status");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wsConnect.isConnect]);
+  const data = useSystemSettingSocket();
 
   const statusObj: { donbestApi: "ERROR" | "SUCCESS"; donbestStream: "ERROR" | "SUCCESS" } = React.useMemo(() => {
-    if (state.systemStatus !== null) {
-      return { donbestApi: state.systemStatus.dbApiStatus > -1 ? "SUCCESS" : "ERROR", donbestStream: state.systemStatus.dbStreamStatus > -1 ? "SUCCESS" : "ERROR" };
+    if (data.systemStatus !== null) {
+      return { donbestApi: data.systemStatus.dbApiStatus > -1 ? "SUCCESS" : "ERROR", donbestStream: data.systemStatus.dbStreamStatus > -1 ? "SUCCESS" : "ERROR" };
     }
     return { donbestApi: "ERROR", donbestStream: "ERROR" };
-  }, [state]);
+  }, [data]);
 
   return (
     <Grid container spacing={gridSpacing}>
@@ -81,14 +38,14 @@ const Dashboard = () => {
           <Grid item lg={2} md={6} sm={6} xs={6}>
             <Grid container spacing={gridSpacing}>
               <Grid item sm={6} xs={12} md={6} lg={12}>
-                <WigetStatus isLoading={state.isLoading} title={`Hello, ${auth.currentUser}`} subTitle="Admin" icon={<AccountCircleIcon fontSize="inherit" />} status="DEFAULT" />
+                <WigetStatus isLoading={data.isLoading} title={`Hello, ${auth.currentUser}`} subTitle="Admin" icon={<AccountCircleIcon fontSize="inherit" />} status="DEFAULT" />
               </Grid>
               {/* <Grid item sm={6} xs={12} md={6} lg={12}>
-                <WigetStatus isLoading={state.isLoading} title="Socket Conntection Status" subTitle="Not connected" icon={<ErrorOutlineIcon fontSize="inherit" />} status="ERROR" />
+                <WigetStatus isLoading={data.isLoading} title="Socket Conntection Status" subTitle="Not connected" icon={<ErrorOutlineIcon fontSize="inherit" />} status="ERROR" />
               </Grid> */}
               <Grid item sm={6} xs={12} md={6} lg={12}>
                 <WigetStatus
-                  isLoading={state.isLoading}
+                  isLoading={data.isLoading}
                   title="Donbest API"
                   subTitle={statusObj.donbestApi === "SUCCESS" ? "OK" : "Error!"}
                   icon={<CheckCircleOutlineIcon fontSize="inherit" />}
@@ -97,7 +54,7 @@ const Dashboard = () => {
               </Grid>
               <Grid item sm={6} xs={12} md={6} lg={12}>
                 <WigetStatus
-                  isLoading={state.isLoading}
+                  isLoading={data.isLoading}
                   title="Donbest Stream"
                   subTitle={statusObj.donbestStream === "SUCCESS" ? "Connected" : "Not connected!"}
                   icon={<CheckCircleOutlineIcon fontSize="inherit" />}
@@ -107,7 +64,7 @@ const Dashboard = () => {
             </Grid>
           </Grid>
           <Grid item lg={4} md={6} sm={6} xs={6}>
-            <RecentCard isLoading={state.isLoading} idGames={state.systemStatus ? state.systemStatus.updatingGames : []} />
+            <RecentCard isLoading={data.isLoading} idGames={data.systemStatus ? data.systemStatus.updatingGames : []} />
           </Grid>
         </Grid>
       </Grid>
