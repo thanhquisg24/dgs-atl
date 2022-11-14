@@ -128,6 +128,17 @@ const EditLeagueMapping = () => {
   // React.useEffect(() => {
   //   setValue("dgsLeagueId", "");
   // }, [setValue, watchDgsSport]);
+  const defaultOption = React.useMemo(() => {
+    if (state.donbestItem.dgsIdLeague === null || state.donbestItem.dgsLeagueName === null) {
+      return undefined;
+    }
+    return [
+      {
+        id: state.donbestItem.dgsIdLeague,
+        label: state.donbestItem.dgsLeagueName,
+      },
+    ];
+  }, [state.donbestItem.dgsIdLeague, state.donbestItem.dgsLeagueName]);
 
   React.useEffect(() => {
     if (leagueId) {
@@ -275,12 +286,7 @@ const EditLeagueMapping = () => {
                       idField="idLeague"
                       textField="description"
                       dependencyField="idSport"
-                      defaultOption={[
-                        {
-                          id: state.donbestItem.dgsIdLeague,
-                          label: state.donbestItem.dgsLeagueName,
-                        },
-                      ]}
+                      defaultOption={defaultOption}
                       queryStr={JSON.stringify({
                         resource: "dgs-league",
                         perPage: 50,

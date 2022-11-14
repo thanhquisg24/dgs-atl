@@ -15,8 +15,8 @@ export interface IStompConfig {
   DEBUG_MODE: boolean;
 }
 export const STOMP_CONFIG = {
-  //NDPOINT: window.location.protocol === "http:" ? `ws://${baseUrl}/ws` : `wss://${baseUrl}/ws`,
-  ENDPOINT: "ws://localhost:8088/alm-ws",
+  ENDPOINT: window.location.protocol === "http:" ? "ws://172.31.77.133:8088/alm-ws" : `wss://${window.location.hostname}/alm-ws`,
+  // ENDPOINT: `wss://${window.location.hostname}/alm-ws`,
   URL_SUBSCRIBE: "/topic/system-status",
   URL_SEND_TO_MAP: "/system-status",
   DEBUG_MODE: false, //

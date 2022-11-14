@@ -49,7 +49,6 @@ const Dashboard = () => {
   }, []);
 
   const setValToState = React.useCallback((msg: string) => {
-    console.log("🚀 ~ file: index.tsx ~ line 52 ~ setValToState ~ msg", msg);
     setState({
       systemStatus: JSON.parse(msg),
       isLoading: false,

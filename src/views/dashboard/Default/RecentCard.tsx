@@ -55,9 +55,40 @@ const ActivityRow = ({ theme, idGame }: any) => {
   );
 };
 
+// const REFRESH_INTERVAL = 1000 * 5;
 const RecentCard = (props: { isLoading: boolean; idGames: number[] }) => {
   const { isLoading, idGames } = props;
+  // const [state, setState] = React.useState<number[]>([]);
   const theme: any = useTheme();
+
+  // useEffect(() => {
+  //   console.log("🚀 ~ file: RecentCard.tsx ~ line 70 ~ useEffect ~ idGames", idGames);
+  //   const s = new Set(state);
+  //   for (let index = 0; index < idGames.length; index++) {
+  //     const element = idGames[index];
+  //     s.add(element);
+  //   }
+  //   setState([...s]);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [idGames]);
+  // useEffect(() => {
+  //   let intaval: null | any = null;
+  //   intaval = setInterval(() => {
+  //     // eslint-disable-next-line no-shadow
+  //     console.log("🚀 ~ file: RecentCard.tsx ~ line 82 ~ intaval=setInterval ~ state");
+  //     setState((state) => {
+  //       return state.splice(0, 1);
+  //     });
+  //     // dequeue();
+  //     // const i = peek();
+  //   }, REFRESH_INTERVAL);
+  //   return () => {
+  //     if (intaval !== null) {
+  //       clearInterval(intaval);
+  //     }
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   return (
     <>
       {isLoading ? (

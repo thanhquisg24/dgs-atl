@@ -38,10 +38,11 @@ export default function CustomAutoCompleteV2(props: IProps) {
         }}
         getOptionLabel={(item) => {
           const str = options.list.find((p) => p?.id?.toString() === item?.id?.toString())?.label;
+          // console.log("🚀 ~ file: CustomAutoCompleteV2.tsx ~ line 41 ~ CustomAutoCompleteV2 ~ str", str);
           if (str) return str;
-          if (onSearch) {
-            onSearch("");
-          }
+          // if (onSearch) {
+          //   onSearch("");
+          // }
           return "";
         }}
         size={size}

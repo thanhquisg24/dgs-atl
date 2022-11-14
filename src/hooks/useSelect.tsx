@@ -61,6 +61,7 @@ export function useSelect(props: IProps): IUseSelect {
   React.useEffect(() => {
     const query: IQueryParams = queryMemo;
     if (search !== "") {
+      console.log("🚀 ~ file: useSelect.tsx ~ line 64 ~ React.useEffect ~ search", search);
       query.filter = { ...query.filter, q: search };
     }
     if (dependencyField ? get(query.filter, dependencyField) : false || dependencyField === undefined) {

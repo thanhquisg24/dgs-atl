@@ -1,5 +1,5 @@
 import { buildItemEventFromDonbestInfo, IDgsGameEntityWithLeague } from "@adapters/entity";
-import { buildKeyFromDgs, IDonbestEventInfo, IMapDonbestEventInfo, IMapDonbestEventWithIdGame } from "@adapters/entity/DonbestEventInfo";
+import { buildKeyFromDgs, IMapDonbestEventWithIdGame } from "@adapters/entity/DonbestEventInfo";
 import { createReducer } from "@reduxjs/toolkit";
 import { expandLeagueSuccess, fetchLeagueInfoTreeSuccess, selectEventFilterSuccess, selectLeagueIdSuccess, switchTabAction } from "@store/actions/feed-action";
 import { CurrentTabType, IFeedModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
@@ -60,18 +60,18 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
   builder.addCase(expandLeagueSuccess, (state, action) => {
     let countGameFail = 0;
     const keySportLeague = buildKeyFromDgs(action.payload.dbSportId, action.payload.dbLeagueId);
-    const exampleItem: IDonbestEventInfo = {
-      dbSportId: 0,
-      dbLeagueId: 0,
-      idGame: 9999999,
-      awayRot: 9999,
-      date: "",
-      time: "",
-      awayTeam: "example away missing",
-      utc: "2022-11-06T04:00:00.000+00:00",
-      isCheck: false,
-    };
-    const mapEvent: IMapDonbestEventWithIdGame = JSON.parse(JSON.stringify({ ...state.dbIdGameMap[keySportLeague], [exampleItem.idGame]: exampleItem }));
+    // const exampleItem: IDonbestEventInfo = {
+    //   dbSportId: 0,
+    //   dbLeagueId: 0,
+    //   idGame: 9999999,
+    //   awayRot: 9999,
+    //   date: "",
+    //   time: "",
+    //   awayTeam: "example away missing",
+    //   utc: "2022-11-06T04:00:00.000+00:00",
+    //   isCheck: false,
+    // };
+    const mapEvent: IMapDonbestEventWithIdGame = JSON.parse(JSON.stringify({ ...state.dbIdGameMap[keySportLeague] }));
 
     const gamesWithLeague: IDgsGameEntityWithLeague[] = action.payload.list.map((e) => {
       const isStatus = has(mapEvent, e.gameProviderIdGame);
