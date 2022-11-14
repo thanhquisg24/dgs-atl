@@ -5,6 +5,7 @@ import LeagueCopyToBtn from "./misc/league-copy-to-btn";
 
 export default function LeagueContainerRight(props: {
   isExistsItem: boolean;
+  dgsSportId: string | null;
   leagueInfoList: ILeagueInfoModel[];
   onSyncLines: () => void;
   onSyncTimes: () => void;
@@ -13,7 +14,7 @@ export default function LeagueContainerRight(props: {
   onDelete: () => void;
   onReset: () => void;
 }) {
-  const { onSyncLines, onSyncTimes, onSyncScores, onSyncGames, onDelete, onReset, isExistsItem, leagueInfoList } = props;
+  const { onSyncLines, onSyncTimes, onSyncScores, onSyncGames, onDelete, onReset, isExistsItem, leagueInfoList, dgsSportId } = props;
   const { control } = useFormContext();
   return (
     <Box sx={{ width: "100%" }}>
@@ -89,7 +90,7 @@ export default function LeagueContainerRight(props: {
         <Button variant="contained" sx={{ flex: 1, mt: 1 }} fullWidth color="warning" onClick={() => onSyncTimes()}>
           Sync Times
         </Button>
-        <LeagueCopyToBtn leagueInfoList={leagueInfoList} />
+        <LeagueCopyToBtn leagueInfoList={leagueInfoList} dgsSportId={dgsSportId} />
         {isExistsItem && (
           <Button variant="contained" sx={{ flex: 1, mt: 2 }} fullWidth color="error" onClick={() => onDelete()}>
             Delete

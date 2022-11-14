@@ -274,6 +274,7 @@ function LeagueformContent() {
                 onSyncGames={onSyncGames}
                 onDelete={onDelete}
                 onReset={onReset}
+                dgsSportId={selectedLeagueData.dgsSportId}
                 leagueInfoList={leagueInfoList}
               />
             </Grid>

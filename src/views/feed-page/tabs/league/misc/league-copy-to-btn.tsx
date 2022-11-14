@@ -13,8 +13,15 @@ interface IState {
   selection: { [dgsLeagueId: number]: ILeagueInfoModel };
   errorMsg: string;
 }
-export default function LeagueCopyToBtn(props: { leagueInfoList: ILeagueInfoModel[] }) {
-  const { leagueInfoList } = props;
+export default function LeagueCopyToBtn(props: { leagueInfoList: ILeagueInfoModel[]; dgsSportId: string | null }) {
+  const { leagueInfoList, dgsSportId } = props;
+  const leagueInfoListFilter = React.useMemo(() => {
+    if (dgsSportId) {
+      return leagueInfoList.filter((e) => e.dgsLeague.idSport === dgsSportId);
+    }
+    return [];
+  }, [dgsSportId, leagueInfoList]);
+
   const dispatch = useAppDispatch();
   const hookForm = useFormContext();
   const [open, setOpen] = React.useState(false);
@@ -93,7 +100,7 @@ export default function LeagueCopyToBtn(props: { leagueInfoList: ILeagueInfoMode
           <Box sx={{ display: "flex" }}>
             <FormControl sx={{ m: 2 }} component="fieldset" variant="standard">
               <FormGroup>
-                {leagueInfoList.map((item) => (
+                {leagueInfoListFilter.map((item) => (
                   <React.Fragment key={item.dgsLeague.idLeague}>
                     {item.dgsLeague.idSport.trim() !== "NHL" && (
                       <FormControlLabel
