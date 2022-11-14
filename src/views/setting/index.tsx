@@ -6,10 +6,10 @@ import { Button, Grid, TextField } from "@mui/material";
 import { gridSpacing } from "@store/constant";
 // project imports
 import MainCard from "@ui-component/cards/MainCard";
-import CustomAutoCompleteV2 from "@ui-component/CustomAutoCompleteV2";
 import BasicIconTooltip from "@ui-component/icon-base";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import DgsUserSelectbox from "./dgs-user-select";
 
 // ==============================|| SAMPLE PAGE ||============================== //
 
@@ -96,7 +96,7 @@ const SettingPage = () => {
                 name="almIdUser"
                 rules={{ required: "This field is required" }}
                 render={({ field }) => (
-                  <CustomAutoCompleteV2
+                  <DgsUserSelectbox
                     sx={{ mt: 2 }}
                     id="id-alm-user-name"
                     label="ALM User Name"
@@ -105,13 +105,23 @@ const SettingPage = () => {
                     errorMsg={errors.almIdUser?.message}
                     idField="idUser"
                     textField="loginName"
-                    queryStr={JSON.stringify({
-                      resource: "dgs-user",
-                      perPage: 50,
-                      sort: { field: "loginName", order: "ASC" },
-                    })}
-                    defaultOption={[{ id: state?.almSetting.almIdUser, label: state?.almSetting.almUser }]}
                   />
+                  // <CustomAutoCompleteV2
+                  //   sx={{ mt: 2 }}
+                  //   id="id-alm-user-name"
+                  //   label="ALM User Name"
+                  //   size="small"
+                  //   registerProp={field}
+                  //   errorMsg={errors.almIdUser?.message}
+                  //   idField="idUser"
+                  //   textField="loginName"
+                  //   queryStr={JSON.stringify({
+                  //     resource: "dgs-user",
+                  //     perPage: 50,
+                  //     sort: { field: "loginName", order: "ASC" },
+                  //   })}
+                  //   defaultOption={[{ id: state?.almSetting.almIdUser, label: state?.almSetting.almUser }]}
+                  // />
                 )}
               />
 

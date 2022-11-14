@@ -8,11 +8,21 @@ import { useTheme } from "@mui/material/styles";
 import { gridSpacing } from "@store/constant";
 import MainCard from "@ui-component/cards/MainCard";
 import SkeletonPopularCard from "@ui-component/cards/Skeleton/PopularCard";
+import { Queue } from "@utils/queue";
+import { isEmpty, omit } from "lodash";
+import React from "react";
 
 // assets
 
 // ==============================|| DASHBOARD DEFAULT - POPULAR CARD ||============================== //
-const ActivityRow = ({ theme, idGame }: any) => {
+const ActivityRow = ({ theme, idGame, onHandleRemoveItem }: any) => {
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      onHandleRemoveItem(idGame);
+    }, 1500);
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <>
       <Grid container direction="column">
@@ -55,40 +65,60 @@ const ActivityRow = ({ theme, idGame }: any) => {
   );
 };
 
-// const REFRESH_INTERVAL = 1000 * 5;
+const REFRESH_INTERVAL = 1000 * 3;
+
 const RecentCard = (props: { isLoading: boolean; idGames: number[] }) => {
   const { isLoading, idGames } = props;
-  // const [state, setState] = React.useState<number[]>([]);
+  const [state, setState] = React.useState<{ [idgame: number]: number }>({});
   const theme: any = useTheme();
+  const q = React.useMemo(() => {
+    return new Queue<number[]>();
+  }, []);
 
-  // useEffect(() => {
-  //   console.log("🚀 ~ file: RecentCard.tsx ~ line 70 ~ useEffect ~ idGames", idGames);
-  //   const s = new Set(state);
-  //   for (let index = 0; index < idGames.length; index++) {
-  //     const element = idGames[index];
-  //     s.add(element);
-  //   }
-  //   setState([...s]);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [idGames]);
-  // useEffect(() => {
-  //   let intaval: null | any = null;
-  //   intaval = setInterval(() => {
-  //     // eslint-disable-next-line no-shadow
-  //     console.log("🚀 ~ file: RecentCard.tsx ~ line 82 ~ intaval=setInterval ~ state");
-  //     setState((state) => {
-  //       return state.splice(0, 1);
-  //     });
-  //     // dequeue();
-  //     // const i = peek();
-  //   }, REFRESH_INTERVAL);
-  //   return () => {
-  //     if (intaval !== null) {
-  //       clearInterval(intaval);
-  //     }
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
+  React.useEffect(() => {
+    q.enqueue(idGames);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idGames]);
+  React.useEffect(() => {
+    let intaval: null | any = null;
+    intaval = setInterval(() => {
+      // eslint-disable-next-line no-shadow
+      const { size } = q;
+      if (size > 0) {
+        // eslint-disable-next-line no-nested-ternary
+        // const len = size >= 20 ? 20 : size >= 10 ? 10 : 1;
+        const len = size;
+        let obj = {};
+        for (let index = 0; index < len; index++) {
+          const element = q.dequeue();
+          const oitem = element.reduce((store: any, cur) => {
+            return { ...store, [cur]: cur };
+          }, {}); //end reduce
+          obj = { ...obj, ...oitem };
+        }
+        if (isEmpty(obj) === false) setState({ ...state, ...obj });
+      } else {
+        setState({});
+      }
+    }, REFRESH_INTERVAL);
+    return () => {
+      if (intaval !== null) {
+        clearInterval(intaval);
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onHandleRemoveItem = React.useCallback(
+    (idgame: number) => {
+      const newState = omit(state, idgame);
+      setState(newState);
+    },
+    [state],
+  );
+  // const gamesRender: number[] | undefined = React.useMemo(() => {
+  //   return peek();
+  // }, [peek]);
   return (
     <>
       {isLoading ? (
@@ -105,10 +135,10 @@ const RecentCard = (props: { isLoading: boolean; idGames: number[] }) => {
                 </Grid>
               </Grid>
               <Grid item xs={12}>
-                {idGames.map((item) => (
-                  <ActivityRow key={item} theme={theme} idGame={item} />
+                {Object.values(state).map((item) => (
+                  <ActivityRow key={item} theme={theme} idGame={item} onHandleRemoveItem={onHandleRemoveItem} />
                 ))}
-                {idGames.length === 0 && (
+                {isEmpty(state) && (
                   <Grid container direction="column">
                     <Grid item>
                       <Grid container alignItems="center" justifyContent="space-between">

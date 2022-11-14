@@ -99,7 +99,7 @@ function* initAuthTokenSaga(): Generator | any {
     }
   } catch (error) {
     yield put(doLoginFailure(error.message));
-    notifyMessageError(error.message);
+    // notifyMessageError(error.message);
   }
 }
 

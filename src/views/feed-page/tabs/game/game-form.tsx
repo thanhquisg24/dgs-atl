@@ -147,7 +147,7 @@ function GameFromBody(props: IProps) {
         const channelPayloadSyncLines: Sync_Odds_Task_Type = {
           taskObject: `Sync ${gameWithLeague.homeTeam} vs ${gameWithLeague.visitorTeam}`,
           taskType: TASK_TYPE.SYNC_ODDS,
-          payload: { dgsIdGame: gameWithLeague.dgsLeagueId },
+          payload: { dgsIdGame: gameWithLeague.idGame },
         };
         onComfirmSync(data, () => dispatch(taskChannelRequestAction(channelPayloadSyncLines)));
         // emitStartLoading();

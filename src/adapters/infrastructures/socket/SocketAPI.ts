@@ -44,7 +44,6 @@ export default class SocketAPI implements ISocketApi {
           resolve(this);
         },
         (error: any) => {
-          console.log("🚀 ~ file: SocketAPI.ts ~ line 39 ~ SocketAPI ~ returnnewPromise ~ error", error);
           reject(error);
         },
       );
@@ -83,7 +82,6 @@ export default class SocketAPI implements ISocketApi {
     this.socket.subscribe(
       channel,
       (msg: { body: string }) => {
-        console.log("🚀 ~ file: SocketAPI.ts ~ line 81 ~ SocketAPI ~ onMessage ~ msg", msg);
         // called when the client receives a STOMP message from the server
         if (msg.body.length > 0) {
           // const json_msg = JSON.parse(msg.body);

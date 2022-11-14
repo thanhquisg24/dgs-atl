@@ -25,7 +25,7 @@ export interface IFilterPeriodEntity {
   dbSportId: number;
 }
 
-const defaultNHLPeriodItem: IFilterPeriodEntity = {
+const defaultPeriodItem: IFilterPeriodEntity = {
   id: null,
   type: FilterTypeEnum.LEAGUE,
   lineTypeId: 0,
@@ -48,9 +48,14 @@ const defaultNHLPeriodItem: IFilterPeriodEntity = {
   dbSportId: 0,
 };
 
-export const defaultNHLPeriods: IFilterPeriodEntity[] = [
-  defaultNHLPeriodItem,
-  { ...defaultNHLPeriodItem, period: 7 },
-  { ...defaultNHLPeriodItem, period: 8 },
-  { ...defaultNHLPeriodItem, period: 9 },
-];
+export const defaultNHLPeriods: IFilterPeriodEntity[] = [defaultPeriodItem, { ...defaultPeriodItem, period: 7 }, { ...defaultPeriodItem, period: 8 }, { ...defaultPeriodItem, period: 9 }];
+
+export const defaultSOCPeriods: IFilterPeriodEntity[] = [defaultPeriodItem, { ...defaultPeriodItem, period: 1 }, { ...defaultPeriodItem, period: 2 }];
+
+export const defaultMUPerios: IFilterPeriodEntity[] = [defaultPeriodItem];
+export const defaultPeriodsMap = {
+  MU: defaultMUPerios,
+  SOC: defaultSOCPeriods,
+  NHL: defaultNHLPeriods,
+};
+// export const

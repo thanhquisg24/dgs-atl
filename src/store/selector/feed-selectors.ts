@@ -1,5 +1,6 @@
-import { defaultNHLPeriods, FilterTypeEnum, IDgsLineTypeEntity, IDonbestSportBookEntity, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
+import { defaultPeriodsMap, FilterTypeEnum, IDgsLineTypeEntity, IDonbestSportBookEntity, IFilterLineTypeEntity, IFilterPeriodEntity } from "@adapters/entity";
 import { CurrentTabType, IFeedModel, ILeagueInfoModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig, ISelectedGame } from "@store/models/feed-model";
+import { get, isEmpty } from "lodash";
 import { RootStateType } from "../types";
 
 export const getFeed = (state: RootStateType): IFeedModel => state.feed;
@@ -33,8 +34,9 @@ export const getDgsSportIdFromSelectedLeague = (state: RootStateType): string | 
 export const getDefaultFilterLineTypeSetting = (state: RootStateType): IFilterLineTypeEntity | null => (state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterLineType[0] : null);
 export const getDefaultFilterPeriodSetting = (state: RootStateType): IFilterPeriodEntity[] | null => {
   const { selectedDgsLeague } = state.feed;
-  if (selectedDgsLeague.dgsSportId === "NHL") {
-    return defaultNHLPeriods;
+  const result = get(defaultPeriodsMap, selectedDgsLeague.dgsSportId ? selectedDgsLeague.dgsSportId : "");
+  if (isEmpty(result) === false) {
+    return result;
   }
   return state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterPeriod : null;
 };
@@ -43,9 +45,9 @@ export const getDefaultFilterPeriodSettingByEvent = (state: RootStateType): IFil
   const { selectedGame } = state.feed;
   let result: IFilterPeriodEntity[] = [];
   const idSport = selectedGame.gameWithLeague ? selectedGame.gameWithLeague.idSport : "";
-  if (idSport.trim() === "NHL") {
-    result = defaultNHLPeriods;
-  } else {
+  const sportTrimp = idSport.trim();
+  result = get(defaultPeriodsMap, sportTrimp);
+  if (isEmpty(result)) {
     result = state.feed.defaultFilterCombine ? state.feed.defaultFilterCombine.listFilterPeriod : [];
   }
   if (selectedGame.gameWithLeague) {
