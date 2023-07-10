@@ -35,7 +35,7 @@ interface IApiPostType {
   deleteItemsLeagueMapping(payload: number[]): Promise<AxiosResponse>;
 }
 interface IApiFetchType {
-  fetDonbestIdGames(): Promise<AxiosResponse>;
+  fetDonbestIdGames(isCache?: boolean): Promise<AxiosResponse>;
   fetchAvaiableDgsLineType(): Promise<AxiosResponse>;
   fetAvaiableDgsLeague(): Promise<AxiosResponse>;
   fetAvaiableDgsGames(idLeague: number): Promise<AxiosResponse>;
@@ -79,8 +79,17 @@ class MainApi extends AuthApi implements IMainApi {
     return this.Axios.post("/system-setting/update-setting", setting);
   }
 
-  fetDonbestIdGames(): Promise<AxiosResponse<any, any>> {
-    return this.Axios.get("db-filter/get-db-id-games");
+  fetDonbestIdGames(isCache?: boolean): Promise<AxiosResponse<any, any>> {
+    const pathReq = "db-filter/get-db-id-games";
+    if (isCache) {
+      return this.Axios.get(pathReq, {
+        cache: {
+          maxAge: 3 * 60 * 1000, // 2 min instead of 15 min
+          exclude: { query: false },
+        },
+      });
+    }
+    return this.Axios.get(pathReq);
   }
 
   fetchLineTypeLinks(outIdLineType: number, dgsIdSport: string): Promise<AxiosResponse<any, any>> {

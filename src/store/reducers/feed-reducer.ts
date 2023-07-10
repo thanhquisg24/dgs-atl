@@ -4,7 +4,7 @@ import { createReducer } from "@reduxjs/toolkit";
 import { expandLeagueSuccess, fetchLeagueInfoTreeSuccess, selectEventFilterSuccess, selectLeagueIdSuccess, switchTabAction } from "@store/actions/feed-action";
 import { CurrentTabType, IFeedModel, IMapFilterLineTypeConfig, IMapFilterPeriodConfig } from "@store/models/feed-model";
 import { buildDgsLeaguesTree, buildKeyLineType, buildMapFilterLineType, buildMapFilterPeriod } from "@store/utils/feed-utils";
-import { has } from "lodash";
+import { has, set } from "lodash";
 
 const defaultSelectedGame = {
   mapFilterPeriodConfig: null,
@@ -78,7 +78,7 @@ const feedReducer = createReducer(initialFeedState as IFeedModel, (builder) => {
       if (isStatus === false) {
         countGameFail += 1;
       }
-      mapEvent[e.gameProviderIdGame].isCheck = true;
+      set(mapEvent, "isCheck", true);
       return {
         ...e,
         dgsLeagueId: action.payload.dgsLeagueId,

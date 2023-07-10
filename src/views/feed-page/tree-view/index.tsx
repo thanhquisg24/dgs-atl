@@ -182,8 +182,13 @@ function TreeItemNode(props: IPropsTreeItem) {
 
 export default function CustomizedTreeView() {
   const dispatch = useAppDispatch();
+
   React.useEffect(() => {
     dispatch(fetchLeagueInfoTreeRequest());
+    const timer = setInterval(() => {
+      dispatch(fetchLeagueInfoTreeRequest());
+    }, 1000 * 60 * 2.9);
+    return () => clearInterval(timer);
   }, [dispatch]);
 
   const dgsLeagueList: ILeagueInfoModel[] = useAppSelector(getLeagueLeftInfoList);

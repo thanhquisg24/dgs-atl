@@ -33,7 +33,7 @@ function* fetchDgsLeaguesSaga(): Generator | any {
       diRepositorires.dgsLeague.fetchAvaiableDgsLineType(),
       diRepositorires.donbestLeague.fetAvaiableDonbestSportBook(),
       diRepositorires.donbestFilter.fetDefaultFilterCombine(),
-      diRepositorires.donbestFilter.fetDonbestIdGames(),
+      diRepositorires.donbestFilter.fetDonbestIdGames(true),
     ]);
 
     yield put(

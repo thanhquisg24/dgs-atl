@@ -1,4 +1,5 @@
 import { IUserEntity } from "@adapters/entity";
+import { JWT_TOKEN_EXPIREIN } from "@adapters/infrastructures/adapters.infrastructures.config";
 import { presenter } from "@adapters/presenters";
 import { notifyMessageError } from "@emiter/AppEmitter";
 import { appInitAction } from "@store/actions";
@@ -83,7 +84,8 @@ function* refreshTokenSaga(): Generator | any {
     // yield put(doRefreshTokenRequest(refreshData.refreshToken));
   } catch (error) {
     yield put(doRefreshTokenFailure(error.message));
-    notifyMessageError(error.message);
+    notifyMessageError("Refresh Token Fail!");
+    yield spawn(timer, JWT_TOKEN_EXPIREIN);
   }
 }
 

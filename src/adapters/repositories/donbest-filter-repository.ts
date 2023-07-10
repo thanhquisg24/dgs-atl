@@ -10,7 +10,7 @@ import { BaseRepository } from "./base-repository";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IDonbestFilterRepository {
-  fetDonbestIdGames(): Promise<IMapDonbestEventInfo>;
+  fetDonbestIdGames(isCache?: boolean): Promise<IMapDonbestEventInfo>;
   postCopyLeagueFilters(payload: ILeagueFilterPayload[]): Promise<boolean>;
   fetDefaultFilterCombine(): Promise<IFilterCombine>;
   fetFilterCombine(type: FilterTypeEnum, dgsLeagueId: number, lineTypeId: number): Promise<IFilterCombine>;
@@ -57,7 +57,6 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
     const rightTocompare = transPeriods(eventFetch.eventFilterPeriod);
     const changesPeriods = differenceWith(leftTocompare, rightTocompare, isEqual);
     if (changesPeriods.length > 0) {
-      console.log("🚀 ~ file: donbest-filter-repository.ts ~ line 58 ~ DonbestFilterRepository ~ compareTwoEventFilter ~ changesPeriods", changesPeriods);
       return false;
     }
     return true;
@@ -117,10 +116,10 @@ export class DonbestFilterRepository extends BaseRepository implements IDonbestF
     });
   }
 
-  fetDonbestIdGames(): Promise<IMapDonbestEventInfo> {
+  fetDonbestIdGames(isCache?: boolean): Promise<IMapDonbestEventInfo> {
     return new Promise((resolve, reject) => {
       this.infra.remote.mainApi
-        .fetDonbestIdGames()
+        .fetDonbestIdGames(isCache)
         .then((res: AxiosResponse) => {
           if (res.status === 200) {
             const { data } = res;
